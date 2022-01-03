@@ -9,6 +9,10 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI);
 
+// 配置 Axios
+import Axios from './utils/request'
+Vue.prototype.$axios = Axios;
+
 new Vue({
   router,
   store,
