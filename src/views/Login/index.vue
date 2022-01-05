@@ -43,36 +43,23 @@ export default {
     }
   },
   methods: {
-    // 展示弹窗
-    showMessageBox(res){
-      if(res.code === 10000) this.$message({message:res.msg,type:'success'})
-      if(res.code === 10001) this.$message({message:res.msg,type:'warning'})
-      if(res.code === 10002) this.$message({message:res.msg,type:'warning'})
-      if(res.code === 10003) this.$message.error(res.msg)
-      if(res.code === 10004) this.$message.error(res.msg)
-    },
     // 登录
     async login() {
-      try {
-        // 获取数据
-        const {account, password} = this.loginForm;
-        // 账号验证的结果
-        const res = await this.$axios.post('/b/login', { account, password })
-        // 写入 token
-        localStorage.setItem('token',res.data.token);
-        // 弹窗
-        this.showMessageBox(res);
-        if (res.code === 10000){
-          // 分发一个事件给vuex 让vuex去请求获取当前登录用户的所有信息
-          this.$store.dispatch('getUserInfo',{
-            account
-          })
-          // 跳转
-          this.$router.push('/');
-        }
-      }catch (e) {
-        console.log(e)
+      // 获取数据
+      const {account, password} = this.loginForm;
+      // 账号验证的结果
+      const res = await this.$axios.post('/admin/login', { account, password })
+      // 写入 token
+      localStorage.setItem('token',res.data.token);
+      this.$message({
+        type: res.code === 200 ? "success" : "error",
+        message:res.msg
+      })
+      if (res.code === 200){
+        this.$store.dispatch('setAccountInfo',res.data);
       }
+      // 跳转
+      await this.$router.push('/');
     }
   },
 }
