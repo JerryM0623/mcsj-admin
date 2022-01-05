@@ -23,7 +23,25 @@ const routes = [
         component: () => import(/* webpackChunkName: "Home" */ '../views/Home/index'),
         meta: {
             title: '主页'
-        }
+        },
+        children:[
+            {
+                path:'account-management',
+                name:'AccountManagement',
+                component:() => import(/* webpackChunkName: "Home" */ '../views/Home/AccountManagement/index'),
+                mata:{
+                    title:'账户管理'
+                }
+            },
+            {
+                path:'role-management',
+                name:'RoleManagement',
+                component:() => import(/* webpackChunkName: "Home" */ '../views/Home/RoleManagement/index'),
+                mata:{
+                    title:'角色管理'
+                }
+            }
+        ]
     },
     {
         path: '/login',
