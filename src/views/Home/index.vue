@@ -3,21 +3,20 @@
     <div class="left">
       <el-col class="home-slide-menu-container">
         <el-menu
-            default-active="5"
             class="home-slide-menu"
             background-color="#20303f"
             text-color="#ffffff"
             active-text-color="#FFD585"
         >
           <h2 class="logo">门窗世界后台管理系统</h2>
-          <el-submenu index="1">
+          <el-submenu index="hr-management">
             <template slot="title">
               <i class="el-icon-user"></i>
               <span>人事管理</span>
             </template>
-            <el-menu-item index="1-1"><span>账户管理</span></el-menu-item>
-            <el-menu-item index="1-2"><span>角色管理</span></el-menu-item>
-            <el-menu-item index="1-3"><span>权限管理</span></el-menu-item>
+            <router-link to="/account-management"><el-menu-item index="account-management"><span>账户管理</span></el-menu-item></router-link>
+            <router-link to="/account-management"><el-menu-item index="role-management"><span>角色管理</span></el-menu-item></router-link>
+            <router-link to="/account-management"><el-menu-item index="authority-management"><span>权限管理</span></el-menu-item></router-link>
           </el-submenu>
           <el-menu-item index="2"><i class="el-icon-picture-outline"></i><span>轮播图管理</span></el-menu-item>
           <el-submenu index="3">
@@ -38,7 +37,6 @@
     <div class="right">
       <div class="home-top-bar">
         <el-menu mode="horizontal">
-          <el-menu-item class="avatar"><el-avatar :src="getUserAvatar"></el-avatar></el-menu-item>
           <el-submenu index="profile">
             <template slot="title">
               <span>{{getUserName}}</span>
@@ -49,7 +47,7 @@
         </el-menu>
 <!--        <div class="avatar"></div>-->
       </div>
-      <router-view></router-view>
+      <router-view class="subpage-container"></router-view>
     </div>
   </div>
 </template>
@@ -71,9 +69,6 @@ export default {
     }
   },
   computed:{
-    getUserAvatar(){
-      return this.$store.state.userInfo.user_avatar;
-    },
     getUserName(){
       return this.$store.state.userInfo.account;
     }
@@ -118,21 +113,22 @@ export default {
 
 /* top-header */
 .home-top-bar{
-  /*width: 200px;*/
+  width: calc(100% - 40px);
+  margin: 20px 20px 0;
   height: 60px;
   background-color: #ffffff;
   color: black;
   line-height: 60px;
   padding: 0 20px;
-  box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);
+  border-radius: 5px;
 }
 .home-top-bar div{
   float: left;
 }
-.avatar{
-  margin-left: 80%;
-}
-.avatar:hover{
-  cursor: pointer;
+
+/* 管理页面的右侧信息展示页面 */
+.subpage-container{
+  padding: 20px;
 }
 </style>
