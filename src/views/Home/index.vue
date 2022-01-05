@@ -15,8 +15,8 @@
               <span>人事管理</span>
             </template>
             <router-link to="/account-management"><el-menu-item index="account-management"><span>账户管理</span></el-menu-item></router-link>
-            <router-link to="/account-management"><el-menu-item index="role-management"><span>角色管理</span></el-menu-item></router-link>
-            <router-link to="/account-management"><el-menu-item index="authority-management"><span>权限管理</span></el-menu-item></router-link>
+            <router-link to="/role-management"><el-menu-item index="role-management"><span>角色管理</span></el-menu-item></router-link>
+            <router-link to="/role-management"><el-menu-item index="authority-management"><span>权限管理</span></el-menu-item></router-link>
           </el-submenu>
           <el-menu-item index="2"><i class="el-icon-picture-outline"></i><span>轮播图管理</span></el-menu-item>
           <el-submenu index="3">
