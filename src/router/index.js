@@ -40,6 +40,14 @@ const routes = [
                 mata:{
                     title:'角色管理'
                 }
+            },
+            {
+                path:'Carousel-management',
+                name:'CarouselManagement',
+                component:() => import(/* webpackChunkName: "Home" */ '../views/Home/CarouselManagement/index'),
+                mata:{
+                    title:'轮播图管理'
+                }
             }
         ]
     },

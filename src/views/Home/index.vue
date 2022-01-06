@@ -18,7 +18,7 @@
             <router-link to="/role-management"><el-menu-item index="role-management"><span>角色管理</span></el-menu-item></router-link>
             <router-link to="/role-management"><el-menu-item index="authority-management"><span>权限管理</span></el-menu-item></router-link>
           </el-submenu>
-          <el-menu-item index="2"><i class="el-icon-picture-outline"></i><span>轮播图管理</span></el-menu-item>
+          <router-link to="/carousel-management"><el-menu-item index="CarouselManagement"><i class="el-icon-picture-outline"></i><span>轮播图管理</span></el-menu-item></router-link>
           <el-submenu index="3">
             <template slot="title">
               <i class="el-icon-present"></i>
