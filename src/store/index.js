@@ -14,7 +14,6 @@ export default new Vuex.Store({
     },
     actions: {
         setAccountInfo({commit},payload){
-            console.log(payload)
             commit('SET_ACCOUNT_INFO',payload)
         }
     },

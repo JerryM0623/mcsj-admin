@@ -207,72 +207,14 @@ export default {
     },
 
     /**
-     * 输入数据时进行验证工作
-     */
-    addAccountCheck() {
-      if (!this.addAccount.accountInput) {
-        this.$message({
-          type: "warning",
-          message: "请填写账号"
-        })
-        return false;
-      }
-      if (this.addAccount.accountInput.length > 10 || this.addAccount.accountInput.length < 6) {
-        this.$message({
-          type: "warning",
-          message: "账号的长度在6-10之间哦"
-        })
-        return false;
-      }
-
-      if (!this.addAccount.passwordInput) {
-        this.$message({
-          type: "warning",
-          message: "请填写密码"
-        })
-        return false;
-      }
-      if (this.addAccount.passwordInput.length < 6 || this.addAccount.passwordInput.length > 10) {
-        this.$message({
-          type: "warning",
-          message: "密码的长度在6-10之间哦"
-        })
-        return false;
-      }
-
-      if (!this.addAccount.checkPasswordInput) {
-        this.$message({
-          type: "warning",
-          message: "请再次填写密码"
-        })
-        return false;
-      }
-      if (this.addAccount.checkPasswordInput !== this.addAccount.passwordInput) {
-        this.$message({
-          type: "warning",
-          message: "两次密码填写不一致，请重新填写"
-        })
-        return false;
-      }
-
-      if (!this.addAccount.roleType) {
-        this.$message({
-          type: "warning",
-          message: "请选择职业类型"
-        })
-        return false;
-      }
-      return true;
-    },
-
-    /**
      * 添加用户的方法
      */
     async handleAddAccount() {
-      const res1 = checkInput.accountCheck(this.addAccount.accountInput, this);
-      const res2 = checkInput.passwordCheck(this.addAccount.passwordInput, this);
-      const res3 = checkInput.rePasswordCheck(this.addAccount.passwordInput, this.addAccount.checkPasswordInput, this);
-      const res4 = checkInput.roleCheck(this.addAccount.roleType, this);
+      const res1 = await checkInput.accountCheck(this.addAccount.accountInput, this);
+      const res2 = await checkInput.passwordCheck(this.addAccount.passwordInput, this);
+      const res3 = await checkInput.rePasswordCheck(this.addAccount.passwordInput, this.addAccount.checkPasswordInput, this);
+      const res4 = await checkInput.roleCheck(this.addAccount.roleType, this);
+
       if (res1 && res2 && res3 && res4) {
         // 发起请求
         const res = await this.$axios.post('/admin/account/add', {
