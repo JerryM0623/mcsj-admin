@@ -63,6 +63,7 @@
       <el-table-column
           label="操作"
           width="150"
+          align="center"
       >
         <template v-slot:default="scope">
           <el-button @click="openEditDrawer(scope)" type="primary" size="small">编辑</el-button>
@@ -153,7 +154,7 @@ export default {
         // 开启 loading 遮罩
         this.loading = true;
         // 发送请求
-        const res = await this.$axios.get('/admin/accounts');
+        const res = await this.$axios.get('/admin/account/all');
         const newRes = res.data.sort((a, b) => {
           return a.id - b.id;
         })
