@@ -28,7 +28,7 @@ const routes = [
             {
                 path:'account-management',
                 name:'AccountManagement',
-                component:() => import(/* webpackChunkName: "Home" */ '../views/Home/AccountManagement/index'),
+                component:() => import(/* webpackChunkName: "accountManagement" */ '../views/Home/AccountManagement/index'),
                 mata:{
                     title:'账户管理'
                 }
@@ -36,18 +36,23 @@ const routes = [
             {
                 path:'role-management',
                 name:'RoleManagement',
-                component:() => import(/* webpackChunkName: "Home" */ '../views/Home/RoleManagement/index'),
+                component:() => import(/* webpackChunkName: "roleManagement" */ '../views/Home/RoleManagement/index'),
                 mata:{
                     title:'角色管理'
                 }
             },
             {
-                path:'Carousel-management',
+                path:'carousel-management',
                 name:'CarouselManagement',
-                component:() => import(/* webpackChunkName: "Home" */ '../views/Home/CarouselManagement/index'),
+                component:() => import(/* webpackChunkName: "carouselManagement" */ '../views/Home/CarouselManagement/index'),
                 mata:{
                     title:'轮播图管理'
                 }
+            },
+            {
+                path:'carousel-preview',
+                name:'CarouselPreview',
+                component:() => import(/* webpackChunkName: "carouselManagement" */ '../views/Home/CarouselPreview/index')
             }
         ]
     },
