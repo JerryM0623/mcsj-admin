@@ -7,9 +7,10 @@
             background-color="#20303f"
             text-color="#ffffff"
             active-text-color="#FFD585"
+            unique-opened
         >
           <h2 class="logo">门窗世界后台管理系统</h2>
-          <el-submenu index="hr-management">
+          <el-submenu index="humanResource-management">
             <template slot="title">
               <i class="el-icon-user"></i>
               <span>人事管理</span>
@@ -18,7 +19,14 @@
             <router-link to="/role-management"><el-menu-item index="role-management"><span>角色管理</span></el-menu-item></router-link>
             <router-link to="/role-management"><el-menu-item index="authority-management"><span>权限管理</span></el-menu-item></router-link>
           </el-submenu>
-          <router-link to="/carousel-management"><el-menu-item index="CarouselManagement"><i class="el-icon-picture-outline"></i><span>轮播图管理</span></el-menu-item></router-link>
+          <el-submenu index="CarouselManagement">
+            <template v-slot:title>
+              <i class="el-icon-picture-outline"></i>
+              <span>轮播图管理</span>
+            </template>
+            <router-link to="carousel-preview"><el-menu-item index="account-preview"><span>预览轮播图</span></el-menu-item></router-link>
+            <router-link to="carousel-management"><el-menu-item index="account-management"><span>轮播图管理</span></el-menu-item></router-link>
+          </el-submenu>
           <el-submenu index="3">
             <template slot="title">
               <i class="el-icon-present"></i>
@@ -130,5 +138,6 @@ export default {
 /* 管理页面的右侧信息展示页面 */
 .subpage-container{
   padding: 20px;
+  height: calc(100% - 80px);
 }
 </style>
