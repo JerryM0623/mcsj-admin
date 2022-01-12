@@ -2,80 +2,114 @@
     <div class="goods-series-management">
         <!--        搜索-->
         <search-bar
-            title = "搜索系列"
+            title="搜索系列"
             :options="searchBarOptions"
             :handler-search="filterSeries"
             :handler-clear="clearSearch"
         ></search-bar>
         <!--        表格-->
-        <el-card style="box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);margin-bottom: 20px;">
-            <el-button type="primary" style="margin-bottom: 20px;">添加系列</el-button>
-            <!--    数据-->
-            <el-table
-                v-loading="loading"
-                :data="seriesDataShow"
-                border
-                height="370"
-                style="width: 100%;">
-                <el-table-column
-                    prop="id"
-                    label="编号"
-                    width="80"
-                    align="center"
-                >
-                </el-table-column>
-                <el-table-column
-                    prop="type_name"
-                    label="所属商品类型"
-                    align="center"
-                >
-                </el-table-column>
-                <el-table-column
-                    prop="series_name"
-                    label="系列名称"
-                    align="center"
-                >
-                </el-table-column>
-                <el-table-column
-                    label="操作"
-                    width="150"
-                    align="center"
-                >
-                    <template v-slot:default="scoped">
-                        <el-button @click="openDrawer(scoped)" type="primary" size="small">编辑</el-button>
-                        <el-button @click="deleteCarousel(scoped)" type="danger" size="small">删除</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-        </el-card>
+        <data-table
+            class="series-data-table"
+            :data-list="seriesDataShow"
+            :column-list="DataTableColumn"
+            :handle-delete="deleteRow"
+            :handle-edit="editRow"
+        ></data-table>
+        <!--        抽屉-->
+        <edit-drawer
+            :drawer-option="drawerOptions"
+        >
+            <template v-slot:content>
+                <div class="container">
+                    <el-form class="drawer-form" label-width="100">
+                        <el-form-item label="编辑系列名称">
+                            <el-input v-model="editData.series_name" class="series-name-edit"></el-input>
+                        </el-form-item>
+                        <el-form-item label="所属商品类型">
+                            <el-select v-model="editData.type_name">
+                                <el-option
+                                    v-for="item in goodsTypes"
+                                    :key="item.type_name"
+                                    :value="item.type_name">{{ item.type_name }}</el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-form>
+                    <div class="buttons">
+                        <el-button class="drawer-button" @click="closeDrawer">取消</el-button>
+                        <el-button class="drawer-button" @click="submitEdit" type="primary">提交</el-button>
+                    </div>
+                </div>
+            </template>
+        </edit-drawer>
     </div>
 </template>
 
 <script>
 
 import SearchBar from '../../../../components/searchBar/index';
-import { mapState } from 'vuex'
+import DataTable from '../../../../components/DataTable/index';
+import EditDrawer from '../../../../components/EditDrawer/index';
+import {mapState} from 'vuex'
 
 export default {
     name: "GoodsSeriesManagement",
     components: {
         SearchBar,
+        DataTable,
+        EditDrawer
     },
     data() {
         return {
-            seriesDataShow: [], // 战士在表格中的数据
-            loading: false,     // 控制表格加载动画
-            searchSeries: {},
-            searchBarOptions:[
-                { value: "id", label:"id", data:"id" },
-                { value: "所属商品", label:"所属商品类型", data:"type_name" },
-            ]
+            seriesDataShow: [], // 展示在表格中的数据
+            // 搜索栏的配置属性
+            searchBarOptions: [
+                {value: "id", label: "id", data: "id"},
+                {value: "所属商品", label: "所属商品类型", data: "type_name"},
+            ],
+            // 表格列的配置属性
+            DataTableColumn: [
+                {prop: "id", label: "编号", width: "80", align: "center"},
+                {prop: "type_name", label: "所属商品类型", align: "center"},
+                {prop: "series_name", label: "系列名称", align: "center"},
+            ],
+            // 抽屉的配置属性
+            drawerOptions: {
+                isDrawerShow: false, // 开关
+                drawerDirection: 'ltr', // 打开方向
+                showClose: false,  // 关闭按钮的开关
+                wrapperClosable: false, // 遮罩关闭抽屉开关
+                title: '编辑系列数据' // 标题
+            },
+            // 商品types列表
+            goodsTypes:[],
+            // 编辑时的数据
+            editData:{
+                id:'',
+                series_name:'',
+                type_name:'',
+            }
         }
     },
-    computed:{
+    computed: {
         ...mapState(['goodsSeriesData'])
     },
     methods: {
+        /**
+         * 获取全部的商品类型信息
+         */
+        async getAllGoodsTypes(){
+            const { code, msg, data } = await this.$axios.get('/admin/series/allType');
+            // 判断响应
+            if (code === 500) {
+                this.$message.error(msg);
+            }
+            if (code === 300) {
+                this.$message.warning(msg);
+            }
+            // 配置数据
+            this.goodsTypes = data;
+        },
+
         /**
          * 获取系列的数据
          * @returns {Promise<void>}
@@ -99,17 +133,68 @@ export default {
          * @param type -> 搜索的类别
          * @param value -> 输入的数据
          */
-        filterSeries(type, value){
+        filterSeries(type, value) {
             this.seriesDataShow = this.goodsSeriesData.filter(item => {
                 return item[type].toString() === value;
             })
         },
 
-        clearSearch(){
+        /**
+         * 清除搜索框的所有搜索内容，还原表格内容为初始内容
+         */
+        clearSearch() {
             this.seriesDataShow = this.goodsSeriesData;
-        }
+        },
+
+        /**
+         * 点击编辑按钮打开抽屉
+         */
+        editRow(row) {
+            // 配置数据
+            this.editData.id = row.id;
+            this.editData.series_name = row.series_name;
+            this.editData.type_name = row.type_name;
+            // 开启抽屉
+            this.drawerOptions.isDrawerShow = true;
+        },
+
+        deleteRow(row) {
+            console.log(row)
+        },
+
+        /**
+         * 点击取消按钮关闭抽屉
+         */
+        closeDrawer(){
+            this.$confirm('确定要直接关闭抽屉?如有修改内容将不会被保存!','注意',{
+                confirmButtonText:"确定",
+                cancelButtonText:"取消",
+                type:"warning",
+            }).then(() => {
+                this.drawerOptions.isDrawerShow = false;
+            })
+        },
+
+        /**
+         * 点击提交按钮提交修改
+         */
+        async submitEdit(){
+            // 发请求
+            const { code, msg } = await this.$axios.post('/admin/series/edit',this.editData);
+            if (code === 500){
+                this.$message.error(msg);
+            }
+            this.$message.success(msg);
+            // 关闭抽屉
+            this.drawerOptions.isDrawerShow = false;
+            // 更新数据
+            await this.getAllSeries();
+            this.seriesDataShow = this.goodsSeriesData;
+        },
     },
     mounted() {
+        // 请求目前有多少系列
+        this.getAllGoodsTypes();
         // 像后台请求全部数据
         this.getAllSeries();
         // 数据对齐，将显示在页面的数据和 vuex 里面的数据匹配
@@ -119,5 +204,26 @@ export default {
 </script>
 
 <style scoped>
-
+.series-data-table {
+    height: calc(100% - 125px);
+}
+.container{
+    position: relative;
+    height: 100%;
+}
+.drawer-form{
+    padding-left: 20px
+}
+.series-name-edit{
+    width: 50%;
+}
+.buttons{
+    position: absolute;
+    padding-left: 20px;
+    width: 100%;
+    bottom: 20px;
+}
+.buttons > .drawer-button{
+    width: 45%;
+}
 </style>
