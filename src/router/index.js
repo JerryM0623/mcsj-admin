@@ -9,7 +9,7 @@ Vue.use(VueRouter)
  */
 const checkAccountIsLogin = () => {
     const token = localStorage.getItem('token');
-    if(!token){
+    if (!token) {
         alert('暂未登录，请勿强行进行页面跳转！！！');
         return false;
     }
@@ -24,36 +24,55 @@ const routes = [
         meta: {
             title: '主页'
         },
-        children:[
+        children: [
             {
-                path:'account-management',
-                name:'AccountManagement',
-                component:() => import(/* webpackChunkName: "accountManagement" */ '../views/Home/AccountManagement/index'),
-                mata:{
-                    title:'账户管理'
+                path: 'account-management',
+                name: 'AccountManagement',
+                component: () => import(/* webpackChunkName: "AccountManagement" */ '../views/Home/AccountManagement/index'),
+                mata: {
+                    title: '账户管理'
                 }
             },
             {
-                path:'role-management',
-                name:'RoleManagement',
-                component:() => import(/* webpackChunkName: "roleManagement" */ '../views/Home/RoleManagement/index'),
-                mata:{
-                    title:'角色管理'
+                path: 'role-management',
+                name: 'RoleManagement',
+                component: () => import(/* webpackChunkName: "RoleManagement" */ '../views/Home/RoleManagement/index'),
+                mata: {
+                    title: '角色管理'
                 }
             },
             {
-                path:'carousel-management',
-                name:'CarouselManagement',
-                component:() => import(/* webpackChunkName: "carouselManagement" */ '../views/Home/CarouselManagement/index'),
-                mata:{
-                    title:'轮播图管理'
+                path: 'carousel-management',
+                name: 'CarouselManagement',
+                component: () => import(/* webpackChunkName: "CarouselManagement" */ '../views/Home/CarouselManagement/index'),
+                mata: {
+                    title: '轮播图管理'
                 }
             },
             {
-                path:'carousel-preview',
-                name:'CarouselPreview',
-                component:() => import(/* webpackChunkName: "carouselManagement" */ '../views/Home/CarouselPreview/index')
-            }
+                path: 'carousel-preview',
+                name: 'CarouselPreview',
+                component: () => import(/* webpackChunkName: "CarouselPreview" */ '../views/Home/CarouselPreview/index'),
+                meta: {
+                    title: '轮播图预览'
+                }
+            },
+            {
+                path: 'goods-series-management',
+                name: 'GoodsSeriesManagement',
+                component: () => import(/* webpackChunkName: "GoodsSeriesManagement" */ '../views/Home/GoodsManagement/GoodsSeriesManagement/index'),
+                meta: {
+                    title: '轮播图预览'
+                }
+            },
+            {
+                path: 'window-goods-management',
+                name: 'WindowGoodsManagement',
+                component: () => import(/* webpackChunkName: "WindowGoodsManagement" */ '../views/Home/GoodsManagement/WindowGoodsManagement/index'),
+                meta: {
+                    title: '轮播图预览'
+                }
+            },
         ]
     },
     {
@@ -71,7 +90,7 @@ const router = new VueRouter({
 })
 
 // 前置路由守卫
-router.beforeEach((to,from,next) => {
+router.beforeEach((to, from, next) => {
     /*
       实现除login页面之外的所有页面跳转时进行账号检测的功能
       若未登录将会强行拦截路由跳转请求并且重定向至 login 页面
