@@ -124,8 +124,14 @@ export default {
             if (code === 300) {
                 this.$message.warning(msg);
             }
+
+            // 对 data 按照 id 进行排序
+            const newData = data.sort((item, nextItem) => {
+                return item.id - nextItem.id;
+            })
+
             // 配置数据
-            await this.$store.dispatch('setSeriesData', data);
+            await this.$store.dispatch('setSeriesData', newData);
         },
 
         /**
