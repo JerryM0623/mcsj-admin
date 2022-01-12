@@ -205,8 +205,28 @@ export default {
             this.drawerOptions.isDrawerShow = true;
         },
 
+        /**
+         * 删除一个系列
+         */
         deleteRow(row) {
-            console.log(row)
+            this.$confirm('确认删除?删除操作将无法恢复','注意',{
+                confirmButtonText:"确认删除",
+                cancelButtonText:"取消删除",
+                type:'warning'
+            }).then(async () => {
+                const { id } = row;
+                // 发请求
+                const { code, msg } = await this.$axios.post('/admin/series/delete',{id});
+                // 判断
+                if (code === 500){
+                    this.$message.error(msg);
+                    return;
+                }
+                this.$message.success(msg);
+                // 更新数据
+                await this.getAllSeries();
+                this.seriesDataShow = this.goodsSeriesData;
+            })
         },
 
         /**
@@ -247,6 +267,10 @@ export default {
             this.dialogOptions.isDialogShow = true;
         },
 
+        /**
+         * 添加一个新的系列的前后台交互方法
+         * @returns {Promise<void>}
+         */
         async submitAdd(){
             const { type_name, series_name } = this.addData;
             // 验证
