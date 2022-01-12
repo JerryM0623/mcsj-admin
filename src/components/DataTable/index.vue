@@ -1,6 +1,6 @@
 <template>
     <el-card style="box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);margin-bottom: 20px;">
-        <el-button type="primary" style="margin-bottom: 20px;">添加系列</el-button>
+        <el-button @click="openDialog" type="primary" style="margin-bottom: 20px;">添加系列</el-button>
         <!--    数据-->
         <el-table
             :data="dataList"
@@ -57,6 +57,11 @@ export default {
             type:Function,
             required:true
         },
+        // 开启添加系列的dialog
+        handleOpenDialog:{
+            type:Function,
+            required:true
+        }
     },
     methods:{
         editRow(scoped){
@@ -64,6 +69,9 @@ export default {
         },
         deleteRow(scoped){
             this.handleDelete(scoped.row);
+        },
+        openDialog(){
+            this.handleOpenDialog();
         }
     }
 }

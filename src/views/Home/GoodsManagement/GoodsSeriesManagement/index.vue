@@ -14,6 +14,7 @@
             :column-list="DataTableColumn"
             :handle-delete="deleteRow"
             :handle-edit="editRow"
+            :handle-open-dialog="openDialog"
         ></data-table>
         <!--        抽屉-->
         <edit-drawer
@@ -30,17 +31,45 @@
                                 <el-option
                                     v-for="item in goodsTypes"
                                     :key="item.type_name"
-                                    :value="item.type_name">{{ item.type_name }}</el-option>
+                                    :value="item.type_name">{{ item.type_name }}
+                                </el-option>
                             </el-select>
                         </el-form-item>
                     </el-form>
                     <div class="buttons">
-                        <el-button class="drawer-button" @click="closeDrawer">取消</el-button>
+                        <el-button class="drawer-button" @click="closeWindow">取消</el-button>
                         <el-button class="drawer-button" @click="submitEdit" type="primary">提交</el-button>
                     </div>
                 </div>
             </template>
         </edit-drawer>
+        <!--        添加-->
+        <add-dialog
+            :dialog-options="dialogOptions"
+        >
+            <template v-slot:content>
+                <div class="dialog-container">
+                    <el-form label-width="150px" :model="addData">
+                        <el-form-item label="填写系列名">
+                            <el-input v-model="addData.series_name" style="width: 40%"></el-input>
+                        </el-form-item>
+                        <el-form-item label="选择所属商品类型">
+                            <el-select style="width: 40%" v-model="addData.type_name">
+                                <el-option
+                                    v-for="item in goodsTypes"
+                                    :key="item.type_name"
+                                    :value="item.type_name">{{ item.type_name }}
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="closeWindow">取 消</el-button>
+                        <el-button @click="submitAdd" type="primary">添 加</el-button>
+                    </div>
+                </div>
+            </template>
+        </add-dialog>
     </div>
 </template>
 
@@ -49,6 +78,7 @@
 import SearchBar from '../../../../components/searchBar/index';
 import DataTable from '../../../../components/DataTable/index';
 import EditDrawer from '../../../../components/EditDrawer/index';
+import AddDialog from '../../../../components/AddDialog/index';
 import {mapState} from 'vuex'
 
 export default {
@@ -56,7 +86,8 @@ export default {
     components: {
         SearchBar,
         DataTable,
-        EditDrawer
+        EditDrawer,
+        AddDialog,
     },
     data() {
         return {
@@ -81,12 +112,22 @@ export default {
                 title: '编辑系列数据' // 标题
             },
             // 商品types列表
-            goodsTypes:[],
+            goodsTypes: [],
             // 编辑时的数据
-            editData:{
-                id:'',
-                series_name:'',
-                type_name:'',
+            editData: {
+                id: '',
+                series_name: '',
+                type_name: '',
+            },
+            // 添加系列的配置属性
+            dialogOptions: {
+                isDialogShow: false,
+                title: "添加新系列"
+            },
+            // 添加的数据
+            addData:{
+                series_name: '',
+                type_name: ''
             }
         }
     },
@@ -97,8 +138,8 @@ export default {
         /**
          * 获取全部的商品类型信息
          */
-        async getAllGoodsTypes(){
-            const { code, msg, data } = await this.$axios.get('/admin/series/allType');
+        async getAllGoodsTypes() {
+            const {code, msg, data} = await this.$axios.get('/admin/series/allType');
             // 判断响应
             if (code === 500) {
                 this.$message.error(msg);
@@ -169,25 +210,26 @@ export default {
         },
 
         /**
-         * 点击取消按钮关闭抽屉
+         * 点击取消按钮关闭Drawer或者Dialog
          */
-        closeDrawer(){
-            this.$confirm('确定要直接关闭抽屉?如有修改内容将不会被保存!','注意',{
-                confirmButtonText:"确定",
-                cancelButtonText:"取消",
-                type:"warning",
+        closeWindow() {
+            this.$confirm('确定要直接关闭当前窗口?内容将不会被保存!', '注意', {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning",
             }).then(() => {
                 this.drawerOptions.isDrawerShow = false;
+                this.dialogOptions.isDialogShow = false
             })
         },
 
         /**
          * 点击提交按钮提交修改
          */
-        async submitEdit(){
+        async submitEdit() {
             // 发请求
-            const { code, msg } = await this.$axios.post('/admin/series/edit',this.editData);
-            if (code === 500){
+            const {code, msg} = await this.$axios.post('/admin/series/edit', this.editData);
+            if (code === 500) {
                 this.$message.error(msg);
             }
             this.$message.success(msg);
@@ -197,6 +239,36 @@ export default {
             await this.getAllSeries();
             this.seriesDataShow = this.goodsSeriesData;
         },
+
+        /**
+         * 打开dialog
+         */
+        openDialog(){
+            this.dialogOptions.isDialogShow = true;
+        },
+
+        async submitAdd(){
+            const { type_name, series_name } = this.addData;
+            // 验证
+            if (type_name.trim().length <= 0 && series_name.trim().length <= 0){
+                this.$message.warning('请填写完整数据!');
+                return;
+            }
+            // 发请求
+            const {code, msg} = await this.$axios.post('/admin/series/add',this.addData);
+            // 判断
+            if (code === 500){
+                this.$message.error(msg);
+                return;
+            }
+            this.$message.success(msg)
+            // 关闭窗口
+            this.dialogOptions.isDialogShow =false;
+            // 更新数据(到 store)
+            await this.getAllSeries();
+            // 更新数据(到 page)
+            this.seriesDataShow = this.goodsSeriesData;
+        }
     },
     mounted() {
         // 请求目前有多少系列
@@ -213,23 +285,36 @@ export default {
 .series-data-table {
     height: calc(100% - 125px);
 }
-.container{
+
+.container {
     position: relative;
     height: 100%;
 }
-.drawer-form{
+
+.drawer-form {
     padding-left: 20px
 }
-.series-name-edit{
+
+.series-name-edit {
     width: 50%;
 }
-.buttons{
+
+.buttons {
     position: absolute;
     padding-left: 20px;
     width: 100%;
     bottom: 20px;
 }
-.buttons > .drawer-button{
+
+.buttons > .drawer-button {
     width: 45%;
+}
+
+.dialog-footer{
+    padding-left: calc(100% - 200px - 20px);
+    margin-top: 50px;
+}
+.dialog-footer > button{
+    width: 100px;
 }
 </style>
