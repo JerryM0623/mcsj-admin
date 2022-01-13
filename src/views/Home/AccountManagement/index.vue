@@ -1,401 +1,447 @@
 <template>
-  <div class="account-management-container">
-    <!--  搜索框-->
-    <el-card class="account-search-bar">
-      <h1 class="tip-title">搜索账户</h1>
-      <el-select class="search-type-select" v-model="searchAccount.searchTypeShow" placeholder="查询类型">
-        <el-option value="id">id</el-option>
-        <el-option value="账号">账号</el-option>
-        <el-option value="职位">职位</el-option>
-      </el-select>
-      <el-input v-model="searchAccount.searchInput" class="search-input" placeholder="请输入信息"></el-input>
-      <el-button type="primary" @click="search">搜索</el-button>
-      <el-button type="primary" @click="clearSearch">清除搜索结果</el-button>
-    </el-card>
-    <!--    添加-->
-    <el-card shadow="always" class="add-account">
-      <h1 class="tip-title">添加账户</h1>
-      <el-input v-model="addAccount.accountInput" class="account-input" placeholder="请输入账号"></el-input>
-      <el-input type="password" v-model="addAccount.passwordInput" class="password-input"
-                placeholder="请输入密码"></el-input>
-      <el-input type="password" v-model="addAccount.checkPasswordInput" class="check-password-input"
-                placeholder="请再次输入密码"></el-input>
-      <el-select class="account-type-select" v-model="addAccount.roleType" placeholder="选择职业">
-        <el-option value="超级管理员">超级管理员</el-option>
-        <el-option value="商品管理员">商品管理员</el-option>
-        <el-option value="客服专员">客服专员</el-option>
-      </el-select>
-      <el-button type="primary" @click="handleAddAccount">添加</el-button>
-      <el-button type="danger">清空</el-button>
-    </el-card>
-    <!--  表格-->
-    <el-table
-        v-loading="loading"
-        :data="accountDataShow"
-        border
-        height="335"
-        style="width: 100%;box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1)">
-      <el-table-column
-          prop="id"
-          label="用户编号"
-          width="80"
-          align="center"
-      >
-      </el-table-column>
-      <el-table-column
-          prop="account"
-          label="账号"
-          align="center"
-      >
-      </el-table-column>
-      <el-table-column
-          prop="password"
-          label="密码"
-          align="center"
-      >
-      </el-table-column>
-      <el-table-column
-          prop="role"
-          label="职位"
-          align="center"
-      >
-      </el-table-column>
-      <el-table-column
-          label="操作"
-          width="150"
-          align="center"
-      >
-        <template v-slot:default="scope">
-          <el-button @click="openEditDrawer(scope)" type="primary" size="small">编辑</el-button>
-          <el-button type="danger" size="small" @click="deleteAccount(scope.row.id)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-
-    <el-drawer
-        title="账号编辑"
-        :before-close="isGiveUpEdit"
-        :visible.sync="isDrawerShow"
-        direction="ltr"
-        custom-class="account-edit-drawer"
-        ref="account-edit-drawer"
-        :show-close="false"
-    >
-      <div class="account-edit-drawer__content">
-        <el-form :model="editAccount" label-width="60">
-          <el-form-item label="账号">
-            <el-input class="drawer-input" v-model="editAccount.account" placeholder="请输入账号"
-                      autocomplete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="密码">
-            <el-input class="drawer-input" type="password" show-password v-model="editAccount.password"
-                      placeholder="请输入密码" autocomplete="off"></el-input>
-          </el-form-item>
-          <el-form-item label="职位">
-            <el-select v-model="editAccount.roleType" placeholder="请选择职位">
-              <el-option label="超级管理员" value="超级管理员"></el-option>
-              <el-option label="商品管理员" value="商品管理员"></el-option>
-              <el-option label="客服专员" value="客服专员"></el-option>
-            </el-select>
-          </el-form-item>
-        </el-form>
-        <div class="account-edit-drawer__footer">
-          <el-button class="drawer-button" @click="isGiveUpEdit">取 消</el-button>
-          <el-button class="drawer-button" type="primary" @click="editAccountFunc">提交</el-button>
-        </div>
-      </div>
-    </el-drawer>
-  </div>
+    <div class="account-management-container">
+        <!--  搜索框-->
+        <search-bar
+            title="搜索账户"
+            :options="searchBarOptions"
+            :handler-search="filterAccounts"
+            :handler-clear="clearSearch"
+        ></search-bar>
+        <!--    添加-->
+        <add-dialog
+            :dialog-options="dialogOptions"
+        >
+            <template v-slot:content>
+                <div class="dialog-container">
+                    <el-form label-width="150px" :model="addAccount">
+                        <el-form-item label="填写账户">
+                            <el-input v-model="addAccount.accountInput"></el-input>
+                        </el-form-item>
+                        <el-form-item label="填写密码">
+                            <el-input type="password" v-model="addAccount.passwordInput"></el-input>
+                        </el-form-item>
+                        <el-form-item label=再次填写密码>
+                            <el-input type="password" v-model="addAccount.checkPasswordInput"></el-input>
+                        </el-form-item>
+                        <el-form-item label="选择职业">
+                            <el-select v-model="addAccount.roleType">
+                                <el-option
+                                    v-for="item in roleList"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value="item.name"
+                                ></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button @click="closeDialog">取 消</el-button>
+                        <el-button @click="submitAdd" type="primary">添 加</el-button>
+                    </div>
+                </div>
+            </template>
+        </add-dialog>
+        <!--  表格-->
+        <data-table
+            class="series-data-table"
+            :data-list="accountDataShow"
+            :column-list="DataTableColumn"
+            :handle-delete="deleteRow"
+            :handle-edit="editRow"
+            :handle-open-dialog="openDialog"
+        ></data-table>
+        <!--        编辑-->
+        <edit-drawer
+            :drawer-option="drawerOptions"
+        >
+            <template v-slot:content>
+                <div class="drawer-container">
+                    <el-form class="drawer-form" label-width="100">
+                        <el-form-item label="编辑账户">
+                            <el-input class="drawer-input" v-model="editAccount.account"></el-input>
+                        </el-form-item>
+                        <el-form-item label="编辑密码">
+                            <el-input type="password"
+                                      v-model="editAccount.password"
+                                      class="drawer-input"
+                            ></el-input>
+                        </el-form-item>
+                        <el-form-item label="编辑职业">
+                            <el-select v-model="editAccount.roleType">
+                                <el-option
+                                    v-for="item in roleList"
+                                    :key="item.id"
+                                    :value="item.name"
+                                    :label="item.name"
+                                >
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-form>
+                    <div class="drawer-footer">
+                        <el-button class="drawer-button" @click="closeDrawer">取消</el-button>
+                        <el-button class="drawer-button" @click="submitEdit" type="primary">提交</el-button>
+                    </div>
+                </div>
+            </template>
+        </edit-drawer>
+    </div>
 </template>
 
 <script>
-import checkInput from '../../../utils/checkInput'
+import searchBar from '../../../components/searchBar/index';
+import DataTable from '../../../components/DataTable/index';
+import AddDialog from '../../../components/AddDialog/index';
+import EditDrawer from '../../../components/EditDrawer/index';
 
 export default {
-  name: "AccountManagement",
-  data() {
-    return {
-      // 添加账户的数据
-      addAccount: {
-        accountInput: '',
-        passwordInput: '',
-        checkPasswordInput: '',
-        roleType: ''
-      },
-      // 编辑账户
-      editAccount: {
-        id: '',
-        account: '',
-        password: '',
-        roleType: ''
-      },
-      // 搜索模块的数据
-      searchAccount: {
-        searchInput: '',
-        searchTypeShow: '',
-        searchTypeData: ''
-      },
-      // 后端返回的数据
-      accountData: [],
-      accountDataShow: [],
-      // 控制 loading 遮罩
-      loading: false,
-      // 控制 抽屉 开关
-      isDrawerShow: false
-    }
-  },
-  methods: {
-    /**
-     * 查询全部账户信息的函数
-     */
-    async getAllAccount() {
-      try {
-        // 开启 loading 遮罩
-        this.loading = true;
-        // 发送请求
-        const res = await this.$axios.get('/admin/account/all');
-        const newRes = res.data.sort((a, b) => {
-          return a.id - b.id;
-        })
-        // 处理数据
-        this.accountData = this.accountDataShow = newRes;
-        // 关闭 loading 遮罩
-        this.loading = false;
-      } catch (err) {
-        console.log(err);
-      }
+    name: "AccountManagement",
+    components: {
+        searchBar,
+        DataTable,
+        AddDialog,
+        EditDrawer
     },
-
-    /**
-     * 根据传入的数据查询账户信息的函数
-     */
-    search() {
-      // 判断
-      if (!this.searchAccount.searchTypeData || !this.searchAccount.searchTypeShow) {
-        this.$message({
-          type: "warning",
-          message: "请选择类型"
-        })
-        return;
-      }
-      if (!this.searchAccount.searchInput) {
-        this.$message({
-          type: "warning",
-          message: "请输入关键字"
-        })
-        return;
-      }
-      this.loading = true;
-      // 两个都输入了,根据传入的类型进行 filter
-      const res = this.accountData.filter((item) => {
-        return item.id.toString() === this.searchAccount.searchInput || item.account === this.searchAccount.searchInput || item.role === this.searchAccount.searchInput
-      })
-      this.accountDataShow = res.sort((a, b) => {
-        return a.id - b.id;
-      })
-      this.loading = false;
-    },
-
-    /**
-     * 清除搜索结果
-     */
-    clearSearch() {
-      this.searchAccount.searchTypeData = '';
-      this.searchAccount.searchTypeShow = '';
-      this.searchAccount.searchInput = '';
-      this.accountDataShow = this.accountData;
-    },
-
-    /**
-     * 添加用户的方法
-     */
-    async handleAddAccount() {
-      const res1 = await checkInput.accountCheck(this.addAccount.accountInput, this);
-      const res2 = await checkInput.passwordCheck(this.addAccount.passwordInput, this);
-      const res3 = await checkInput.rePasswordCheck(this.addAccount.passwordInput, this.addAccount.checkPasswordInput, this);
-      const res4 = await checkInput.roleCheck(this.addAccount.roleType, this);
-
-      if (res1 && res2 && res3 && res4) {
-        // 发起请求
-        const res = await this.$axios.post('/admin/account/add', {
-          account: this.addAccount.accountInput,
-          password: this.addAccount.passwordInput,
-          role: this.addAccount.roleType
-        })
-        this.$message({
-          type: res.code === 200 ? "success" : "error",
-          message: res.msg
-        })
-        // 清空输入
-        if (res.code === 200) {
-          this.addAccount.accountInput = '';
-          this.addAccount.passwordInput = '';
-          this.addAccount.checkPasswordInput = '';
-          this.addAccount.roleType = '';
-
-          // 刷新表格
-          this.getAllAccount();
+    data() {
+        return {
+            // 搜索栏的配置属性
+            searchBarOptions: [
+                {value: "id", label: "id", data: "id"},
+                {value: "账号", label: "账号", data: "account"},
+                {value: "职位", label: "职位", data: "role"},
+            ],
+            // 表格列的配置属性
+            DataTableColumn: [
+                {prop: "id", label: "用户编号", width: "80", align: "center"},
+                {prop: "account", label: "账号", align: "center"},
+                {prop: "password", label: "密码", align: "center"},
+                {prop: "role", label: "职位", align: "center"},
+            ],
+            // 添加系列的配置属性
+            dialogOptions: {
+                isDialogShow: false,
+                title: "添加新账户"
+            },
+            // 抽屉的配置属性
+            drawerOptions: {
+                isDrawerShow: false, // 开关
+                drawerDirection: 'ltr', // 打开方向
+                showClose: false,  // 关闭按钮的开关
+                wrapperClosable: false, // 遮罩关闭抽屉开关
+                title: '编辑账户数据' // 标题
+            },
+            // 存放数据库中 role 的列表
+            roleList: [],
+            // 添加账户的数据
+            addAccount: {
+                accountInput: '',
+                passwordInput: '',
+                checkPasswordInput: '',
+                roleType: ''
+            },
+            // 编辑账户
+            editAccount: {
+                id: '',
+                account: '',
+                password: '',
+                roleType: ''
+            },
+            // 后端返回的数据
+            accountData: [],
+            accountDataShow: [],
         }
-      }
     },
+    methods: {
+        /**
+         * 向后台请求所有的 role
+         */
+        async getAllRoles() {
+            // 发送请求
+            const {code, data} = await this.$axios.get('/admin/account/role/all');
+            if (code === 500) return;
+            this.roleList = data;
+        },
+        /**
+         * 查询全部账户信息的函数
+         */
+        async getAllAccount() {
+            try {
+                // 开启 loading 遮罩
+                this.loading = true;
+                // 发送请求
+                const res = await this.$axios.get('/admin/account/all');
+                const newRes = res.data.sort((a, b) => {
+                    return a.id - b.id;
+                })
+                // 处理数据
+                this.accountData = this.accountDataShow = newRes;
+                // 关闭 loading 遮罩
+                this.loading = false;
+            } catch (err) {
+                console.log(err);
+            }
+        },
 
-    /**
-     * 开启编辑账户抽屉的函数
-     * @param scoped
-     */
-    openEditDrawer(scoped) {
-      // 配置数据
-      const {id, account, password, role} = scoped.row;
-      this.editAccount = {
-        id,
-        account,
-        password,
-        roleType: role
-      }
-      // 展开抽屉
-      this.isDrawerShow = true;
+        /**
+         * 根据传入的数据查询账户信息的函数
+         */
+        filterAccounts(selectResult, searchInput) {
+            // 判断
+            if (!selectResult) {
+                this.$message({
+                    type: "warning",
+                    message: "请选择类型"
+                })
+                return;
+            }
+            if (!searchInput) {
+                this.$message({
+                    type: "warning",
+                    message: "请输入关键字"
+                })
+                return;
+            }
+            // 两个都输入了,根据传入的类型进行 filter
+            const res = this.accountData.filter((item) => {
+                return item[selectResult].toString() === searchInput;
+            })
+            this.accountDataShow = res.sort((a, b) => {
+                return a.id - b.id;
+            })
+        },
+
+        /**
+         * 清除搜索结果
+         */
+        clearSearch() {
+            this.accountDataShow = this.accountData;
+        },
+
+        /**
+         * 开启 dialog
+         */
+        openDialog() {
+            this.dialogOptions.isDialogShow = true;
+        },
+
+        /**
+         * 关闭 dialog
+         */
+        closeDialog() {
+            this.$confirm('现在退出数据将不会保存', '注意', {
+                confirmButtonText: '确定退出',
+                cancelButtonText: '取消退出',
+                type: 'warning',
+            }).then(() => {
+                this.dialogOptions.isDialogShow = false;
+            })
+        },
+
+        /**
+         * 添加用户的方法
+         */
+        async submitAdd() {
+            // 获取数据
+            const {accountInput, passwordInput, checkPasswordInput, roleType} = this.addAccount;
+
+            // 判断单独存储变量
+            const judgeAccount = !accountInput || accountInput.length < 6 || accountInput.length > 16;
+            const judgePassword = !passwordInput || passwordInput.length < 6 || passwordInput.length > 16;
+            const judgeCheckPass = !checkPasswordInput || checkPasswordInput !== passwordInput;
+            const judgeRole = !roleType;
+
+            // 判断
+            if (judgeAccount) {
+                this.$message.warning('账号的长度在6-16之间，请检查。')
+                return;
+            }
+            if (judgePassword) {
+                this.$message.warning('密码的长度在6-16之间，请检查。')
+                return;
+            }
+            if (judgeCheckPass) {
+                this.$message.warning('两次密码输入不一致，请检查')
+                return;
+            }
+            if (judgeRole) {
+                this.$message.warning('请选择职业');
+                return;
+            }
+
+            // 发起请求
+            const {code, msg} = await this.$axios.post('/admin/account/add', {
+                account: accountInput,
+                password: passwordInput,
+                role: roleType
+            })
+
+            // 输出消息
+            if (code === 500) {
+                this.$message.error(msg);
+            }
+            this.$message.success(msg);
+
+            // 清空数据
+            this.addAccount.accountInput = '';
+            this.addAccount.passwordInput = '';
+            this.addAccount.checkPasswordInput = '';
+            this.addAccount.roleType = '';
+
+            // 关闭 dialog
+            this.dialogOptions.isDialogShow = false;
+
+            // 刷新表格
+            await this.getAllAccount();
+        },
+
+        /**
+         * 点击编辑按钮开启 drawer
+         */
+        editRow(row) {
+            // 配置数据
+            const {id, account, password, role} = row;
+            this.editAccount.id = id;
+            this.editAccount.account = account;
+            this.editAccount.password = password;
+            this.editAccount.roleType = role;
+            // 开启抽屉
+            this.drawerOptions.isDrawerShow = true;
+        },
+
+        /**
+         * 关闭 drawer
+         */
+        closeDrawer() {
+            this.$confirm('现在退出数据将不会保存', '注意', {
+                confirmButtonText: '确定退出',
+                cancelButtonText: '取消退出',
+                type: 'warning',
+            }).then(() => {
+                this.drawerOptions.isDrawerShow = false;
+            })
+        },
+
+        /**
+         * 提交修改
+         */
+        async submitEdit() {
+            // 获取数据
+            const {id, account, password, roleType} = this.editAccount;
+
+            // 变量化
+            const judgeId = !id;
+            const judgeAccount = !account || account.length < 6 || account.length > 16;
+            const judgePassWord = !password || password.length < 6 || password.length > 16;
+            const judgeRole = !roleType
+
+            // 判断
+            if (judgeId) {
+                this.$message.warning('数据不完整，无法提交数据，请重试')
+                return;
+            }
+            if (judgeAccount) {
+                this.$message.warning('账号的长度在6-16之间，请检查。')
+                return;
+            }
+            if (judgePassWord) {
+                this.$message.warning('密码的长度在6-16之间，请检查。')
+                return;
+            }
+            if (judgeRole) {
+                this.$message.warning('请选择职业')
+                return;
+            }
+
+            // 发请求
+            // 提交信息
+            const {code, msg} = await this.$axios.post('/admin/account/update', {
+                id,
+                account,
+                password,
+                role: roleType
+            })
+
+            // 后台处理失败
+            if (code === 500) {
+                this.$message.error(msg);
+                return;
+            }
+
+            // 后台处理成功
+            this.$message.success(msg);
+
+            // 关闭 drawer
+            this.drawerOptions.isDrawerShow = false;
+
+            // 更新表格数据
+            await this.getAllAccount();
+        },
+
+        /**
+         * 删除一行数据
+         */
+        deleteRow(row) {
+
+            const {id} = row;
+
+            this.$confirm('确定删除？该操作将无法撤回！', '注意', {
+                confirmButtonText: "确认删除",
+                cancelButtonText: "取消删除",
+                type: "warning"
+            }).then(async () => {
+                // 后台通信
+                const {code, msg} = await this.$axios.post('/admin/account/delete', {id});
+                // 后台失败消息
+                if (code === 500) {
+                    this.$message.error(msg);
+                    return;
+                }
+                // 后台成功消息
+                this.$message.success(msg);
+                // 更新数据
+                await this.getAllAccount();
+            })
+        },
     },
-
-    /**
-     * 在抽屉关闭之前提醒用户
-     */
-    isGiveUpEdit() {
-      // 开启弹框
-      this.$confirm('您确定要退出吗?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.isDrawerShow = false;
-      })
+    mounted() {
+        // 获取职业类型
+        this.getAllRoles();
+        // 向后端查询全部账户信息
+        this.getAllAccount();
     },
-
-    /**
-     * 提交编辑完的账户信息到服务器
-     */
-    async editAccountFunc() {
-      // 判断
-      const res1 = checkInput.accountCheck(this.editAccount.account, this);
-      const res2 = checkInput.passwordCheck(this.editAccount.password, this);
-      const res3 = checkInput.roleCheck(this.editAccount.roleType, this);
-
-      if (res1 && res2 && res3) {
-        // 提交信息
-        const res = await this.$axios.post('/admin/account/update', {
-          id: this.editAccount.id,
-          account: this.editAccount.account,
-          password: this.editAccount.password,
-          role: this.editAccount.roleType
-        })
-        this.$message({
-          type: res.code === 200 ? "success" : "error",
-          message: res.msg
-        })
-        if (res.code === 200) {
-          this.isDrawerShow = false;
-          this.getAllAccount();
-        }
-      }
-    },
-
-    /**
-     * 删除一个账户
-     * @param id -> 需要删除的账户的id
-     * @returns {Promise<void>}
-     */
-    deleteAccount(id) {
-      // 弹出框框
-      this.$confirm('此操作将永久删除该账户, 是否继续?', '注意', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(async () => {
-        // 提交信息
-        const res = await this.$axios.post('/admin/account/delete', {id});
-        this.$message({
-          type: res.code === 200 ? "success":"error",
-          message: res.msg
-        })
-        if (res.code === 200){
-          this.getAllAccount();
-        }
-      })
-    }
-  },
-  mounted() {
-    // 向后端查询全部账户信息
-    this.getAllAccount();
-  },
-  watch: {
-    searchAccount: {
-      deep: true,
-      handler(newVal) {
-        if (newVal.searchTypeShow === 'id') {
-          newVal.searchTypeData = 'id';
-          return;
-        }
-        if (newVal.searchTypeShow === '账号') {
-          newVal.searchTypeData = 'account';
-          return;
-        }
-        if (newVal.searchTypeShow === '职位') {
-          newVal.searchTypeData = 'role';
-        }
-      }
-    },
-  }
 }
 </script>
 
 <style scoped>
-.tip-title {
-  font-size: 14px;
-  color: #cecfd1;
-  margin-bottom: 10px;
+.dialog-footer {
+    /*margin-top: 50px;*/
+    padding-left: calc(100% - 220px);
 }
 
-.search-type-select {
-  width: 10%;
-  margin-right: 10px;
+.dialog-footer > button {
+    width: 100px;
 }
 
-.search-input {
-  width: 25%;
-  margin-right: 10px;
+.drawer-container {
+    position: relative;
+    height: 100%;
+    padding-left: 20px;
 }
 
-.account-search-bar,
-.add-account {
-  margin-bottom: 20px;
+.drawer-container > form {
+    width: 400px;
 }
 
-.account-input,
-.password-input,
-.check-password-input,
-.account-type-select {
-  width: 20%;
-  margin-right: 15px;
+.drawer-footer {
+    position: absolute;
+    bottom: 20px;
 }
 
-/* 抽屉 */
-.account-edit-drawer__content {
-  height: 100%;
-  position: relative;
-  padding: 0 20px;
+.drawer-footer > button {
+    width: 200px;
 }
 
 .drawer-input {
-  width: 90%;
-}
-
-.account-edit-drawer__footer {
-  position: absolute;
-  bottom: 20px;
-  right: 20px;
-}
-
-.drawer-button {
-  width: 100px;
+    width: calc(100% - 70px);
 }
 </style>

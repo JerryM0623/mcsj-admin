@@ -6,7 +6,7 @@
             :data="dataList"
             border
             style="width: 100%;"
-            height="375"
+            :height="height"
         >
             <el-table-column
                 v-for="item in columnList"
@@ -34,9 +34,9 @@
 <script>
 export default {
     name: "DataTable",
-    props:{
+    props: {
         // 用于显示的数组
-        dataList:{
+        dataList: {
             type: Array,
             required: true
         },
@@ -45,34 +45,39 @@ export default {
         * [{ prop:"id", label:"编号", width:"80", align:"center" },
         * { prop:"type_name", label:"所属商品类型", align:"center" }, ...]
         */
-        columnList:{
+        columnList: {
             type: Array,
             required: true
         },
         // 处理编辑任务
-        handleEdit:{
-            type:Function,
-            required:true
+        handleEdit: {
+            type: Function,
+            required: true
         },
         // 处理删除任务
-        handleDelete:{
-            type:Function,
-            required:true
+        handleDelete: {
+            type: Function,
+            required: true
         },
         // 开启添加系列的dialog
-        handleOpenDialog:{
-            type:Function,
-            required:true
+        handleOpenDialog: {
+            type: Function,
+            required: true
+        },
+        // 控制表格的高度
+        height: {
+            type: String,
+            default: () => "375"
         }
     },
-    methods:{
-        editRow(scoped){
+    methods: {
+        editRow(scoped) {
             this.handleEdit(scoped.row);
         },
-        deleteRow(scoped){
+        deleteRow(scoped) {
             this.handleDelete(scoped.row);
         },
-        openDialog(){
+        openDialog() {
             this.handleOpenDialog();
         }
     }
