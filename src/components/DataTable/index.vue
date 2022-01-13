@@ -5,7 +5,9 @@
         <el-table
             :data="dataList"
             border
-            style="width: 100%;">
+            style="width: 100%;"
+            height="375"
+        >
             <el-table-column
                 v-for="item in columnList"
                 :key="item.label"

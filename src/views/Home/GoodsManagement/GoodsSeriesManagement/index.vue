@@ -74,13 +74,10 @@
 </template>
 
 <script>
-
 import SearchBar from '../../../../components/searchBar/index';
 import DataTable from '../../../../components/DataTable/index';
 import EditDrawer from '../../../../components/EditDrawer/index';
 import AddDialog from '../../../../components/AddDialog/index';
-import {mapState} from 'vuex'
-
 export default {
     name: "GoodsSeriesManagement",
     components: {
@@ -91,6 +88,7 @@ export default {
     },
     data() {
         return {
+            seriesData:[],      // 系列数据
             seriesDataShow: [], // 展示在表格中的数据
             // 搜索栏的配置属性
             searchBarOptions: [
@@ -131,9 +129,6 @@ export default {
             }
         }
     },
-    computed: {
-        ...mapState(['goodsSeriesData'])
-    },
     methods: {
         /**
          * 获取全部的商品类型信息
@@ -172,7 +167,7 @@ export default {
             })
 
             // 配置数据
-            await this.$store.dispatch('setSeriesData', newData);
+            this.seriesData = this.seriesDataShow = newData;
         },
 
         /**
@@ -181,7 +176,7 @@ export default {
          * @param value -> 输入的数据
          */
         filterSeries(type, value) {
-            this.seriesDataShow = this.goodsSeriesData.filter(item => {
+            this.seriesDataShow = this.seriesData.filter(item => {
                 return item[type].toString() === value;
             })
         },
@@ -190,7 +185,7 @@ export default {
          * 清除搜索框的所有搜索内容，还原表格内容为初始内容
          */
         clearSearch() {
-            this.seriesDataShow = this.goodsSeriesData;
+            this.seriesDataShow = this.seriesData;
         },
 
         /**
@@ -225,7 +220,6 @@ export default {
                 this.$message.success(msg);
                 // 更新数据
                 await this.getAllSeries();
-                this.seriesDataShow = this.goodsSeriesData;
             })
         },
 
@@ -257,7 +251,6 @@ export default {
             this.drawerOptions.isDrawerShow = false;
             // 更新数据
             await this.getAllSeries();
-            this.seriesDataShow = this.goodsSeriesData;
         },
 
         /**
@@ -288,10 +281,8 @@ export default {
             this.$message.success(msg)
             // 关闭窗口
             this.dialogOptions.isDialogShow =false;
-            // 更新数据(到 store)
+            // 更新数据
             await this.getAllSeries();
-            // 更新数据(到 page)
-            this.seriesDataShow = this.goodsSeriesData;
         }
     },
     mounted() {
@@ -299,16 +290,11 @@ export default {
         this.getAllGoodsTypes();
         // 像后台请求全部数据
         this.getAllSeries();
-        // 数据对齐，将显示在页面的数据和 vuex 里面的数据匹配
-        this.seriesDataShow = this.goodsSeriesData;
     }
 }
 </script>
 
 <style scoped>
-.series-data-table {
-    height: calc(100% - 125px);
-}
 
 .container {
     position: relative;
