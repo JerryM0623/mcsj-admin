@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import searchBar from '../../../../components/searchBar/index';
+import searchBar from '../../../../components/SearchBar/index';
 
 export default {
     name: "WindowGoodsManagement",

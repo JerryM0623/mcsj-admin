@@ -124,7 +124,7 @@
 </template>
 
 <script>
-import checkAddCarousel from "../../../utils/checkAddCarousel";
+import checkAddCarousel from "../../../../utils/checkAddCarousel";
 
 export default {
     name: "CarouselManagement",

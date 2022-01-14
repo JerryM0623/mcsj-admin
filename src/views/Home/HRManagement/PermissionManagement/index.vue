@@ -1,10 +1,10 @@
 <template>
-  <div class="role-management">role..</div>
+<div class="permission-management">permission...</div>
 </template>
 
 <script>
 export default {
-name: "RoleManagement"
+name: "PermissionManagement"
 }
 </script>
 

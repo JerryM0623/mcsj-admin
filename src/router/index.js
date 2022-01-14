@@ -28,7 +28,7 @@ const routes = [
             {
                 path: 'account-management',
                 name: 'AccountManagement',
-                component: () => import(/* webpackChunkName: "AccountManagement" */ '../views/Home/AccountManagement/index'),
+                component: () => import(/* webpackChunkName: "AccountManagement" */ '../views/Home/HRManagement/AccountManagement/index'),
                 mata: {
                     title: '账户管理'
                 }
@@ -36,7 +36,15 @@ const routes = [
             {
                 path: 'role-management',
                 name: 'RoleManagement',
-                component: () => import(/* webpackChunkName: "RoleManagement" */ '../views/Home/RoleManagement/index'),
+                component: () => import(/* webpackChunkName: "RoleManagement" */ '../views/Home/HRManagement/RoleManagement/index'),
+                mata: {
+                    title: '角色管理'
+                }
+            },
+            {
+                path: 'permission-management',
+                name: 'PermissionManagement',
+                component: () => import(/* webpackChunkName: "PermissionManagement" */ '../views/Home/HRManagement/RoleManagement/index'),
                 mata: {
                     title: '角色管理'
                 }
@@ -44,7 +52,7 @@ const routes = [
             {
                 path: 'carousel-management',
                 name: 'CarouselManagement',
-                component: () => import(/* webpackChunkName: "CarouselManagement" */ '../views/Home/CarouselManagement/index'),
+                component: () => import(/* webpackChunkName: "CarouselManagement" */ '../views/Home/CarouselManagement/CarouselManagement'),
                 mata: {
                     title: '轮播图管理'
                 }
@@ -52,7 +60,7 @@ const routes = [
             {
                 path: 'carousel-preview',
                 name: 'CarouselPreview',
-                component: () => import(/* webpackChunkName: "CarouselPreview" */ '../views/Home/CarouselPreview/index'),
+                component: () => import(/* webpackChunkName: "CarouselPreview" */ '../views/Home/CarouselManagement/CarouselPreview/index'),
                 meta: {
                     title: '轮播图预览'
                 }

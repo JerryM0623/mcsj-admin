@@ -15,13 +15,13 @@
                             <i class="el-icon-user"></i>
                             <span>人事管理</span>
                         </template>
-                        <router-link to="/account-management">
+                        <router-link to="account-management">
                             <el-menu-item index="account-management"><span>账户管理</span></el-menu-item>
                         </router-link>
-                        <router-link to="/role-management">
+                        <router-link to="role-management">
                             <el-menu-item index="role-management"><span>角色管理</span></el-menu-item>
                         </router-link>
-                        <router-link to="/role-management">
+                        <router-link to="permission-management">
                             <el-menu-item index="authority-management"><span>权限管理</span></el-menu-item>
                         </router-link>
                     </el-submenu>
@@ -34,7 +34,7 @@
                             <el-menu-item index="account-preview"><span>预览轮播图</span></el-menu-item>
                         </router-link>
                         <router-link to="carousel-management">
-                            <el-menu-item index="account-management"><span>轮播图管理</span></el-menu-item>
+                            <el-menu-item index="account-management"><span>管理轮播图</span></el-menu-item>
                         </router-link>
                     </el-submenu>
                     <el-submenu index="goods-management">

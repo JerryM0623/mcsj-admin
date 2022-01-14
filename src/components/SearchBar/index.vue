@@ -24,7 +24,7 @@
 
 <script>
 export default {
-    name: "searchBar",
+    name: "SearchBar",
     props:{
         // 搜索框的标题
         title:{

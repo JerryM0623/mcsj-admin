@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import SearchBar from '../../../../components/searchBar/index';
+import SearchBar from '../../../../components/SearchBar/index';
 import DataTable from '../../../../components/DataTable/index';
 import EditDrawer from '../../../../components/EditDrawer/index';
 import AddDialog from '../../../../components/AddDialog/index';

@@ -89,10 +89,10 @@
 </template>
 
 <script>
-import searchBar from '../../../components/searchBar/index';
-import DataTable from '../../../components/DataTable/index';
-import AddDialog from '../../../components/AddDialog/index';
-import EditDrawer from '../../../components/EditDrawer/index';
+import searchBar from '../../../../components/SearchBar';
+import DataTable from '../../../../components/DataTable';
+import AddDialog from '../../../../components/AddDialog';
+import EditDrawer from '../../../../components/EditDrawer';
 
 export default {
     name: "AccountManagement",
