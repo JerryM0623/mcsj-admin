@@ -11,12 +11,11 @@
             <el-table-column
                 v-for="item in columnList"
                 :key="item.label"
-                :prop="item.prop"
-                :label="item.label"
-                :width="item.width ? item.width : ''"
-                :align="item.align ? item.align : 'center'"
+                v-bind="item"
             >
             </el-table-column>
+<!--            自定义的列表插槽-->
+            <slot name="customizeColumn"></slot>
             <el-table-column
                 label="操作"
                 width="150"

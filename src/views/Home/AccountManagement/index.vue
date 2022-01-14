@@ -43,7 +43,7 @@
         </add-dialog>
         <!--  表格-->
         <data-table
-            class="series-data-table"
+            class="account-data-table"
             :data-list="accountDataShow"
             :column-list="DataTableColumn"
             :handle-delete="deleteRow"
