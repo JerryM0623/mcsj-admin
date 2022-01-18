@@ -1,6 +1,6 @@
 <template>
     <el-card style="box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);margin-bottom: 20px;">
-        <el-button @click="openDialog" type="primary" style="margin-bottom: 20px;">添加系列</el-button>
+        <el-button @click="openDialog" type="primary" style="margin-bottom: 20px;">添加数据</el-button>
         <!--    数据-->
         <el-table
             :data="dataList"
@@ -14,8 +14,6 @@
                 v-bind="item"
             >
             </el-table-column>
-<!--            自定义的列表插槽-->
-            <slot name="customizeColumn"></slot>
             <el-table-column
                 label="操作"
                 width="150"

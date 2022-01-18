@@ -44,7 +44,7 @@ const routes = [
             {
                 path: 'permission-management',
                 name: 'PermissionManagement',
-                component: () => import(/* webpackChunkName: "PermissionManagement" */ '../views/Home/HRManagement/RoleManagement/index'),
+                component: () => import(/* webpackChunkName: "PermissionManagement" */ '../views/Home/HRManagement/PermissionManagement/index'),
                 mata: {
                     title: '角色管理'
                 }
