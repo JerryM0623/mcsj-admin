@@ -8,13 +8,20 @@ export default new Vuex.Store({
         userInfo:{}
     },
     mutations: {
-        'SET_ACCOUNT_INFO':function (state, payload){
-            state.userInfo = {...payload}
+        'SET_USER_INFO':function (state, payload){
+            // 存 state 一份
+            state.userInfo = {...payload};
+        },
+        'REMOVE_USER_INFO':function (state){
+            state.userInfo = {};
         }
     },
     actions: {
         setAccountInfo({commit},payload){
-            commit('SET_ACCOUNT_INFO',payload)
+            commit('SET_USER_INFO',payload)
+        },
+        removeUserInfo({commit}){
+            commit('REMOVE_USER_INFO');
         }
     },
     modules: {}

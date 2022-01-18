@@ -92,6 +92,7 @@ export default {
         logout() {
             // 清除数据
             localStorage.removeItem('token')
+            this.$store.dispatch('removeUserInfo');
             // 通知
             this.$message({
                 message: '退出成功',

@@ -56,7 +56,7 @@ export default {
         message:res.msg
       })
       if (res.code === 200){
-        this.$store.dispatch('setAccountInfo',res.data);
+        await this.$store.dispatch('setAccountInfo',res.data);
       }
       // 跳转
       await this.$router.push('/');
