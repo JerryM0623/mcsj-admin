@@ -8,14 +8,12 @@ Vue.use(VueRouter)
  * @returns {boolean} 返回是否已经登录账号
  */
 const checkAccountIsLogin = () => {
-    const localToken = localStorage.getItem('token');
-    const sessionStore = JSON.parse(sessionStorage.getItem('store'));
-    if (sessionStore && localToken === sessionStore.userInfo.token){
-        return true;
+    const token = localStorage.getItem('token');
+    if (!token){
+        alert('暂未登录,请勿强行进行页面跳转');
+        return false;
     }
-    localStorage.removeItem('token');
-    alert('暂未登录，请勿强行进行跳转操作');
-    return false;
+    return true;
 }
 
 const routes = [
