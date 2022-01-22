@@ -10,10 +10,11 @@
                 <!--右侧头部-->
                 <el-header class="right-header">
                     <el-breadcrumb class="bread-crumb" separator-class="el-icon-arrow-right">
-                        <el-breadcrumb-item>首页</el-breadcrumb-item>
-                        <el-breadcrumb-item>活动管理</el-breadcrumb-item>
-                        <el-breadcrumb-item>活动列表</el-breadcrumb-item>
-                        <el-breadcrumb-item>活动详情</el-breadcrumb-item>
+                        <el-breadcrumb-item
+                            v-for="item in breadCrumbDataList"
+                            :key="item.meta.title"
+                        >{{ item.meta.title }}
+                        </el-breadcrumb-item>
                     </el-breadcrumb>
                     <el-button @click="logout" class="log-out-btn" type="primary">退出登录</el-button>
                 </el-header>
@@ -34,9 +35,15 @@ export default {
     components: {
         AsideNav,
     },
+    data() {
+        return {
+            // 面包屑展示所需数据
+            breadCrumbDataList: []
+        }
+    },
     methods: {
         /**
-         * 退出账户登录的回调函数
+         * 退出账户登录的方法
          */
         logout() {
             // 清除数据
@@ -47,12 +54,24 @@ export default {
             this.$message.success('退出登录');
             // 跳转页面
             this.$router.push('/login');
+        },
+
+        /**
+         * 获取面包屑展示所需数据的方法
+         */
+        getBreadCrumbData() {
+            this.breadCrumbDataList = this.$route.matched;
         }
     },
-    computed: {
-        getUserName() {
-            return this.$store.state.userInfo.account;
+    watch: {
+        // 监听全局路由,实现面包屑依赖数据的更新
+        $route(to) {
+            this.breadCrumbDataList = to.matched;
         }
+    },
+    mounted() {
+        // 传入面包屑所需要的数据
+        this.getBreadCrumbData();
     }
 }
 </script>
