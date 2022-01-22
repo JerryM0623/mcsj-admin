@@ -2,7 +2,7 @@
     <div class="home">
         <el-container class="home-container">
             <!--侧边栏-->
-            <el-aside class="left-container" width="230px">
+            <el-aside class="left-container" width="250px">
                 <aside-nav></aside-nav>
             </el-aside>
             <!--右侧界面-->
