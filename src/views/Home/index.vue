@@ -1,104 +1,51 @@
 <template>
-    <div class="home-container">
-        <div class="left">
-            <el-col class="home-slide-menu-container">
-                <el-menu
-                    class="home-slide-menu"
-                    background-color="#20303f"
-                    text-color="#ffffff"
-                    active-text-color="#FFD585"
-                    unique-opened
-                >
-                    <h2 class="logo">门窗世界后台管理系统</h2>
-                    <el-submenu index="humanResource-management">
-                        <template slot="title">
-                            <i class="el-icon-user"></i>
-                            <span>人事管理</span>
-                        </template>
-                        <router-link to="account-management">
-                            <el-menu-item index="account-management"><span>账户管理</span></el-menu-item>
-                        </router-link>
-                        <router-link to="role-management">
-                            <el-menu-item index="role-management"><span>角色管理</span></el-menu-item>
-                        </router-link>
-                        <router-link to="permission-management">
-                            <el-menu-item index="authority-management"><span>权限管理</span></el-menu-item>
-                        </router-link>
-                    </el-submenu>
-                    <el-submenu index="CarouselManagement">
-                        <template v-slot:title>
-                            <i class="el-icon-picture-outline"></i>
-                            <span>轮播图管理</span>
-                        </template>
-                        <router-link to="carousel-preview">
-                            <el-menu-item index="account-preview"><span>预览轮播图</span></el-menu-item>
-                        </router-link>
-                        <router-link to="carousel-management">
-                            <el-menu-item index="account-management"><span>管理轮播图</span></el-menu-item>
-                        </router-link>
-                    </el-submenu>
-                    <el-submenu index="goods-management">
-                        <template slot="title">
-                            <i class="el-icon-present"></i>
-                            <span>商品管理</span>
-                        </template>
-                        <el-menu-item-group>
-                            <template slot="title">系列管理</template>
-                            <router-link to="goods-series-management">
-                                <el-menu-item index="goods-series-management"><span>系列管理</span></el-menu-item>
-                            </router-link>
-                        </el-menu-item-group>
-                        <el-menu-item-group>
-                            <template slot="title">商品管理</template>
-                            <router-link to="window-goods-management">
-                                <el-menu-item index="window-goods-management"><span>窗系列商品管理</span></el-menu-item>
-                            </router-link>
-                            <router-link to="door-goods-management">
-                                <el-menu-item index="door-goods-management"><span>门系列商品管理</span></el-menu-item>
-                            </router-link>
-                            <router-link to="house-goods-management">
-                                <el-menu-item index="house-goods-management"><span>房系列商品管理</span></el-menu-item>
-                            </router-link>
-                        </el-menu-item-group>
-                    </el-submenu>
-                    <el-menu-item index="4"><i class="el-icon-document"></i><span>订单管理</span></el-menu-item>
-                    <el-menu-item index="5"><i class="el-icon-chat-dot-square"></i><span>在线客服</span></el-menu-item>
-                </el-menu>
-
-            </el-col>
-        </div>
-        <div class="right">
-            <div class="home-top-bar">
-                <el-menu mode="horizontal">
-                    <el-submenu index="profile">
-                        <template slot="title">
-                            <span>{{ getUserName }}</span>
-                        </template>
-                        <el-menu-item index="showProfile"><span>个人信息</span></el-menu-item>
-                        <el-menu-item index="logout" @click="logout"><span>退出登录</span></el-menu-item>
-                    </el-submenu>
-                </el-menu>
-                <!--        <div class="avatar"></div>-->
-            </div>
-            <router-view class="subpage-container"></router-view>
-        </div>
+    <div class="home">
+        <el-container class="home-container">
+            <!--侧边栏-->
+            <el-aside class="left-container" width="230px">
+                <aside-nav></aside-nav>
+            </el-aside>
+            <!--右侧界面-->
+            <el-container class="right-container">
+                <!--右侧头部-->
+                <el-header class="right-header">
+                    <el-breadcrumb class="bread-crumb" separator-class="el-icon-arrow-right">
+                        <el-breadcrumb-item>首页</el-breadcrumb-item>
+                        <el-breadcrumb-item>活动管理</el-breadcrumb-item>
+                        <el-breadcrumb-item>活动列表</el-breadcrumb-item>
+                        <el-breadcrumb-item>活动详情</el-breadcrumb-item>
+                    </el-breadcrumb>
+                    <el-button @click="logout" class="log-out-btn" type="primary">退出登录</el-button>
+                </el-header>
+                <!--右侧子页面显示区域-->
+                <el-main>
+                    <router-view class="subpage-container"></router-view>
+                </el-main>
+            </el-container>
+        </el-container>
     </div>
 </template>
 
 <script>
+import AsideNav from "./components/AsideNav";
+
 export default {
     name: "Home",
+    components: {
+        AsideNav,
+    },
     methods: {
-        logout() {
+        /**
+         * 退出账户登录的回调函数
+         */
+        logout(){
             // 清除数据
-            localStorage.removeItem('token')
+            localStorage.removeItem('token');
+            sessionStorage.removeItem('store');
             this.$store.dispatch('removeUserInfo');
-            // 通知
-            this.$message({
-                message: '退出成功',
-                type: "success"
-            })
-            // 返回login
+            // 发送通知
+            this.$message.success('退出登录');
+            // 跳转页面
             this.$router.push('/login');
         }
     },
@@ -111,62 +58,79 @@ export default {
 </script>
 
 <style scoped>
-.home-container {
+.home {
     height: 100%;
     width: 100%;
 }
 
-.left,
-.right {
-    float: left;
+.home-container {
     height: 100%;
 }
 
-.left {
-    width: 250px;
-    margin: 0;
+.left-container {
+    height: 100%;
 }
 
-.right {
-    width: calc(100% - 250px);
-    background-color: #f2f5fc;
+.right-header {
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #ccc;
 }
+
+
+/*.left,*/
+/*.right {*/
+/*    float: left;*/
+/*    height: 100%;*/
+/*}*/
+
+/*.left {*/
+/*    width: 250px;*/
+/*    margin: 0;*/
+/*}*/
+
+/*.right {*/
+/*    width: calc(100% - 250px);*/
+/*    background-color: #f2f5fc;*/
+/*}*/
 
 /* 左侧竖着的菜单栏 */
-.logo {
-    color: white;
-    font-weight: 700;
-    font-size: 20px;
-    height: 60px;
-    line-height: 60px;
-    text-align: center;
-}
+/*.logo {*/
+/*    color: white;*/
+/*    font-weight: 700;*/
+/*    font-size: 20px;*/
+/*    height: 60px;*/
+/*    line-height: 60px;*/
+/*    text-align: center;*/
+/*}*/
 
-.home-slide-menu-container,
-.home-slide-menu {
-    height: 100%;
-}
+/*!*.home-slide-menu-container,*!*/
+/*.home-slide-menu {*/
+/*    height: 100%;*/
+/*}*/
 
 /* top-header */
-.home-top-bar {
-    width: calc(100% - 40px);
-    margin: 20px 20px 0;
-    height: 60px;
-    background-color: #ffffff;
-    color: black;
-    line-height: 60px;
-    padding: 0 20px;
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-}
+/*.home-top-bar {*/
+/*    width: calc(100% - 40px);*/
+/*    margin: 20px 20px 0;*/
+/*    height: 60px;*/
+/*    background-color: #ffffff;*/
+/*    color: black;*/
+/*    line-height: 60px;*/
+/*    padding: 0 20px;*/
+/*    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);*/
+/*    border-radius: 5px;*/
+/*}*/
 
-.home-top-bar div {
-    float: left;
-}
+/*.home-top-bar div {*/
+/*    float: left;*/
+/*}*/
 
 /* 管理页面的右侧信息展示页面 */
-.subpage-container {
-    padding: 20px;
-    height: calc(100% - 80px);
-}
+/*.subpage-container {*/
+/*    padding: 20px;*/
+/*    height: calc(100% - 80px);*/
+/*}*/
 </style>
