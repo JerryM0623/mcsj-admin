@@ -32,7 +32,7 @@
                 </div>
             </template>
         </edit-drawer>
-<!--        添加区域-->
+        <!--        添加区域-->
         <add-dialog
             :dialog-options="dialogOptions"
         >
@@ -85,13 +85,13 @@ export default {
                 show: [] // 用于展示的数组
             },
             // dialog的配置属性对象
-            dialogOptions:{
-                isDialogShow:false,
-                title:'添加新的权限信息'
+            dialogOptions: {
+                isDialogShow: false,
+                title: '添加新的权限信息'
             },
             // 添加信息的数据收集对象
-            addPermission:{
-                permission_name:""
+            addPermission: {
+                permission_name: ""
             },
             // 编辑信息所使用的 drawer 的属性配置
             drawerOptions: {
@@ -102,8 +102,8 @@ export default {
                 title: '编辑账户数据' // 标题
             },
             // 编辑所使用的数据收集对象
-            editPermission:{
-                id:'',
+            editPermission: {
+                id: '',
                 permission_name: ''
             }
         }
@@ -145,18 +145,18 @@ export default {
         /**
          * 点击添加按钮打开 dialog 的回调函数
          */
-        openDialog(){
+        openDialog() {
             this.dialogOptions.isDialogShow = true;
         },
 
         /**
          * 点击取消按钮关闭弹窗的回调函数
          */
-        closeDialog(){
-            this.$confirm('现在退出将会失去全部的数据','注意',{
-                confirmButtonText:"确定退出",
-                cancelButtonText:"暂不退出",
-                type:"warning"
+        closeDialog() {
+            this.$confirm('现在退出将会失去全部的数据', '注意', {
+                confirmButtonText: "确定退出",
+                cancelButtonText: "暂不退出",
+                type: "warning"
             }).then(() => {
                 this.addPermission.permission_name = '';
                 this.dialogOptions.isDialogShow = false;
@@ -167,15 +167,15 @@ export default {
          * 点击确认之后进行信息提交添加一条新的权限信息的回调函数
          * @returns {Promise<void>}
          */
-        async submitAddPermission(){
+        async submitAddPermission() {
             // 获取数据做校验
             const {permission_name} = this.addPermission;
-            if (permission_name.length <= 0){
+            if (permission_name.length <= 0) {
                 this.$message.error('请输入权限名称!');
                 return;
             }
-            const { code, msg } = await this.$axios.post('/admin/permission/add',{permission_name});
-            if (code === 500){
+            const {code, msg} = await this.$axios.post('/admin/permission/add', {permission_name});
+            if (code === 500) {
                 this.$message.error(msg);
                 return;
             }
@@ -190,8 +190,8 @@ export default {
         /**
          * 点击编辑打开 drawer 的回调函数
          */
-        openDrawer(row){
-            const { id, permission_name } = row;
+        openDrawer(row) {
+            const {id, permission_name} = row;
             this.editPermission.id = id;
             this.editPermission.permission_name = permission_name;
             this.drawerOptions.isDrawerShow = true;
@@ -200,11 +200,11 @@ export default {
         /**
          * 点击取消关闭 drawer 的回调函数
          */
-        closeDrawer(){
-            this.$confirm('现在退出将会失去全部的数据','注意',{
-                confirmButtonText:"确定退出",
-                cancelButtonText:"暂不退出",
-                type:"warning"
+        closeDrawer() {
+            this.$confirm('现在退出将会失去全部的数据', '注意', {
+                confirmButtonText: "确定退出",
+                cancelButtonText: "暂不退出",
+                type: "warning"
             }).then(() => {
                 this.editPermission.permission_name = '';
                 this.drawerOptions.isDrawerShow = false;
@@ -215,16 +215,16 @@ export default {
          * 点击确定按钮将最新编辑的数据传递给服务器进行数据修改的回调函数
          * @returns {Promise<void>}
          */
-        async submitEditPermission(){
+        async submitEditPermission() {
             // 获取数据
-            const { id, permission_name } = this.editPermission;
-            if (permission_name.trim() === '' || id === ''){
+            const {id, permission_name} = this.editPermission;
+            if (permission_name.trim() === '' || id === '') {
                 this.$message.error('参数错误!');
                 return;
             }
             // 发送请求
-            const {code, msg} = await this.$axios.post('/admin/permission/edit',{id, permission_name});
-            if (code === 500){
+            const {code, msg} = await this.$axios.post('/admin/permission/edit', {id, permission_name});
+            if (code === 500) {
                 this.$message.error(msg);
                 return;
             }
@@ -240,22 +240,22 @@ export default {
          * 点击删除按钮进行权限数据删除的回调函数
          * @param row
          */
-        deletePermission(row){
-            this.$confirm('确定删除这条数据?','注意',{
-                confirmButtonText:"确定",
-                cancelButtonText:"取消",
-                type:"warning"
+        deletePermission(row) {
+            this.$confirm('确定删除这条数据?', '注意', {
+                confirmButtonText: "确定",
+                cancelButtonText: "取消",
+                type: "warning"
             }).then(async () => {
                 // 获取数据
-                const { id } = row;
+                const {id} = row;
                 // 判断数据
-                if (!id || id === ''){
+                if (!id || id === '') {
                     this.$message.error('参数错误!');
                     return;
                 }
                 // 发起请求
-                const { code, msg } = await this.$axios.post('/admin/permission/delete',{id});
-                if (code === 500){
+                const {code, msg} = await this.$axios.post('/admin/permission/delete', {id});
+                if (code === 500) {
                     this.$message.error(msg);
                     return;
                 }
@@ -273,29 +273,33 @@ export default {
 </script>
 
 <style scoped>
-.dialog-container{
+.dialog-container {
     position: relative;
     height: 140px;
 }
-.dialog-footer{
+
+.dialog-footer {
     position: absolute;
     right: 0;
 }
-.dialog-footer > button{
+
+.dialog-footer > button {
     width: 200px;
 }
 
-.drawer-container{
+.drawer-container {
     position: relative;
     margin: 0 20px;
     height: 100%;
 }
-.drawer-footer{
+
+.drawer-footer {
     position: absolute;
     bottom: 20px;
     right: 0;
     width: 100%;
 }
+
 .drawer-footer > button {
     width: calc((100% - 10px) / 2);
 }

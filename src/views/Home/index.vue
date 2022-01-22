@@ -38,7 +38,7 @@ export default {
         /**
          * 退出账户登录的回调函数
          */
-        logout(){
+        logout() {
             // 清除数据
             localStorage.removeItem('token');
             sessionStorage.removeItem('store');
@@ -78,59 +78,4 @@ export default {
     justify-content: space-between;
     border-bottom: 1px solid #ccc;
 }
-
-
-/*.left,*/
-/*.right {*/
-/*    float: left;*/
-/*    height: 100%;*/
-/*}*/
-
-/*.left {*/
-/*    width: 250px;*/
-/*    margin: 0;*/
-/*}*/
-
-/*.right {*/
-/*    width: calc(100% - 250px);*/
-/*    background-color: #f2f5fc;*/
-/*}*/
-
-/* 左侧竖着的菜单栏 */
-/*.logo {*/
-/*    color: white;*/
-/*    font-weight: 700;*/
-/*    font-size: 20px;*/
-/*    height: 60px;*/
-/*    line-height: 60px;*/
-/*    text-align: center;*/
-/*}*/
-
-/*!*.home-slide-menu-container,*!*/
-/*.home-slide-menu {*/
-/*    height: 100%;*/
-/*}*/
-
-/* top-header */
-/*.home-top-bar {*/
-/*    width: calc(100% - 40px);*/
-/*    margin: 20px 20px 0;*/
-/*    height: 60px;*/
-/*    background-color: #ffffff;*/
-/*    color: black;*/
-/*    line-height: 60px;*/
-/*    padding: 0 20px;*/
-/*    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);*/
-/*    border-radius: 5px;*/
-/*}*/
-
-/*.home-top-bar div {*/
-/*    float: left;*/
-/*}*/
-
-/* 管理页面的右侧信息展示页面 */
-/*.subpage-container {*/
-/*    padding: 20px;*/
-/*    height: calc(100% - 80px);*/
-/*}*/
 </style>
