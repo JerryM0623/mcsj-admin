@@ -1,5 +1,7 @@
 <template>
     <el-menu
+        :default-active="$route.path"
+        exact
         class="home-slide-menu"
         background-color="#20303f"
         text-color="#ffffff"
