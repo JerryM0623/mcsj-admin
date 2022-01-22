@@ -40,7 +40,7 @@ export default {
                             url: '/hr/account'
                         },
                         {
-                            title: '角色管理管理',
+                            title: '角色管理',
                             url: '/hr/role'
                         },
                         {
