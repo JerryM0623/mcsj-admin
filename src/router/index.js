@@ -106,6 +106,14 @@ const routes = [
                 }
             },
             {
+                path: '/goods/house/commodity',
+                name: 'houseCommodity',
+                component: () => import(/* webpackChunkName: "houseCommodity" */ '../views/Home/Goods/House/Commodity/index'),
+                meta: {
+                    title: '房商品管理'
+                }
+            },
+            {
                 path: '/order',
                 name: 'order',
                 component: () => import(/* webpackChunkName: "order" */ '../views/Home/Order/index'),
