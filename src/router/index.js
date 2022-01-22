@@ -26,61 +26,102 @@ const routes = [
         },
         children: [
             {
-                path: 'account-management',
-                name: 'AccountManagement',
-                component: () => import(/* webpackChunkName: "AccountManagement" */ '../views/Home/HRManagement/AccountManagement/index'),
+                path: '/hr/account',
+                name: 'account',
+                component: () => import(/* webpackChunkName: "account" */ '../views/Home/HR/Account'),
                 mata: {
                     title: '账户管理'
                 }
             },
             {
-                path: 'role-management',
-                name: 'RoleManagement',
-                component: () => import(/* webpackChunkName: "RoleManagement" */ '../views/Home/HRManagement/RoleManagement/index'),
+                path: '/hr/role',
+                name: 'role',
+                component: () => import(/* webpackChunkName: "role" */ '../views/Home/HR/Role'),
                 mata: {
                     title: '角色管理'
                 }
             },
             {
-                path: 'permission-management',
-                name: 'PermissionManagement',
-                component: () => import(/* webpackChunkName: "PermissionManagement" */ '../views/Home/HRManagement/PermissionManagement/index'),
+                path: '/hr/permission',
+                name: 'permission',
+                component: () => import(/* webpackChunkName: "permission" */ '../views/Home/HR/Permission'),
                 mata: {
-                    title: '角色管理'
+                    title: '权限管理'
                 }
             },
             {
-                path: 'carousel-management',
-                name: 'CarouselManagement',
-                component: () => import(/* webpackChunkName: "CarouselManagement" */ '../views/Home/CarouselManagement/CarouselManagement'),
+                path: '/carousel/management',
+                name: 'carouselManagement',
+                component: () => import(/* webpackChunkName: "carouselManagement" */ '../views/Home/Carousel/Management'),
                 mata: {
-                    title: '轮播图管理'
+                    title: '管理轮播图'
                 }
             },
             {
-                path: 'carousel-preview',
-                name: 'CarouselPreview',
-                component: () => import(/* webpackChunkName: "CarouselPreview" */ '../views/Home/CarouselManagement/CarouselPreview/index'),
+                path: '/carousel/preview',
+                name: 'carouselPreview',
+                component: () => import(/* webpackChunkName: "carouselPreview" */ '../views/Home/Carousel/Preview'),
                 meta: {
-                    title: '轮播图预览'
+                    title: '预览轮播图'
                 }
             },
             {
-                path: 'goods-series-management',
-                name: 'GoodsSeriesManagement',
-                component: () => import(/* webpackChunkName: "GoodsSeriesManagement" */ '../views/Home/GoodsManagement/GoodsSeriesManagement/index'),
+                path: '/goods/window/series',
+                name: 'windowSeries',
+                component: () => import(/* webpackChunkName: "windowSeries" */ '../views/Home/Goods/Window/Series/index'),
                 meta: {
-                    title: '轮播图预览'
+                    title: '窗系列管理'
                 }
             },
             {
-                path: 'window-goods-management',
-                name: 'WindowGoodsManagement',
-                component: () => import(/* webpackChunkName: "WindowGoodsManagement" */ '../views/Home/GoodsManagement/WindowGoodsManagement/index'),
+                path: '/goods/window/commodity',
+                name: 'windowSeries',
+                component: () => import(/* webpackChunkName: "windowCommodity" */ '../views/Home/Goods/Window/Commodity/index'),
                 meta: {
-                    title: '轮播图预览'
+                    title: '窗商品管理'
                 }
             },
+            {
+                path: '/goods/door/series',
+                name: 'doorSeries',
+                component: () => import(/* webpackChunkName: "doorSeries" */ '../views/Home/Goods/Door/Series/index'),
+                meta: {
+                    title: '门系列管理'
+                }
+            },
+            {
+                path: '/goods/door/commodity',
+                name: 'doorCommodity',
+                component: () => import(/* webpackChunkName: "doorCommodity" */ '../views/Home/Goods/Door/Commodity/index'),
+                meta: {
+                    title: '门商品管理'
+                }
+            },
+            {
+                path: '/goods/house/series',
+                name: 'houseSeries',
+                component: () => import(/* webpackChunkName: "houseSeries" */ '../views/Home/Goods/House/Series/index'),
+                meta: {
+                    title: '房系列管理'
+                }
+            },
+            {
+                path: '/order',
+                name: 'order',
+                component: () => import(/* webpackChunkName: "order" */ '../views/Home/Order/index'),
+                meta: {
+                    title: '订单管理'
+                }
+            },
+            {
+                path: '/cs',
+                name: 'cs',
+                component: () => import(/* webpackChunkName: "order" */ '../views/Home/CS/index'),
+                meta: {
+                    title: '在线客服'
+                }
+            },
+
         ]
     },
     {
