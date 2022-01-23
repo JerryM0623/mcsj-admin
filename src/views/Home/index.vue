@@ -20,7 +20,7 @@
                 </el-header>
                 <!--右侧子页面显示区域-->
                 <el-main>
-                    <router-view class="subpage-container"></router-view>
+                    <router-view></router-view>
                 </el-main>
             </el-container>
         </el-container>

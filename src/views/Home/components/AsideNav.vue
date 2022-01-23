@@ -7,7 +7,6 @@
         text-color="#ffffff"
         active-text-color="#FFD585"
         unique-opened
-        router
     >
         <h2 class="logo">门窗世界后台管理系统</h2>
         <aside-nav-item

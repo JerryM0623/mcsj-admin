@@ -11,9 +11,12 @@
                 :item="childItem"
             ></aside-nav-item>
         </el-submenu>
-
-        <el-menu-item v-else :index="item.url"><i :class="item.iconClassName"></i><span>{{ item.title }}</span>
-        </el-menu-item>
+        <router-link v-else :to="item.url">
+            <el-menu-item :index="item.url">
+                <i :class="item.iconClassName"></i>
+                <span>{{ item.title }}</span>
+            </el-menu-item>
+        </router-link>
     </div>
 </template>
 
