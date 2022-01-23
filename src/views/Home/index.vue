@@ -19,7 +19,7 @@
                     <el-button @click="logout" class="log-out-btn" type="primary">退出登录</el-button>
                 </el-header>
                 <!--右侧子页面显示区域-->
-                <el-main>
+                <el-main class="right-main">
                     <router-view></router-view>
                 </el-main>
             </el-container>
@@ -96,5 +96,9 @@ export default {
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid #ccc;
+}
+
+.right-main {
+    background-color: #f1f2f6;
 }
 </style>
