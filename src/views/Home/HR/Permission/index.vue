@@ -1,12 +1,12 @@
 <template>
     <div class="permission-management">
         <!--        搜索区域-->
-        <search-bar
-            title="搜索权限信息"
-            :handler-clear="handleSearchClear"
-            :handler-search="handleSearch"
-            :options="searchBarOptions"
-        ></search-bar>
+        <!--<search-bar-->
+        <!--    title="搜索权限信息"-->
+        <!--    :handler-clear="handleSearchClear"-->
+        <!--    :handler-search="handleSearch"-->
+        <!--    :options="searchBarOptions"-->
+        <!--&gt;</search-bar>-->
         <!--        数据展示区域-->
         <data-table
             :column-list="dataTableColumnOptions"
@@ -15,57 +15,57 @@
             :handle-edit="openDrawer"
             :handle-delete="deletePermission"
         ></data-table>
-        <edit-drawer
-            :drawer-option="drawerOptions"
-        >
-            <template v-slot:content>
-                <div class="drawer-container">
-                    <el-form :model="editPermission" label-width="100">
-                        <el-form-item label="权限名称">
-                            <el-input v-model="editPermission.permission_name"></el-input>
-                        </el-form-item>
-                    </el-form>
-                    <div class="drawer-footer">
-                        <el-button @click="closeDrawer">取消</el-button>
-                        <el-button @click="submitEditPermission" type="primary">确定</el-button>
-                    </div>
-                </div>
-            </template>
-        </edit-drawer>
+        <!--<edit-drawer-->
+        <!--    :drawer-option="drawerOptions"-->
+        <!--&gt;-->
+        <!--    <template v-slot:content>-->
+        <!--        <div class="drawer-container">-->
+        <!--            <el-form :model="editPermission" label-width="100">-->
+        <!--                <el-form-item label="权限名称">-->
+        <!--                    <el-input v-model="editPermission.permission_name"></el-input>-->
+        <!--                </el-form-item>-->
+        <!--            </el-form>-->
+        <!--            <div class="drawer-footer">-->
+        <!--                <el-button @click="closeDrawer">取消</el-button>-->
+        <!--                <el-button @click="submitEditPermission" type="primary">确定</el-button>-->
+        <!--            </div>-->
+        <!--        </div>-->
+        <!--    </template>-->
+        <!--</edit-drawer>-->
         <!--        添加区域-->
-        <add-dialog
-            :dialog-options="dialogOptions"
-        >
-            <template v-slot:content>
-                <div class="dialog-container">
-                    <el-form :model="addPermission" label-width="100">
-                        <el-form-item label="权限名称">
-                            <el-input v-model="addPermission.permission_name"></el-input>
-                        </el-form-item>
-                    </el-form>
-                    <div class="dialog-footer">
-                        <el-button @click="closeDialog">取消</el-button>
-                        <el-button @click="submitAddPermission" type="primary">确定</el-button>
-                    </div>
-                </div>
-            </template>
-        </add-dialog>
+        <!--<add-dialog-->
+        <!--    :dialog-options="dialogOptions"-->
+        <!--&gt;-->
+        <!--    <template v-slot:content>-->
+        <!--        <div class="dialog-container">-->
+        <!--            <el-form :model="addPermission" label-width="100">-->
+        <!--                <el-form-item label="权限名称">-->
+        <!--                    <el-input v-model="addPermission.permission_name"></el-input>-->
+        <!--                </el-form-item>-->
+        <!--            </el-form>-->
+        <!--            <div class="dialog-footer">-->
+        <!--                <el-button @click="closeDialog">取消</el-button>-->
+        <!--                <el-button @click="submitAddPermission" type="primary">确定</el-button>-->
+        <!--            </div>-->
+        <!--        </div>-->
+        <!--    </template>-->
+        <!--</add-dialog>-->
     </div>
 </template>
 
 <script>
-import AddDialog from '../../../../components/AddDialog';
+// import AddDialog from '../../../../components/AddDialog';
 import DataTable from '../../../../components/DataTable';
-import EditDrawer from '../../../../components/EditDrawer';
-import SearchBar from '../../../../components/SearchBar';
+// import EditDrawer from '../../../../components/EditDrawer';
+// import SearchBar from '../../../../components/SearchBar';
 
 export default {
     name: "PermissionManagement",
     components: {
-        AddDialog,
+        // AddDialog,
         DataTable,
-        EditDrawer,
-        SearchBar
+        // EditDrawer,
+        // SearchBar
     },
     data() {
         return {

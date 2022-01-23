@@ -1,6 +1,6 @@
 <template>
     <div class="search-bar-container">
-        <el-card class="search-bar-card">
+        <el-card shadow="never" class="search-bar-card">
             <h1 class="tip-title">{{ title }}</h1>
             <el-select
                 v-model="selectResultShow"
@@ -11,8 +11,8 @@
                 <el-option
                     v-for="item in options"
                     :key="item.value"
-                    :value = item.value
-                    :label = item.label
+                    :value=item.value
+                    :label=item.label
                 ></el-option>
             </el-select>
             <el-input v-model="searchInput" class="search-bar-input" placeholder="请输入信息"></el-input>
@@ -25,46 +25,46 @@
 <script>
 export default {
     name: "SearchBar",
-    props:{
+    props: {
         // 搜索框的标题
-        title:{
+        title: {
             required: true,
             type: String,
             default: "搜索"
         },
         // 选项列表数组
         // 数组形式 [{value, label, data},{value, label, data}, ...]
-        options:{
+        options: {
             type: Array,
             required: true,
             default: () => []
         },
         // 父组件传入的处理数据的函数
-        handlerSearch:{
-            type:Function,
+        handlerSearch: {
+            type: Function,
             required: true,
         },
         // 父组件传入的清空查询的函数
-        handlerClear:{
-            type:Function,
+        handlerClear: {
+            type: Function,
             required: true,
         }
     },
-    data(){
-        return{
-            selectResultShow:'', // 展示在界面上的选项值
-            selectResult:'',     // 下拉选择的结果存储
-            searchInput:'',      // 输入框输入的内容
+    data() {
+        return {
+            selectResultShow: '', // 展示在界面上的选项值
+            selectResult: '',     // 下拉选择的结果存储
+            searchInput: '',      // 输入框输入的内容
         }
     },
-    methods:{
+    methods: {
         /**
          * 转换存储的数据
          * @param value
          */
-        showChange(value){
+        showChange(value) {
             this.options.forEach(item => {
-                if (item.value === value){
+                if (item.value === value) {
                     this.selectResult = item.data;
                 }
             })
@@ -72,12 +72,12 @@ export default {
         /**
          * 触发父组件的数据过滤方法
          */
-        searchValues(){
-            const { selectResult, searchInput } = this;
+        searchValues() {
+            const {selectResult, searchInput} = this;
             this.handlerSearch(selectResult, searchInput);
         },
 
-        clearSearch(){
+        clearSearch() {
             this.searchInput = '';
             this.selectResult = '';
             this.selectResultShow = '';
@@ -93,14 +93,21 @@ export default {
     color: #cecfd1;
     margin-bottom: 10px;
 }
-.search-bar-container{
+
+.search-bar-container {
     margin-bottom: 20px;
 }
-.search-bar-select{
+
+.search-bar-card {
+    border: 1px solid #eee;
+}
+
+.search-bar-select {
     width: 15%;
     margin-right: 10px;
 }
-.search-bar-input{
+
+.search-bar-input {
     width: 20%;
     margin-right: 10px;
 }

@@ -1,12 +1,11 @@
 <template>
-    <el-card style="box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1);margin-bottom: 20px;">
+    <el-card shadow="never">
         <el-button @click="openDialog" type="primary" style="margin-bottom: 20px;">添加数据</el-button>
         <!--    数据-->
         <el-table
             :data="dataList"
             border
-            style="width: 100%;"
-            :height="height"
+            class="data-table"
         >
             <el-table-column
                 v-for="item in columnList"
@@ -62,10 +61,10 @@ export default {
             required: true
         },
         // 控制表格的高度
-        height: {
-            type: String,
-            default: () => "375"
-        }
+        // height: {
+        //     type: String,
+        //     default: () => "375"
+        // }
     },
     methods: {
         editRow(scoped) {
@@ -82,5 +81,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>
