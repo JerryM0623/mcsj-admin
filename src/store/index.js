@@ -3,26 +3,12 @@ import Vuex from 'vuex'
 
 Vue.use(Vuex)
 
+import state from './state';
+import mutations from './mutations';
+import actions from './actions';
+
 export default new Vuex.Store({
-    state: {
-        userInfo:{}
-    },
-    mutations: {
-        'SET_USER_INFO':function (state, payload){
-            // 存 state 一份
-            state.userInfo = {...payload};
-        },
-        'REMOVE_USER_INFO':function (state){
-            state.userInfo = {};
-        }
-    },
-    actions: {
-        setAccountInfo({commit},payload){
-            commit('SET_USER_INFO',payload)
-        },
-        removeUserInfo({commit}){
-            commit('REMOVE_USER_INFO');
-        }
-    },
-    modules: {}
+    state,
+    mutations,
+    actions
 })
