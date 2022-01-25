@@ -10,16 +10,36 @@
 
 
 
-        <!--        数据展示区域-->
+        <!--数据展示区域-->
         <data-table
             :column-list="dataTableColumnOptions"
             :data-list="permissionList.originList"
-            :handle-open-dialog="openDialog"
+            :handle-add="openAddDialog"
             :handle-edit="openDrawer"
             :handle-delete="deletePermission"
             :pagination-options="paginationOptions"
             :handle-current-change="currentPageChange"
         ></data-table>
+        <!--添加权限的dialog-->
+        <el-dialog
+            class="add-dialog"
+            title="添加一条权限"
+            :visible.sync="dialogFormVisible"
+            :before-close="showConfirm"
+        >
+            <el-form :model="addPermissionData">
+                <el-form-item label="权限名称" label-width="100">
+                    <el-input v-model="addPermissionData.permissionName"></el-input>
+                </el-form-item>
+                <el-form-item label="权限释义" label-width="100">
+                    <el-input v-model="addPermissionData.comment"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="add-dialog-footer">
+                <el-button @click="showConfirm">取 消</el-button>
+                <el-button type="primary" @click="addPermission">确 定</el-button>
+            </div>
+        </el-dialog>
 
 
 
@@ -66,9 +86,8 @@
 <script>
 import DataTable from '../../../../components/DataTable';
 import fzt from '../../../../components/fzt'
-
 import permissionApis from '../../../../apis/permission';
-import {mapState} from 'vuex'
+import { mapState } from 'vuex'
 
 export default {
     name: "PermissionManagement",
@@ -78,11 +97,18 @@ export default {
     },
     data() {
         return {
+            // 控制dialog的开启与结束
+            dialogFormVisible:false,
+            // 添加权限的数据表单双向绑定
+            addPermissionData:{
+                permissionName:'',
+                comment:''
+            },
             // 搜索栏options
-            searchBarOptions: [
-                {value: 'id', label: 'id', data: 'id'},
-                {value: '权限名称', label: '权限名称', data: 'permission_name'}
-            ],
+            // searchBarOptions: [
+            //     {value: 'id', label: 'id', data: 'id'},
+            //     {value: '权限名称', label: '权限名称', data: 'permission_name'}
+            // ],
             // 表格的列属性
             dataTableColumnOptions: [
                 {prop: 'id', label: '编号', width: 80, align: 'center'},
@@ -90,27 +116,27 @@ export default {
                 {prop: 'comment', label: '权限释义', align: 'center'},
             ],
             // dialog的配置属性对象
-            dialogOptions: {
-                isDialogShow: false,
-                title: '添加新的权限信息'
-            },
+            // dialogOptions: {
+            //     isDialogShow: false,
+            //     title: '添加新的权限信息'
+            // },
             // 添加信息的数据收集对象
-            addPermission: {
-                permission_name: ""
-            },
+            // addPermission: {
+            //     permission_name: ""
+            // },
             // 编辑信息所使用的 drawer 的属性配置
-            drawerOptions: {
-                isDrawerShow: false, // 开关
-                drawerDirection: 'ltr', // 打开方向
-                showClose: false,  // 关闭按钮的开关
-                wrapperClosable: false, // 遮罩关闭抽屉开关
-                title: '编辑账户数据' // 标题
-            },
+            // drawerOptions: {
+            //     isDrawerShow: false, // 开关
+            //     drawerDirection: 'ltr', // 打开方向
+            //     showClose: false,  // 关闭按钮的开关
+            //     wrapperClosable: false, // 遮罩关闭抽屉开关
+            //     title: '编辑账户数据' // 标题
+            // },
             // 编辑所使用的数据收集对象
-            editPermission: {
-                id: '',
-                permission_name: ''
-            },
+            // editPermission: {
+            //     id: '',
+            //     permission_name: ''
+            // },
             // 分页组件的配置
             paginationOptions:{
                 background:true,
@@ -128,17 +154,18 @@ export default {
          * @returns {Promise<void>}
          */
         async getPermissionByPageNumber(pageNum = 1, pageSize = this.paginationOptions.pageSize) {
-            const {code, msg, data} = await permissionApis.getDataByPageNum(pageNum, pageSize);
-            if (!code) {
-                this.$message.error('请求失败');
-                return;
-            }
-            if (code === 500) {
-                this.$message.error(msg);
-                return;
-            }
-            // 存入 state
-            await this.$store.dispatch('setPermissionData', data);
+            // 调用actions
+            await this.$store.dispatch('setPermissionData', {pageNum, pageSize});
+            // const {code, msg, data} = await permissionApis.getDataByPageNum(pageNum, pageSize);
+            // if (!code) {
+            //     this.$message.error('请求失败');
+            //     return;
+            // }
+            // if (code === 500) {
+            //     this.$message.error(msg);
+            //     return;
+            // }
+            // // 存入 state
             this.paginationOptions.total = this.permissionList.total;
         },
 
@@ -147,6 +174,44 @@ export default {
          */
         async currentPageChange(pageNum){
             await this.getPermissionByPageNumber(pageNum);
+        },
+
+        async addPermission(){
+            console.log(111);
+            if (this.addPermissionData.permissionName === '' || this.addPermissionData.comment === ''){
+                this.$message.error('请填写数据');
+                return;
+            }
+            // 调用api
+            const {code, msg} = await permissionApis.addOnePermission(this.addPermissionData);
+            // 判断结果
+            if (code !== 200){
+                this.$message.error(msg);
+                return;
+            }
+            this.$message.success(msg);
+            this.dialogFormVisible = false;
+            await this.getPermissionByPageNumber();
+        },
+
+        openAddDialog(){
+            this.dialogFormVisible = true;
+        },
+
+        showConfirm(){
+            this.$confirm('确定关闭当前 dialog？数据将会被清除','注意',{
+                confirmButtonText:"确定",
+                cancelButtonText:"取消",
+                type: "warning"
+            }).then(() => {
+                // 关闭弹窗
+                this.dialogFormVisible = false;
+                // 清空数据
+                this.addPermissionData = {
+                    permissionName: '',
+                    comment: ''
+                }
+            })
         },
 
         /**
@@ -304,34 +369,35 @@ export default {
 </script>
 
 <style scoped>
-.dialog-container {
-    position: relative;
-    height: 140px;
-}
 
-.dialog-footer {
-    position: absolute;
-    right: 0;
-}
+/*.dialog-container {*/
+/*    position: relative;*/
+/*    height: 140px;*/
+/*}*/
 
-.dialog-footer > button {
-    width: 200px;
-}
+/*.dialog-footer {*/
+/*    position: absolute;*/
+/*    right: 0;*/
+/*}*/
 
-.drawer-container {
-    position: relative;
-    margin: 0 20px;
-    height: 100%;
-}
+/*.dialog-footer > button {*/
+/*    width: 200px;*/
+/*}*/
 
-.drawer-footer {
-    position: absolute;
-    bottom: 20px;
-    right: 0;
-    width: 100%;
-}
+/*.drawer-container {*/
+/*    position: relative;*/
+/*    margin: 0 20px;*/
+/*    height: 100%;*/
+/*}*/
 
-.drawer-footer > button {
-    width: calc((100% - 10px) / 2);
-}
+/*.drawer-footer {*/
+/*    position: absolute;*/
+/*    bottom: 20px;*/
+/*    right: 0;*/
+/*    width: 100%;*/
+/*}*/
+
+/*.drawer-footer > button {*/
+/*    width: calc((100% - 10px) / 2);*/
+/*}*/
 </style>

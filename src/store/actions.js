@@ -1,4 +1,7 @@
 import types from './type'
+import permissionApis from '../apis/permission'
+import Vue from 'vue'
+const vue = new Vue();
 
 const actions = {
     /**
@@ -24,7 +27,23 @@ const actions = {
      * @param payload
      */
     setPermissionData({commit}, payload){
-        commit(types.SET_PERMISSION_DATA, payload);
+        // 请求
+        const {pageNum, pageSize} = payload;
+        permissionApis.getDataByPageNum(pageNum, pageSize)
+            .then((res) => {
+                // 判断
+                if (res === {}) {
+                    vue.$message.error('请求失败');
+                    return;
+                }
+                const {code, msg, data} = res;
+                if (code === 500 || code === 400){
+                    vue.$message.error(msg);
+                    return;
+                }
+                // 提交
+                commit(types.SET_PERMISSION_DATA, data);
+            })
     },
 
     /**

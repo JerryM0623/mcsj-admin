@@ -20,6 +20,15 @@ class PermissionApis{
             return {};
         }
     }
+
+    async addOnePermission(addPermissionData){
+        try {
+            return await Axios.post('/admin/permission/add',{addPermissionData});
+        }catch (e) {
+            console.log(e);
+            return {};
+        }
+    }
 }
 
 export default new PermissionApis();

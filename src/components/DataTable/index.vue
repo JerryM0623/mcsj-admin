@@ -66,7 +66,7 @@ export default {
             required: true
         },
         // 开启添加系列的dialog
-        handleOpenDialog: {
+        handleAdd: {
             type: Function,
             required: true
         },
@@ -100,7 +100,7 @@ export default {
          * 添加
          */
         openDialog() {
-            this.handleOpenDialog();
+            this.handleAdd();
         },
         /**
          * 分页指示器的当前分页改变的时候触发
