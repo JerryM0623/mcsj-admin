@@ -16,6 +16,23 @@ const actions = {
      */
     removeUserInfo({commit}){
         commit(types.REMOVE_ACCOUNT_INFO);
+    },
+
+    /**
+     * 添加权限信息
+     * @param commit
+     * @param payload
+     */
+    setPermissionData({commit}, payload){
+        commit(types.SET_PERMISSION_DATA, payload);
+    },
+
+    /**
+     * 删除已存储的权限信息
+     * @param commit
+     */
+    removePermissionData({commit}){
+        commit(types.REMOVE_PERMISSION_DATA);
     }
 }
 

@@ -3,10 +3,10 @@ const state = {
     userInfo:{},
     // 权限管理方面的数据
     permissionList:{
-        // 原始数据
+        // 权限数据
         originList:[],
-        // 展示数据
-        showList:[]
+        // 总数
+        total: 0
     }
 }
 

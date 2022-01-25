@@ -15,6 +15,27 @@ const mutations = {
      */
     [types.REMOVE_ACCOUNT_INFO](state){
         state.userInfo = {};
+    },
+
+    /**
+     * 添加权限信息到state中
+     * @param state
+     * @param payload
+     */
+    [types.SET_PERMISSION_DATA](state, payload){
+        state.permissionList.originList = payload.data;
+        state.permissionList.total = payload.total;
+    },
+
+    /**
+     * 删除存储在state中的权限数据
+     * @param state
+     */
+    [types.REMOVE_PERMISSION_DATA](state){
+        state.permissionList = {
+            originList: [],
+            total: 0
+        }
     }
 
 }

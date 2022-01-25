@@ -7,14 +7,23 @@
         <!--    :handler-search="handleSearch"-->
         <!--    :options="searchBarOptions"-->
         <!--&gt;</search-bar>-->
+
+
+
         <!--        数据展示区域-->
         <data-table
             :column-list="dataTableColumnOptions"
-            :data-list="permission_data.show"
+            :data-list="permissionList.originList"
             :handle-open-dialog="openDialog"
             :handle-edit="openDrawer"
             :handle-delete="deletePermission"
+            :pagination-options="paginationOptions"
+            :handle-current-change="currentPageChange"
         ></data-table>
+
+
+
+
         <!--<edit-drawer-->
         <!--    :drawer-option="drawerOptions"-->
         <!--&gt;-->
@@ -50,22 +59,22 @@
         <!--        </div>-->
         <!--    </template>-->
         <!--</add-dialog>-->
+        <fzt></fzt>
     </div>
 </template>
 
 <script>
-// import AddDialog from '../../../../components/AddDialog';
 import DataTable from '../../../../components/DataTable';
-// import EditDrawer from '../../../../components/EditDrawer';
-// import SearchBar from '../../../../components/SearchBar';
+import fzt from '../../../../components/fzt'
+
+import permissionApis from '../../../../apis/permission';
+import {mapState} from 'vuex'
 
 export default {
     name: "PermissionManagement",
     components: {
-        // AddDialog,
         DataTable,
-        // EditDrawer,
-        // SearchBar
+        fzt
     },
     data() {
         return {
@@ -78,12 +87,8 @@ export default {
             dataTableColumnOptions: [
                 {prop: 'id', label: '编号', width: 80, align: 'center'},
                 {prop: 'permission_name', label: '权限名称', align: 'center'},
+                {prop: 'comment', label: '权限释义', align: 'center'},
             ],
-            // 权限信息相关的对象
-            permission_data: {
-                data: [],// 原数组
-                show: [] // 用于展示的数组
-            },
             // dialog的配置属性对象
             dialogOptions: {
                 isDialogShow: false,
@@ -105,6 +110,15 @@ export default {
             editPermission: {
                 id: '',
                 permission_name: ''
+            },
+            // 分页组件的配置
+            paginationOptions:{
+                background:true,
+                pageSize:10,
+                total:0,
+                pagerCount:7, // 控制最多显示多少个页，超过这个数就开始隐藏
+                layout:'prev, pager, next',
+                hideOnSinglePage: true
             }
         }
     },
@@ -113,13 +127,26 @@ export default {
          * 获取全部的权限信息
          * @returns {Promise<void>}
          */
-        async getAllPermission() {
-            const {code, msg, data} = await this.$axios.get('/admin/permission/all');
+        async getPermissionByPageNumber(pageNum = 1, pageSize = this.paginationOptions.pageSize) {
+            const {code, msg, data} = await permissionApis.getDataByPageNum(pageNum, pageSize);
+            if (!code) {
+                this.$message.error('请求失败');
+                return;
+            }
             if (code === 500) {
                 this.$message.error(msg);
                 return;
             }
-            this.permission_data.show = this.permission_data.data = data;
+            // 存入 state
+            await this.$store.dispatch('setPermissionData', data);
+            this.paginationOptions.total = this.permissionList.total;
+        },
+
+        /**
+         * 分页指示器切换数据的时候的回调函数
+         */
+        async currentPageChange(pageNum){
+            await this.getPermissionByPageNumber(pageNum);
         },
 
         /**
@@ -265,9 +292,13 @@ export default {
             })
         }
     },
+    computed:{
+        // 将 state 里面的权限列表导出到 computed 里面
+        ...mapState(['permissionList'])
+    },
     mounted() {
-        // 打开页面主动向后台请求权限数据
-        this.getAllPermission();
+        // 打开页面主动向后台请求第一页权限数据
+        this.getPermissionByPageNumber();
     }
 }
 </script>
