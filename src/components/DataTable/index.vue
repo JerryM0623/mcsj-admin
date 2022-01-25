@@ -24,6 +24,11 @@
                 </template>
             </el-table-column>
         </el-table>
+        <el-pagination
+            class="data-table-pagination"
+            v-bind="paginationOptions"
+            @current-change="currentChange"
+        ></el-pagination>
     </el-card>
 </template>
 
@@ -45,6 +50,11 @@ export default {
             type: Array,
             required: true
         },
+        // 分页的配置
+        paginationOptions:{
+            type: Object,
+            required :true
+        },
         // 处理编辑任务
         handleEdit: {
             type: Function,
@@ -60,6 +70,11 @@ export default {
             type: Function,
             required: true
         },
+        // 分页改变的回调函数
+        handleCurrentChange:{
+            type: Function,
+            required: true
+        }
         // 控制表格的高度
         // height: {
         //     type: String,
@@ -67,18 +82,39 @@ export default {
         // }
     },
     methods: {
+        /**
+         * 编辑
+         * @param scoped
+         */
         editRow(scoped) {
             this.handleEdit(scoped.row);
         },
+        /**
+         * 删除
+         * @param scoped
+         */
         deleteRow(scoped) {
             this.handleDelete(scoped.row);
         },
+        /**
+         * 添加
+         */
         openDialog() {
             this.handleOpenDialog();
+        },
+        /**
+         * 分页指示器的当前分页改变的时候触发
+         */
+        currentChange(pageNum){
+            // 调用父组件进行数据请求
+            this.handleCurrentChange(pageNum);
         }
     }
 }
 </script>
 
 <style scoped>
+.data-table-pagination{
+    margin-top: 20px;
+}
 </style>
