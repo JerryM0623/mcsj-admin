@@ -39,7 +39,7 @@ const mutations = {
         const list = state.permissionList.originList;
         const keyWord = payload;
         let newArr = [];
-        list.filter(item => {
+        list.forEach(item => {
             if (item.permissionID.toString() === keyWord) {
                 newArr.push(item);
             }
@@ -70,6 +70,29 @@ const mutations = {
         state.rolePermissionList.originList =
             state.rolePermissionList.showList = payload.list;
         state.rolePermissionList.total = payload.total;
+    },
+
+    /**
+     * 搜索角色权限的信息
+     * @param state
+     * @param payload
+     */
+    [types.SEARCH_ROLE_PERMISSION_DATA](state, payload){
+        const list = state.rolePermissionList.originList;
+        let newArr = [];
+        list.forEach(item => {
+            const judgeOne = item.rolePermissionID.toString() === payload;
+            const judgeTwo = item.roleName.toString() === payload;
+            const judgeThree = item.Permission.toString() === payload;
+            if (judgeOne || judgeTwo || judgeThree){
+                newArr.push(item);
+            }
+        })
+        state.rolePermissionList.showList = newArr;
+    },
+
+    [types.CLEAR_SEARCH_ROLE_PERMISSION](state){
+        state.rolePermissionList.showList = state.rolePermissionList.originList;
     }
 
 }

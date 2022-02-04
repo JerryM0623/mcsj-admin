@@ -43,13 +43,6 @@ export default {
     },
     data(){
         return{
-            roleTableOptions:{
-                data:[
-                    { roleID: 1, roleName: 'ndj', rolePermission: '员工账户管理、职位管理、权限管理' },
-                    { roleID: 2, roleName: 'fdw', rolePermission: '员工账户管理、职位管理、权限管理' },
-                    { roleID: 3, roleName: 'mde', rolePermission: '员工账户管理、职位管理、权限管理' },
-                ]
-            },
             searchInput: '',
             paginationOptions: {
                 pageSize: 10,
@@ -59,6 +52,9 @@ export default {
         }
     },
     methods: {
+        /**
+         * 分页查询角色权限数据
+         */
         async getRolePermissionDataByPageNum(pageNum = this.paginationOptions.pageNum,
                                        pageSize = this.paginationOptions.pageSize){
             try {
@@ -77,21 +73,42 @@ export default {
                 console.log(e);
             }
         },
+
+        /**
+         * 根据关键词进行搜索
+         */
+        searchRolePermission(){
+            const keyWord = this.searchInput;
+            if (keyWord.length <= 0){
+                this.$message.error('请输入关键字');
+                return;
+            }
+            this.$store.dispatch('searchRolePermission', keyWord);
+        },
+
+        /**
+         * 清除搜索的所有痕迹
+         */
+        clearSearch(){
+            this.searchInput = '';
+            this.$store.dispatch('clearSearchRolePermission');
+        },
+
+
         editRow(row){
             console.log(row);
         },
         deleteRow(row){
             console.log(row);
         },
-        searchRolePermission(){
-            console.log('搜索角色权限');
-        },
-        clearSearch(){
-            console.log('清楚搜索痕迹');
-        },
         addRolePermission(){
             console.log('添加角色权限信息');
         },
+
+        /**
+         * 分页组件换页时的事件回调
+         * @param pageNum
+         */
         pageNumChange(pageNum) {
             this.getRolePermissionDataByPageNum(pageNum);
         }

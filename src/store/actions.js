@@ -51,6 +51,23 @@ const actions = {
      */
     setRolePermissionData({commit}, payload){
         commit(types.SET_ROLE_PERMISSION_DATA, payload);
+    },
+
+    /**
+     * 对角色权限信息进行检索
+     * @param commit
+     * @param keyWord
+     */
+    searchRolePermission({commit}, keyWord){
+        commit(types.SEARCH_ROLE_PERMISSION_DATA, keyWord);
+    },
+
+    /**
+     * 清除角色权限的搜索痕迹
+     * @param commit
+     */
+    clearSearchRolePermission({commit}){
+        commit(types.CLEAR_SEARCH_ROLE_PERMISSION);
     }
 }
 
