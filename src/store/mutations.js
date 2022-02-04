@@ -62,15 +62,14 @@ const mutations = {
     },
 
     /**
-     * 删除存储在state中的权限数据
+     * 设置角色权限的数据
      * @param state
+     * @param payload
      */
-    [types.REMOVE_PERMISSION_DATA](state) {
-        state.permissionList = {
-            originList: [],
-            showList: [],
-            total: 0
-        }
+    [types.SET_ROLE_PERMISSION_DATA](state, payload){
+        state.rolePermissionList.originList =
+            state.rolePermissionList.showList = payload.list;
+        state.rolePermissionList.total = payload.total;
     }
 
 }

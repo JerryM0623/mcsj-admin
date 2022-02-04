@@ -45,11 +45,12 @@ const actions = {
     },
 
     /**
-     * 删除已存储的权限信息
+     * 设置角色权限的数据
      * @param commit
+     * @param payload
      */
-    removePermissionData({commit}) {
-        commit(types.REMOVE_PERMISSION_DATA);
+    setRolePermissionData({commit}, payload){
+        commit(types.SET_ROLE_PERMISSION_DATA, payload);
     }
 }
 

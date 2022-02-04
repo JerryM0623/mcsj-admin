@@ -1,127 +1,106 @@
 <template>
-    <div class="role-management">
-        <!--  搜索框-->
-        <!--<search-bar-->
-        <!--    title="搜索角色"-->
-        <!--    :options="searchBarOptions"-->
-        <!--    :handler-search="filterRoles"-->
-        <!--    :handler-clear="clearSearch"-->
-        <!--&gt;</search-bar>-->
-        <!--    添加-->
-        <!--<add-dialog-->
-        <!--    :dialog-options="dialogOptions"-->
-        <!--&gt;-->
-        <!--    <template v-slot:content>-->
-        <!--        <div class="dialog-container">-->
-        <!--            <el-form label-width="150px" :model="addAccount">-->
-        <!--                <el-form-item label="填写账户">-->
-        <!--                    <el-input v-model="addAccount.accountInput"></el-input>-->
-        <!--                </el-form-item>-->
-        <!--                <el-form-item label="填写密码">-->
-        <!--                    <el-input type="password" v-model="addAccount.passwordInput"></el-input>-->
-        <!--                </el-form-item>-->
-        <!--                <el-form-item label=再次填写密码>-->
-        <!--                    <el-input type="password" v-model="addAccount.checkPasswordInput"></el-input>-->
-        <!--                </el-form-item>-->
-        <!--                <el-form-item label="选择职业">-->
-        <!--                    <el-select v-model="addAccount.roleType">-->
-        <!--                        <el-option-->
-        <!--                            v-for="item in roleList"-->
-        <!--                            :key="item.id"-->
-        <!--                            :label="item.name"-->
-        <!--                            :value="item.name"-->
-        <!--                        ></el-option>-->
-        <!--                    </el-select>-->
-        <!--                </el-form-item>-->
-        <!--            </el-form>-->
-        <!--            <div slot="footer" class="dialog-footer">-->
-        <!--                <el-button @click="closeDialog">取 消</el-button>-->
-        <!--                <el-button @click="submitAdd" type="primary">添 加</el-button>-->
-        <!--            </div>-->
-        <!--        </div>-->
-        <!--    </template>-->
-        <!--</add-dialog>-->
-        <!--  表格-->
-        <data-table
-            class="account-data-table"
-            :data-list="accountDataShow"
-            :column-list="DataTableColumn"
-            :handle-delete="deleteRow"
-            :handle-edit="editRow"
-            :handle-open-dialog="openDialog"
-        ></data-table>
-        <!--        编辑-->
-        <!--<edit-drawer-->
-        <!--    :drawer-option="drawerOptions"-->
-        <!--&gt;-->
-        <!--    <template v-slot:content>-->
-        <!--        <div class="drawer-container">-->
-        <!--            <el-form class="drawer-form" label-width="100">-->
-        <!--                <el-form-item label="编辑账户">-->
-        <!--                    <el-input class="drawer-input" v-model="editAccount.account"></el-input>-->
-        <!--                </el-form-item>-->
-        <!--                <el-form-item label="编辑密码">-->
-        <!--                    <el-input type="password"-->
-        <!--                              v-model="editAccount.password"-->
-        <!--                              class="drawer-input"-->
-        <!--                    ></el-input>-->
-        <!--                </el-form-item>-->
-        <!--                <el-form-item label="编辑职业">-->
-        <!--                    <el-select v-model="editAccount.roleType">-->
-        <!--                        <el-option-->
-        <!--                            v-for="item in roleList"-->
-        <!--                            :key="item.id"-->
-        <!--                            :value="item.name"-->
-        <!--                            :label="item.name"-->
-        <!--                        >-->
-        <!--                        </el-option>-->
-        <!--                    </el-select>-->
-        <!--                </el-form-item>-->
-        <!--            </el-form>-->
-        <!--            <div class="drawer-footer">-->
-        <!--                <el-button class="drawer-button" @click="closeDrawer">取消</el-button>-->
-        <!--                <el-button class="drawer-button" @click="submitEdit" type="primary">提交</el-button>-->
-        <!--            </div>-->
-        <!--        </div>-->
-        <!--    </template>-->
-        <!--</edit-drawer>-->
+    <div class="role">
+        <el-card>
+            <!--功能区-->
+            <el-row style="margin-bottom: 10px">
+                <el-col :span="6">
+                    <el-input v-model="searchInput" style="width: 100%" placeholder="请键入数据进行搜索"></el-input>
+                </el-col>
+                <el-col :span="18">
+                    <el-button @click="searchRolePermission" type="primary" style="margin-left: 10px">搜索</el-button>
+                    <el-button @click="clearSearch" type="primary">清除搜索信息</el-button>
+                    <el-button @click="addRolePermission" type="primary">添加角色</el-button>
+                </el-col>
+            </el-row>
+            <!--数据显示表格-->
+            <role-table
+                :table-data="rolePermissionList.showList"
+                :handle-edit="editRow"
+                :handle-delete="deleteRow"
+            ></role-table>
+            <!--分页组件-->
+            <el-pagination
+                style="margin-top: 10px"
+                background
+                layout="prev, pager, next"
+                :total="rolePermissionList.total"
+                @current-change="pageNumChange"
+                :current-page.sync="paginationOptions.currentPage"
+            >
+            </el-pagination>
+            <!--编辑/新建的dialog-->
+        </el-card>
     </div>
 </template>
 
 <script>
-// import AddDialog from '../../../../components/AddDialog';
-import DataTable from '../../../../components/DataTable';
-// import EditDrawer from '../../../../components/EditDrawer';
-// import SearchBar from '../../../../components/SearchBar';
-
+import RoleTable from './components/RoleTable';
+import {mapState} from "vuex";
 export default {
-    name: "RoleManagement",
+    name: "Role",
     components: {
-        // AddDialog,
-        // EditDrawer,
-        DataTable,
-        // SearchBar
+        RoleTable,
     },
     data(){
-        return {
-            // 搜索栏的配置属性
-            searchBarOptions: [
-                {value: "id", label: "id", data: "id"},
-                {value: "账号", label: "账号", data: "account"},
-                {value: "职位", label: "职位", data: "role"},
-            ],
+        return{
+            roleTableOptions:{
+                data:[
+                    { roleID: 1, roleName: 'ndj', rolePermission: '员工账户管理、职位管理、权限管理' },
+                    { roleID: 2, roleName: 'fdw', rolePermission: '员工账户管理、职位管理、权限管理' },
+                    { roleID: 3, roleName: 'mde', rolePermission: '员工账户管理、职位管理、权限管理' },
+                ]
+            },
+            searchInput: '',
+            paginationOptions: {
+                pageSize: 10,
+                pageNum: 1,
+                currentPage: 1
+            },
         }
     },
-    methods:{
-        filterRoles(){
-            console.log('filterRoles');
+    methods: {
+        async getRolePermissionDataByPageNum(pageNum = this.paginationOptions.pageNum,
+                                       pageSize = this.paginationOptions.pageSize){
+            try {
+                const {code, msg, data} = await this.$axios.get('/admin/role/all',{
+                    params:{
+                        pageNum,
+                        pageSize
+                    }
+                })
+                if (code !== 200){
+                    this.$message.error(msg);
+                    return;
+                }
+                await this.$store.dispatch('setRolePermissionData', data);
+            }catch (e) {
+                console.log(e);
+            }
+        },
+        editRow(row){
+            console.log(row);
+        },
+        deleteRow(row){
+            console.log(row);
+        },
+        searchRolePermission(){
+            console.log('搜索角色权限');
         },
         clearSearch(){
-            console.log('clearSearch');
+            console.log('清楚搜索痕迹');
+        },
+        addRolePermission(){
+            console.log('添加角色权限信息');
+        },
+        pageNumChange(pageNum) {
+            this.getRolePermissionDataByPageNum(pageNum);
         }
     },
+    computed: {
+        ...mapState(['rolePermissionList'])
+    },
     mounted() {
-        // 后台请求role的数据
+        this.getRolePermissionDataByPageNum();
     }
 }
 </script>
