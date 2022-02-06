@@ -218,8 +218,32 @@ export default {
             this.$message.success(msg);
         },
 
+        /**
+         * 删除一条职位权限信息
+         */
         deleteRow(row){
-            console.log(row);
+            this.$confirm('你确定要删除这条对应关系？，删除操作是不可逆的！','注意',{
+                cancelButtonText:'取消',
+                confirmButtonText:'确定',
+                type: 'warning'
+            }).then(async () => {
+                console.log(row);
+                try {
+                    const { code, msg } = await this.$axios.post('/admin/role/delete-role-permission',{
+                        id:row.rolePermissionID
+                    });
+                    if (code !== 200){
+                        this.$message.error(msg);
+                        return;
+                    }
+                    this.paginationOptions.currentPage = 1;
+                    await this.getRolePermissionDataByPageNum(this.paginationOptions.currentPage);
+                    this.$message.success(msg);
+                } catch (e) {
+                    console.log(e);
+                    this.$message.error('请求失败');
+                }
+            })
         },
 
         /**
