@@ -9,13 +9,13 @@
                 <el-col :span="18">
                     <el-button @click="searchRolePermission" type="primary" style="margin-left: 10px">搜索</el-button>
                     <el-button @click="clearSearch" type="primary">清除搜索信息</el-button>
-                    <el-button @click="addRolePermission" type="primary">添加角色</el-button>
+                    <el-button @click="addRole" type="primary">添加职位</el-button>
+                    <el-button @click="addRolePermission" type="primary">添加权限关系</el-button>
                 </el-col>
             </el-row>
             <!--数据显示表格-->
             <role-table
                 :table-data="rolePermissionList.showList"
-                :handle-edit="editRow"
                 :handle-delete="deleteRow"
             ></role-table>
             <!--分页组件-->
@@ -28,18 +28,26 @@
                 :current-page.sync="paginationOptions.currentPage"
             >
             </el-pagination>
-            <!--编辑/新建的dialog-->
+            <!--添加职位的 dialog-->
+            <role-dialog
+                :dialog-visible="roleDialogVisible"
+                :handle-close="addRoleCancel"
+                :handle-submit="addRoleSubmit"
+            ></role-dialog>
+            <!--添加只为权限的dialog-->
         </el-card>
     </div>
 </template>
 
 <script>
 import RoleTable from './components/RoleTable';
+import RoleDialog from './components/RoleDialog';
 import {mapState} from "vuex";
 export default {
     name: "Role",
     components: {
         RoleTable,
+        RoleDialog,
     },
     data(){
         return{
@@ -49,6 +57,7 @@ export default {
                 pageNum: 1,
                 currentPage: 1
             },
+            roleDialogVisible: false,
         }
     },
     methods: {
@@ -94,12 +103,38 @@ export default {
             this.$store.dispatch('clearSearchRolePermission');
         },
 
-
-        editRow(row){
-            console.log(row);
+        /**
+         * 添加职位的 dialog 点击取消之后的回调函数
+         */
+        addRoleCancel(){
+            this.roleDialogVisible = false;
         },
+
+        /**
+         * 添加职位的 dialog 点击提交之后的回调函数
+         */
+        async addRoleSubmit(roleName){
+            try {
+                const { code, msg } = await this.$axios.post('/admin/role/add/role',{
+                    roleName
+                })
+                // 弹出信息
+                this.$message({
+                    type: code === 200 ? 'success' : 'error',
+                    message: msg
+                })
+                this.roleDialogVisible = false;
+            }catch (e) {
+                console.log(e);
+                this.$message.error('请求出错');
+            }
+        },
+
         deleteRow(row){
             console.log(row);
+        },
+        addRole(){
+            this.roleDialogVisible = true;
         },
         addRolePermission(){
             console.log('添加角色权限信息');

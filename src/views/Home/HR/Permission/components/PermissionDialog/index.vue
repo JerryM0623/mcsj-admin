@@ -1,6 +1,6 @@
 <template>
     <el-dialog
-        class="add-and-edit-dialog"
+        class="permission-dialog"
         :title="transformDialogTitle"
         :visible.sync="dialogVisible"
         :show-close="false"

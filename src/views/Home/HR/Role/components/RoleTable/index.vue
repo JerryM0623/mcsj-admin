@@ -25,10 +25,9 @@
             <el-table-column
                 fixed="right"
                 label="操作"
-                width="200"
+                width="100"
                 align="center">
                 <template slot-scope="scope">
-                    <el-button size="small" type="primary" @click="editRow(scope.row)">编辑</el-button>
                     <el-button size="small" type="danger" @click="deleteRow(scope.row)">删除</el-button>
                 </template>
             </el-table-column>
@@ -50,18 +49,10 @@ export default {
             type: Function,
             required: true
         },
-        // 执行编辑的回调函数
-        handleEdit: {
-            type: Function,
-            required: true
-        }
     },
     methods: {
         deleteRow(row) {
             this.handleDelete(row);
-        },
-        editRow(row){
-            this.handleEdit(row);
         }
     }
 }
