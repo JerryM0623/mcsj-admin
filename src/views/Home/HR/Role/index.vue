@@ -11,6 +11,7 @@
                     <el-button @click="clearSearch" type="primary">清除搜索信息</el-button>
                     <el-button @click="addRole" type="primary">添加职位</el-button>
                     <el-button @click="addRolePermission" type="primary">添加权限关系</el-button>
+                    <el-button @click="deleteRole" type="danger">删除职位</el-button>
                 </el-col>
             </el-row>
             <!--数据显示表格-->
@@ -40,6 +41,12 @@
                 :handle-submit="addRolePermissionSubmit"
                 :handle-close="addRolePermissionCancel"
             ></role-permission-dialog>
+            <!--删除 role 的 dialog-->
+            <delete-role-dialog
+                :handle-close="deleteRoleCancel"
+                :handle-submit="deleteRoleSubmit"
+                :dialog-visible="deleteRoleDialogVisible"
+            ></delete-role-dialog>
         </el-card>
     </div>
 </template>
@@ -48,13 +55,15 @@
 import RoleTable from './components/RoleTable';
 import RoleDialog from './components/RoleDialog';
 import RolePermissionDialog from './components/RolePermissionDialog';
+import DeleteRoleDialog from './components/DeleteRoleDialog';
 import {mapState} from "vuex";
 export default {
     name: "Role",
     components: {
         RoleTable,
         RoleDialog,
-        RolePermissionDialog
+        RolePermissionDialog,
+        DeleteRoleDialog
     },
     data(){
         return{
@@ -65,7 +74,8 @@ export default {
                 currentPage: 1
             },
             roleDialogVisible: false,
-            rolePermissionDialogVisible: false
+            rolePermissionDialogVisible: false,
+            deleteRoleDialogVisible: false
         }
     },
     methods: {
@@ -172,6 +182,39 @@ export default {
                 return;
             }
             this.rolePermissionDialogVisible = false;
+            this.paginationOptions.currentPage = 1;
+            await this.getRolePermissionDataByPageNum(this.paginationOptions.currentPage);
+            this.$message.success(msg);
+        },
+
+        /**
+         * 点击开启删除职位的dialog
+         */
+        deleteRole(){
+            this.deleteRoleDialogVisible = true;
+        },
+
+        /**
+         * 点击dialog的取消按钮的回调函数
+         */
+        deleteRoleCancel(){
+            this.deleteRoleDialogVisible = false;
+        },
+
+        /**
+         *
+         */
+        async deleteRoleSubmit(roleValue){
+            const { code, msg } = await this.$axios.post('/admin/role/del-role', {
+                roleValue
+            })
+            if (code !== 200) {
+                this.$message.error(msg);
+                return;
+            }
+            this.deleteRoleDialogVisible = false;
+            this.paginationOptions.currentPage = 1;
+            await this.getRolePermissionDataByPageNum(this.paginationOptions.currentPage);
             this.$message.success(msg);
         },
 

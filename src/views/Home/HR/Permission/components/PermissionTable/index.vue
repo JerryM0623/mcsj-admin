@@ -9,7 +9,7 @@
             <el-table-column
                 prop="permissionID"
                 label="编号"
-                width="100"
+                width="70"
                 align="center">
             </el-table-column>
             <el-table-column
