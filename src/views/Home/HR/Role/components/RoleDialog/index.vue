@@ -74,6 +74,16 @@ export default {
             }
             this.handleSubmit(this.dialogDataLocal.roleName);
         }
+    },
+    watch: {
+        dialogVisible(val) {
+            if (val === false){
+                console.log('dialogVisible === false');
+                this.dialogDataLocal = {
+                    roleName: ''
+                }
+            }
+        }
     }
 }
 </script>

@@ -115,7 +115,7 @@ export default {
          */
         async addRoleSubmit(roleName){
             try {
-                const { code, msg } = await this.$axios.post('/admin/role/add/role',{
+                const { code, msg } = await this.$axios.post('/admin/role/add-role',{
                     roleName
                 })
                 // 弹出信息
