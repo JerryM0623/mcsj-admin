@@ -83,7 +83,7 @@ export default {
                                      pageSize = this.paginationOptions.pageSize) {
             try {
                 // 发送请求
-                const {code, msg, data} = await this.$axios.get('/admin/permission/all', {
+                const {code, msg, data} = await this.$axios.get('/admin/permission/page', {
                     params: {
                         pageNum,
                         pageSize

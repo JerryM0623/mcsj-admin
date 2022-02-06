@@ -35,6 +35,11 @@
                 :handle-submit="addRoleSubmit"
             ></role-dialog>
             <!--添加只为权限的dialog-->
+            <role-permission-dialog
+                :dialog-visible="rolePermissionDialogVisible"
+                :handle-submit="addRolePermissionSubmit"
+                :handle-close="addRolePermissionCancel"
+            ></role-permission-dialog>
         </el-card>
     </div>
 </template>
@@ -42,12 +47,14 @@
 <script>
 import RoleTable from './components/RoleTable';
 import RoleDialog from './components/RoleDialog';
+import RolePermissionDialog from './components/RolePermissionDialog';
 import {mapState} from "vuex";
 export default {
     name: "Role",
     components: {
         RoleTable,
         RoleDialog,
+        RolePermissionDialog
     },
     data(){
         return{
@@ -58,6 +65,7 @@ export default {
                 currentPage: 1
             },
             roleDialogVisible: false,
+            rolePermissionDialogVisible: false
         }
     },
     methods: {
@@ -67,7 +75,7 @@ export default {
         async getRolePermissionDataByPageNum(pageNum = this.paginationOptions.pageNum,
                                        pageSize = this.paginationOptions.pageSize){
             try {
-                const {code, msg, data} = await this.$axios.get('/admin/role/all',{
+                const {code, msg, data} = await this.$axios.get('/admin/role/page',{
                     params:{
                         pageNum,
                         pageSize
@@ -104,6 +112,13 @@ export default {
         },
 
         /**
+         * 开启 roleDialog
+         */
+        addRole(){
+            this.roleDialogVisible = true;
+        },
+
+        /**
          * 添加职位的 dialog 点击取消之后的回调函数
          */
         addRoleCancel(){
@@ -130,14 +145,38 @@ export default {
             }
         },
 
+        /**
+         * 开启添加职位权限的回调函数
+         */
+        addRolePermission(){
+            this.rolePermissionDialogVisible = true;
+        },
+
+        /**
+         * 添加职位权限关系的dialog选择取消的回调函数
+         */
+        addRolePermissionCancel(){
+            this.rolePermissionDialogVisible = false;
+        },
+
+        /**
+         * 添加只为权限关系的dialog选择提交的回调函数
+         */
+        async addRolePermissionSubmit(roleValue, permissionValue){
+            const { code, msg } = await this.$axios.post('/admin/role/add-role-permission', {
+                roleValue,
+                permissionValue
+            })
+            if (code !== 200) {
+                this.$message.error(msg);
+                return;
+            }
+            this.rolePermissionDialogVisible = false;
+            this.$message.success(msg);
+        },
+
         deleteRow(row){
             console.log(row);
-        },
-        addRole(){
-            this.roleDialogVisible = true;
-        },
-        addRolePermission(){
-            console.log('添加角色权限信息');
         },
 
         /**
