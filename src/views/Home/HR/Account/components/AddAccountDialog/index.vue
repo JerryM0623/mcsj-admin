@@ -1,7 +1,7 @@
 <template>
     <el-dialog
         class="add-account-dialog"
-        title="添加新的账户"
+        :title="dialogMode === 'create' ? '添加新的账户' : '编辑账户信息'"
         :visible.sync="dialogVisible"
         :show-close="false"
         :close-on-click-modal="false"
@@ -14,6 +14,16 @@
             </el-form-item>
             <el-form-item label="账户密码" label-width="100">
                 <el-input type="password" show-password class="dialog-input" v-model="dialogDataLocal.password"></el-input>
+            </el-form-item>
+            <el-form-item v-if="dialogMode === 'edit'" label="职位" label-width="100">
+                <el-select v-model="dialogDataLocal.role" placeholder="请选择">
+                    <el-option
+                        v-for="item in options"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.name">
+                    </el-option>
+                </el-select>
             </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -38,8 +48,22 @@ export default {
             required: true
         },
         // 添加权限信息的处理函数
-        handleSubmit: {
+        handleSubmitAdd: {
             type: Function,
+            required: true
+        },
+        // 添加权限信息的处理函数
+        handleSubmitEdit: {
+            type: Function,
+            required: true
+        },
+        // 展示的模式
+        dialogMode: {
+            type: String,
+            required: true
+        },
+        dialogData: {
+            type: Object,
             required: true
         }
     },
@@ -49,7 +73,8 @@ export default {
             dialogDataLocal: {
                 account: '',
                 password: ''
-            }
+            },
+            options: []
         }
     },
     methods: {
@@ -73,8 +98,25 @@ export default {
                 this.$message.error('请填写信息');
                 return;
             }
-            this.handleSubmit(this.dialogDataLocal.account, this.dialogDataLocal.password);
-        }
+            if (this.dialogMode === 'create'){
+                this.handleSubmitAdd(this.dialogDataLocal.account, this.dialogDataLocal.password);
+            }
+            if (this.dialogMode === 'edit'){
+                console.log(this.dialogDataLocal);
+                this.handleSubmitEdit(this.dialogDataLocal);
+            }
+        },
+        /**
+         * 请求后端的职位数据
+         */
+        async getAllRole(){
+            const { code, msg, data } = await this.$axios.get('/admin/role/all');
+            if (code !== 200){
+                this.$message.error(msg);
+                return;
+            }
+            this.options = data;
+        },
     },
     watch: {
         dialogVisible(val) {
@@ -83,6 +125,12 @@ export default {
                     account: '',
                     password: ''
                 }
+            }
+        },
+        dialogMode(val){
+            if (val === 'edit'){
+                this.getAllRole();
+                this.dialogDataLocal = this.dialogData;
             }
         }
     }

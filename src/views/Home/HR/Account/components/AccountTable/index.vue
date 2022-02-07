@@ -62,7 +62,7 @@ export default {
     },
     methods: {
         editRow(row){
-            console.log('edit',row);
+            this.handleEdit(row);
         },
         deleteRow(row){
             console.log('delete',row);

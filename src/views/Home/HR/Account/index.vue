@@ -34,8 +34,11 @@
             <!--添加账户的 dialog-->
             <add-account-dialog
                 :dialog-visible="addAccountDialogVisible"
-                :handle-submit="addAccountSubmit"
+                :handle-submit-add="addAccountSubmit"
+                :handle-submit-edit="editRowSubmit"
                 :handle-close="addAccountCancel"
+                :dialog-mode="addAccountDialogMode"
+                :dialog-data="addAccountDialogData"
             ></add-account-dialog>
             <!--为账户赋予职位-->
             <account-role-dialog
@@ -76,6 +79,12 @@ export default {
             },
             searchInput: '',
             addAccountDialogVisible: false,
+            addAccountDialogMode: 'pengding',
+            addAccountDialogData: {
+                id: 0,
+                account: '',
+                password: ''
+            },
             accountRoleDialogVisible: false,
             deleteAccountVisible: false,
 
@@ -131,6 +140,7 @@ export default {
          */
         addAccount(){
             this.addAccountDialogVisible = true;
+            this.addAccountDialogMode = 'create';
         },
 
         /**
@@ -138,6 +148,7 @@ export default {
          */
         addAccountCancel(){
             this.addAccountDialogVisible = false;
+            this.addAccountDialogMode = 'pengding';
         },
 
         /**
@@ -193,7 +204,7 @@ export default {
                 })
                 if (code !== 200) return;
                 this.accountRoleDialogVisible = false;
-                await this.getAccountByPageNum();
+                await this.getAccountByPageNum(this.paginationOptions.currentPage);
             }catch (e) {
                 console.log(e);
                 this.$message.error('请求失败，请稍后重试');
@@ -228,8 +239,49 @@ export default {
                 })
                 if (code !== 200) return;
                 this.deleteAccountVisible = false;
-                this.paginationOptions.currentPage = 1;
-                await this.getAccountByPageNum();
+                await this.getAccountByPageNum(this.paginationOptions.currentPage);
+            }catch (e) {
+                console.log(e);
+                this.$message.error('请求失败');
+            }
+        },
+
+        /**
+         * 开启 dialog
+         */
+        editRow(row){
+            this.addAccountDialogVisible = true;
+            this.addAccountDialogMode = 'edit';
+            this.addAccountDialogData = {
+                id: row.id,
+                account: row.account,
+                password: row.password,
+                role: row.role
+            }
+        },
+
+        /**
+         * 编辑一条信息的提交信息回调函数
+         * @param data
+         * @returns {Promise<void>}
+         */
+        async editRowSubmit(data){
+            try {
+                const { id, account, password, role } = data;
+                const { code, msg } = await this.$axios.post('/admin/account/edit', {
+                    id,
+                    account,
+                    password,
+                    role
+                })
+                this.$message({
+                    type: code === 200? 'success':'error',
+                    message: msg
+                })
+                if (code !== 200) return;
+                this.addAccountDialogVisible = false;
+                this.addAccountDialogMode = 'pending';
+                await this.getAccountByPageNum(this.paginationOptions.currentPage);
             }catch (e) {
                 console.log(e);
                 this.$message.error('请求失败');
@@ -239,9 +291,10 @@ export default {
         deleteRow(row){
             console.log('deleteRowAccount', row);
         },
-        editRow(row){
-            console.log('EditRowAccount', row);
-        },
+        /**
+         * 分页器变化的时候实现数据更新
+         * @param num
+         */
         pageNumChange(num){
             this.getAccountByPageNum(num);
         }
