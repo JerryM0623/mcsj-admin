@@ -91,6 +91,10 @@ const mutations = {
         state.rolePermissionList.showList = newArr;
     },
 
+    /**
+     * 清除搜索角色权限的信息
+     * @param state
+     */
     [types.CLEAR_SEARCH_ROLE_PERMISSION](state){
         state.rolePermissionList.showList = state.rolePermissionList.originList;
     }
