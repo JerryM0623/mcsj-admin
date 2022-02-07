@@ -8,7 +8,7 @@
         :close-on-press-escape="false"
         width="35%"
     >
-        <el-form :model="dialogDataLocal">
+        <el-form>
             <el-form-item label="账户名称" label-width="100">
                 <el-select v-model="accountValue" placeholder="请选择">
                     <el-option
