@@ -37,6 +37,12 @@
                 :handle-submit="addAccountSubmit"
                 :handle-close="addAccountCancel"
             ></add-account-dialog>
+            <!--为账户赋予职位-->
+            <account-role-dialog
+                :dialog-visible="accountRoleDialogVisible"
+                :handle-close="addAccountRoleCancel"
+                :handle-submit="addAccountRoleSubmit"
+            ></account-role-dialog>
         </el-card>
     </div>
 </template>
@@ -44,6 +50,7 @@
 <script>
 import AccountTable from './components/AccountTable';
 import AddAccountDialog from './components/AddAccountDialog';
+import AccountRoleDialog from './components/AccountRoleDialog';
 import {mapState} from "vuex";
 
 export default {
@@ -51,6 +58,7 @@ export default {
     components: {
         AccountTable,
         AddAccountDialog,
+        AccountRoleDialog,
     },
     data() {
         return {
@@ -60,6 +68,7 @@ export default {
             },
             searchInput: '',
             addAccountDialogVisible: false,
+            accountRoleDialogVisible: false,
 
         }
     },
@@ -143,7 +152,44 @@ export default {
             }
         },
 
-        addAccountRole(){},
+        /**
+         * 控制 账户职位 dialog 的显示
+         */
+        addAccountRole(){
+            this.accountRoleDialogVisible = true;
+        },
+
+        /**
+         * 控制 账户职位 dialog 的隐藏
+         */
+        addAccountRoleCancel(){
+            this.accountRoleDialogVisible = false;
+        },
+
+        /**
+         * 设置账户职位的提交回调函数
+         * @param accountID
+         * @param roleID
+         * @returns {Promise<void>}
+         */
+        async addAccountRoleSubmit(accountID, roleID){
+            try {
+                const { code, msg } = await this.$axios.post('/admin/account/set-account-role', {
+                    accountID,
+                    roleID
+                })
+                this.$message({
+                    message: msg,
+                    type: code === 200 ? 'success' : 'error'
+                })
+                if (code !== 200) return;
+                this.accountRoleDialogVisible = false;
+                await this.getAccountByPageNum();
+            }catch (e) {
+                console.log(e);
+                this.$message.error('请求失败，请稍后重试');
+            }
+        },
         deleteAccount(){},
         deleteRow(row){
             console.log('deleteRowAccount', row);
