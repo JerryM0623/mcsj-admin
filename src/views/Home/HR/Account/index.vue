@@ -1,6 +1,5 @@
 <template>
     <div class="account">
-
         <el-card>
             <!--功能区-->
             <el-row style="margin-bottom: 10px">
@@ -288,8 +287,29 @@ export default {
             }
         },
 
+        /**
+         * 删除一条账户信息
+         */
         deleteRow(row){
-            console.log('deleteRowAccount', row);
+            this.$confirm('你确定要删除吗？删除之后信息将会永久消失！','注意',{
+                cancelButtonText:'取消',
+                confirmButtonText:'确定',
+                type: 'warning'
+            }).then( async () => {
+                try {
+                    const { id } = row;
+                    const { code, msg } = await this.$axios.post('/admin/account/del-account-role', {id});
+                    this.$message({
+                        type: code === 200 ? 'success' : 'error',
+                        message: msg
+                    })
+                    if (code !== 200) return;
+                    await this.getAccountByPageNum(this.paginationOptions.currentPage);
+                }catch (e) {
+                    console.log(e);
+                    this.$message.error('请求失败');
+                }
+            })
         },
         /**
          * 分页器变化的时候实现数据更新
