@@ -11,7 +11,7 @@
                     <el-button @click="searchAccountRole" type="primary" style="margin-left: 10px">搜索</el-button>
                     <el-button @click="clearSearch" type="primary">清除搜索信息</el-button>
                     <el-button @click="addAccount" type="primary">添加账户</el-button>
-                    <el-button @click="addAccountRole" type="primary">添加职位关系</el-button>
+                    <el-button @click="addAccountRole" type="primary">为账户设置职位</el-button>
                     <el-button @click="deleteAccount" type="danger">删除账户</el-button>
                 </el-col>
             </el-row>
@@ -79,8 +79,25 @@ export default {
                 this.$message.error('请求失败，请重新尝试请求');
             }
         },
-        searchAccountRole(){},
-        clearSearch(){},
+
+        /**
+         * 根据关键词键入搜索数据
+         */
+        searchAccountRole(){
+            if (this.searchInput === ''){
+                this.$message.error('请在输入框中输入内容');
+                return;
+            }
+            this.$store.dispatch('searchAccountRole', this.searchInput);
+        },
+
+        /**
+         * 清除所有的搜索痕迹
+         */
+        clearSearch(){
+            this.searchInput = '';
+            this.$store.dispatch('clearSearchAccountRole');
+        },
         addAccount(){},
         addAccountRole(){},
         deleteAccount(){},
@@ -91,7 +108,7 @@ export default {
             console.log('EditRowAccount', row);
         },
         pageNumChange(num){
-            console.log('账户管理页面的分页组件页面更改：', num);
+            this.getAccountByPageNum(num);
         }
     },
     computed: {

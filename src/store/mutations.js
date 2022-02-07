@@ -40,13 +40,10 @@ const mutations = {
         const keyWord = payload;
         let newArr = [];
         list.forEach(item => {
-            if (item.permissionID.toString() === keyWord) {
-                newArr.push(item);
-            }
-            if (item.permissionName.toString() === keyWord) {
-                newArr.push(item);
-            }
-            if (item.permissionComment.toString() === keyWord) {
+            const judgeOne = item.permissionID.toString() === keyWord;
+            const judgeTwo = item.permissionName.toString() === keyWord;
+            const judgeThree = item.permissionComment.toString() === keyWord
+            if (judgeOne || judgeTwo || judgeThree){
                 newArr.push(item);
             }
         })
@@ -108,6 +105,29 @@ const mutations = {
         state.accountList.originList =
             state.accountList.showList = payload.list;
         state.accountList.total = payload.total;
+    },
+
+    /**
+     * 搜索账户信息
+     * @param state
+     * @param payload
+     */
+    [types.SEARCH_ACCOUNT_ROLE](state, payload){
+        const originList = state.accountList.originList;
+        let newArr = [];
+        originList.forEach(item => {
+            const checkOne = item.id.toString() === payload;
+            const checkTwo = item.account.toString() === payload;
+            const checkThree = item.role.toString() === payload;
+            if (checkOne || checkTwo || checkThree){
+                newArr.push(item);
+            }
+        })
+        state.accountList.showList = newArr;
+    },
+
+    [types.CLEAR_SEARCH_ACCOUNT_ROLE](state){
+        state.accountList.showList = state.accountList.originList;
     }
 
 }

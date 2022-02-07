@@ -77,6 +77,23 @@ const actions = {
      */
     setAccountData({commit}, payload){
         commit(types.SET_ACCOUNT_DATA, payload);
+    },
+
+    /**
+     * 根据关键词搜索账户数据
+     * @param commit
+     * @param payload
+     */
+    searchAccountRole({commit}, payload) {
+        commit(types.SEARCH_ACCOUNT_ROLE, payload);
+    },
+
+    /**
+     * 清楚搜索的记录
+     * @param commit
+     */
+    clearSearchAccountRole({commit}){
+        commit(types.CLEAR_SEARCH_ACCOUNT_ROLE);
     }
 }
 
