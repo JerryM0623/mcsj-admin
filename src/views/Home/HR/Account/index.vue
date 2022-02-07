@@ -10,7 +10,7 @@
                 <el-col :span="18">
                     <el-button @click="searchAccountRole" type="primary" style="margin-left: 10px">搜索</el-button>
                     <el-button @click="clearSearch" type="primary">清除搜索信息</el-button>
-                    <el-button @click="addAccount" type="primary">添加账户</el-button>
+                    <el-button @click="addAccount" type="primary">创建账户</el-button>
                     <el-button @click="addAccountRole" type="primary">为账户设置职位</el-button>
                     <el-button @click="deleteAccount" type="danger">删除账户</el-button>
                 </el-col>
@@ -31,18 +31,26 @@
                 :current-page.sync="paginationOptions.currentPage"
             >
             </el-pagination>
+            <!--添加账户的 dialog-->
+            <add-account-dialog
+                :dialog-visible="addAccountDialogVisible"
+                :handle-submit="addAccountSubmit"
+                :handle-close="addAccountCancel"
+            ></add-account-dialog>
         </el-card>
     </div>
 </template>
 
 <script>
 import AccountTable from './components/AccountTable';
+import AddAccountDialog from './components/AddAccountDialog';
 import {mapState} from "vuex";
 
 export default {
     name: "AccountManagement",
     components: {
         AccountTable,
+        AddAccountDialog,
     },
     data() {
         return {
@@ -51,6 +59,7 @@ export default {
                 currentPage: 1
             },
             searchInput: '',
+            addAccountDialogVisible: false,
 
         }
     },
@@ -98,7 +107,42 @@ export default {
             this.searchInput = '';
             this.$store.dispatch('clearSearchAccountRole');
         },
-        addAccount(){},
+
+        /**
+         * 控制添加账户 dialog 的显示与隐藏
+         */
+        addAccount(){
+            this.addAccountDialogVisible = true;
+        },
+
+        /**
+         * 添加账户 dialog 点击取消按钮之后的回调函数
+         */
+        addAccountCancel(){
+            this.addAccountDialogVisible = false;
+        },
+
+        /**
+         * 添加账户 dialog 点击提交之后的回调函数
+         */
+        async addAccountSubmit(account, password){
+            try {
+                const { code, msg } = await this.$axios.post('/admin/account/add-account',{
+                    account,
+                    password
+                })
+                if (code !== 200){
+                    this.$message.error(msg);
+                    return;
+                }
+                this.$message.success(msg);
+                this.addAccountDialogVisible = false;
+            }catch (e) {
+                console.log(e);
+                this.$message.error('操作失败，请重试');
+            }
+        },
+
         addAccountRole(){},
         deleteAccount(){},
         deleteRow(row){
