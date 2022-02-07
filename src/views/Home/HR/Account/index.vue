@@ -43,6 +43,12 @@
                 :handle-close="addAccountRoleCancel"
                 :handle-submit="addAccountRoleSubmit"
             ></account-role-dialog>
+            <!--删除账户-->
+            <delete-account-dialog
+                :handle-submit="deleteAccountSubmit"
+                :handle-close="deleteAccountCancel"
+                :dialog-visible="deleteAccountVisible"
+            ></delete-account-dialog>
         </el-card>
     </div>
 </template>
@@ -51,6 +57,7 @@
 import AccountTable from './components/AccountTable';
 import AddAccountDialog from './components/AddAccountDialog';
 import AccountRoleDialog from './components/AccountRoleDialog';
+import DeleteAccountDialog from './components/DeleteAccountDialog';
 import {mapState} from "vuex";
 
 export default {
@@ -59,6 +66,7 @@ export default {
         AccountTable,
         AddAccountDialog,
         AccountRoleDialog,
+        DeleteAccountDialog
     },
     data() {
         return {
@@ -69,6 +77,7 @@ export default {
             searchInput: '',
             addAccountDialogVisible: false,
             accountRoleDialogVisible: false,
+            deleteAccountVisible: false,
 
         }
     },
@@ -190,7 +199,43 @@ export default {
                 this.$message.error('请求失败，请稍后重试');
             }
         },
-        deleteAccount(){},
+
+        /**
+         * 控制 deleteDialog 的显示
+         */
+        deleteAccount(){
+            this.deleteAccountVisible = true;
+        },
+
+        /**
+         * 控制 deleteDialog 的隐藏
+         */
+        deleteAccountCancel(){
+            this.deleteAccountVisible = false;
+        },
+
+        /**
+         * 删除账号的提交后台的回调函数
+         * @param accountID
+         * @returns {Promise<void>}
+         */
+        async deleteAccountSubmit(accountID){
+            try {
+                const { code, msg } = await this.$axios.post('/admin/account/del',{accountID});
+                this.$message({
+                    type: code === 200 ? 'success' : "error",
+                    message: msg
+                })
+                if (code !== 200) return;
+                this.deleteAccountVisible = false;
+                this.paginationOptions.currentPage = 1;
+                await this.getAccountByPageNum();
+            }catch (e) {
+                console.log(e);
+                this.$message.error('请求失败');
+            }
+        },
+
         deleteRow(row){
             console.log('deleteRowAccount', row);
         },

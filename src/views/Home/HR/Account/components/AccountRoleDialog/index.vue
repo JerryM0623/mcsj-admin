@@ -67,6 +67,9 @@ export default {
         }
     },
     methods: {
+        /**
+         * 请求后端的账户数据
+         */
         async getAllAccounts(){
             const { code, msg, data } = await this.$axios.get('/admin/account/all');
             if (code !== 200){
@@ -75,6 +78,7 @@ export default {
             }
             this.accountOptions = data;
         },
+
         /**
          * 请求后端的职位数据
          */
