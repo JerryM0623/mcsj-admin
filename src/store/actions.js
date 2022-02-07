@@ -68,6 +68,15 @@ const actions = {
      */
     clearSearchRolePermission({commit}){
         commit(types.CLEAR_SEARCH_ROLE_PERMISSION);
+    },
+
+    /**
+     * 添加全部账户的信息
+     * @param commit
+     * @param payload
+     */
+    setAccountData({commit}, payload){
+        commit(types.SET_ACCOUNT_DATA, payload);
     }
 }
 

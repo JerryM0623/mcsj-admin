@@ -97,6 +97,17 @@ const mutations = {
      */
     [types.CLEAR_SEARCH_ROLE_PERMISSION](state){
         state.rolePermissionList.showList = state.rolePermissionList.originList;
+    },
+
+    /**
+     * 添加账户列表的数据
+     * @param state
+     * @param payload
+     */
+    [types.SET_ACCOUNT_DATA](state, payload){
+        state.accountList.originList =
+            state.accountList.showList = payload.list;
+        state.accountList.total = payload.total;
     }
 
 }

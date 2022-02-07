@@ -12,6 +12,12 @@ const state = {
         originList: [],
         showList: [],
         total: 0
+    },
+    // 账户信息的存储数据
+    accountList: {
+        originList: [],
+        showList: [],
+        total: 0
     }
 }
 
