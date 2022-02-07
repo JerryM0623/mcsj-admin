@@ -79,7 +79,7 @@ export default {
             },
             searchInput: '',
             addAccountDialogVisible: false,
-            addAccountDialogMode: 'pengding',
+            addAccountDialogMode: 'pending',
             addAccountDialogData: {
                 id: 0,
                 account: '',
@@ -148,7 +148,7 @@ export default {
          */
         addAccountCancel(){
             this.addAccountDialogVisible = false;
-            this.addAccountDialogMode = 'pengding';
+            this.addAccountDialogMode = 'pending';
         },
 
         /**
