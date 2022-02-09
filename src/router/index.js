@@ -65,25 +65,7 @@ const routes = [
                 meta: {
                     title: '轮播图管理'
                 },
-                component: () => import(/* webpackChunkName: "carousel" */ '../views/Home/Carousel/index'),
-                children: [
-                    {
-                        path: '/carousel/management',
-                        name: 'carouselManagement',
-                        component: () => import(/* webpackChunkName: "carouselManagement" */ '../views/Home/Carousel/Management'),
-                        meta: {
-                            title: '管理轮播图'
-                        }
-                    },
-                    {
-                        path: '/carousel/preview',
-                        name: 'carouselPreview',
-                        component: () => import(/* webpackChunkName: "carouselPreview" */ '../views/Home/Carousel/Preview'),
-                        meta: {
-                            title: '预览轮播图'
-                        }
-                    },
-                ]
+                component: () => import(/* webpackChunkName: "carousel" */ '../views/Home/Carousel/index')
             },
             {
                 path: 'goods',

@@ -52,16 +52,6 @@ export default {
                     title: '轮播图管理',
                     url: '/carousel',
                     iconClassName: 'el-icon-picture-outline',
-                    child: [
-                        {
-                            title: '预览轮播图',
-                            url: '/carousel/preview'
-                        },
-                        {
-                            title: '管理轮播图',
-                            url: '/carousel/management'
-                        },
-                    ]
                 },
                 {
                     title: '商品管理',
