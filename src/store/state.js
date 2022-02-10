@@ -18,6 +18,12 @@ const state = {
         originList: [],
         showList: [],
         total: 0
+    },
+    // 轮播图数据
+    carouselList: {
+        originList: [],
+        showList: [],
+        total: 0
     }
 }
 
