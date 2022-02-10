@@ -126,6 +126,10 @@ const mutations = {
         state.accountList.showList = newArr;
     },
 
+    /**
+     * 清除搜索记录，回归原始状态
+     * @param state
+     */
     [types.CLEAR_SEARCH_ACCOUNT_ROLE](state){
         state.accountList.showList = state.accountList.originList;
     }
