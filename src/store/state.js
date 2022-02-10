@@ -21,9 +21,10 @@ const state = {
     },
     // 轮播图数据
     carouselList: {
-        originList: [],
-        showList: [],
-        total: 0
+        originList: [],     // 原始数据
+        showList: [],       // 表格展示用数据
+        onlineList: [],     // 预览图展示用数据
+        total: 0            // 后端共计拥有的数据总数
     }
 }
 

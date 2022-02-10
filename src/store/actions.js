@@ -94,6 +94,15 @@ const actions = {
      */
     clearSearchAccountRole({commit}){
         commit(types.CLEAR_SEARCH_ACCOUNT_ROLE);
+    },
+
+    /**
+     * 更新数据
+     * @param commit
+     * @param payload
+     */
+    setCarouselData({commit}, payload){
+        commit(types.SET_CAROUSEL_DATA, payload);
     }
 }
 

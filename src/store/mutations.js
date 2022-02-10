@@ -43,7 +43,7 @@ const mutations = {
             const judgeOne = item.permissionID.toString() === keyWord;
             const judgeTwo = item.permissionName.toString() === keyWord;
             const judgeThree = item.permissionComment.toString() === keyWord
-            if (judgeOne || judgeTwo || judgeThree){
+            if (judgeOne || judgeTwo || judgeThree) {
                 newArr.push(item);
             }
         })
@@ -63,7 +63,7 @@ const mutations = {
      * @param state
      * @param payload
      */
-    [types.SET_ROLE_PERMISSION_DATA](state, payload){
+    [types.SET_ROLE_PERMISSION_DATA](state, payload) {
         state.rolePermissionList.originList =
             state.rolePermissionList.showList = payload.list;
         state.rolePermissionList.total = payload.total;
@@ -74,14 +74,14 @@ const mutations = {
      * @param state
      * @param payload
      */
-    [types.SEARCH_ROLE_PERMISSION_DATA](state, payload){
+    [types.SEARCH_ROLE_PERMISSION_DATA](state, payload) {
         const list = state.rolePermissionList.originList;
         let newArr = [];
         list.forEach(item => {
             const judgeOne = item.rolePermissionID.toString() === payload;
             const judgeTwo = item.roleName.toString() === payload;
             const judgeThree = item.Permission.toString() === payload;
-            if (judgeOne || judgeTwo || judgeThree){
+            if (judgeOne || judgeTwo || judgeThree) {
                 newArr.push(item);
             }
         })
@@ -92,7 +92,7 @@ const mutations = {
      * 清除搜索角色权限的信息
      * @param state
      */
-    [types.CLEAR_SEARCH_ROLE_PERMISSION](state){
+    [types.CLEAR_SEARCH_ROLE_PERMISSION](state) {
         state.rolePermissionList.showList = state.rolePermissionList.originList;
     },
 
@@ -101,7 +101,7 @@ const mutations = {
      * @param state
      * @param payload
      */
-    [types.SET_ACCOUNT_DATA](state, payload){
+    [types.SET_ACCOUNT_DATA](state, payload) {
         state.accountList.originList =
             state.accountList.showList = payload.list;
         state.accountList.total = payload.total;
@@ -112,14 +112,14 @@ const mutations = {
      * @param state
      * @param payload
      */
-    [types.SEARCH_ACCOUNT_ROLE](state, payload){
+    [types.SEARCH_ACCOUNT_ROLE](state, payload) {
         const originList = state.accountList.originList;
         let newArr = [];
         originList.forEach(item => {
             const checkOne = item.id.toString() === payload;
             const checkTwo = item.account.toString() === payload;
             const checkThree = item.role.toString() === payload;
-            if (checkOne || checkTwo || checkThree){
+            if (checkOne || checkTwo || checkThree) {
                 newArr.push(item);
             }
         })
@@ -130,8 +130,26 @@ const mutations = {
      * 清除搜索记录，回归原始状态
      * @param state
      */
-    [types.CLEAR_SEARCH_ACCOUNT_ROLE](state){
+    [types.CLEAR_SEARCH_ACCOUNT_ROLE](state) {
         state.accountList.showList = state.accountList.originList;
+    },
+
+    /**
+     * 更新carousel的数据
+     * @param state
+     * @param payload
+     */
+    [types.SET_CAROUSEL_DATA](state, payload) {
+        state.carouselList.originList =
+            state.carouselList.showList =
+                payload.list;
+
+        state.carouselList.onlineList =
+            payload.list.filter(item => {
+                return item.isOnline === 1;
+            })
+
+        state.carouselList.total = payload.total;
     }
 
 }
