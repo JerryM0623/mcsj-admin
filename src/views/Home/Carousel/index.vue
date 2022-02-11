@@ -27,10 +27,16 @@
                 :current-page.sync="paginationOptions.currentPage"
             >
             </el-pagination>
+            <!--上传新的轮播图-->
+            <add-carousel-dialog
+                :dialog-form-visible="addCarouselDialogVisible"
+                :handle-submit="dialogSubmit"
+                :handle-cancel="dialogClose"
+            ></add-carousel-dialog>
         </el-card>
         <el-card class="preview">
             <el-row class="card-title">预览轮播图</el-row>
-            <el-carousel :interval="4000" type="card" height="300px">
+            <el-carousel :interval="4000" type="card" height="350px">
                 <el-carousel-item v-for="item in carouselList.onlineList" :key="item.id">
                     <el-image
                         style="width: 100%; height: 100%"
@@ -44,11 +50,13 @@
 
 <script>
 import CarouselTable from './components/CarouselTable';
+import AddCarouselDialog from './components/AddCarouselDialog';
 import { mapState } from 'vuex';
 
 export default {
     name: "Carousel",
     components: {
+        AddCarouselDialog,
         CarouselTable,
     },
     data() {
@@ -58,6 +66,7 @@ export default {
                 pageSize: 10,
                 currentPage: 1
             },
+            addCarouselDialogVisible: false,
         }
     },
     methods: {
@@ -130,9 +139,35 @@ export default {
             this.searchInput = '';
             this.$store.dispatch('clearSearchCarousel');
         },
+
+        /**
+         * 开启上传上传的dialog
+         */
         addCarousel() {
-            console.log('addCarousel...');
+            this.addCarouselDialogVisible = true;
         },
+
+        /**
+         * 关闭关闭上传的 dialog
+         */
+        dialogClose(){
+            this.$confirm('你确定要关闭吗？关闭之后信息将会永久消失！','注意',{
+                cancelButtonText:'取消',
+                confirmButtonText:'确定',
+                type: 'warning'
+            }).then(() => {
+                this.addCarouselDialogVisible = false;
+            })
+        },
+
+        /**
+         * 上传成功之后关闭 dialog
+         */
+        dialogSubmit(){
+            this.addCarouselDialogVisible = false;
+            this.getCarouselByPageNum(this.paginationOptions.currentPage);
+        },
+
         /**
          * 指示器页面变化的时候进行通知后台进行数据获取
          * @param pageNum
