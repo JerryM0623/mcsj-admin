@@ -103,6 +103,23 @@ const actions = {
      */
     setCarouselData({commit}, payload){
         commit(types.SET_CAROUSEL_DATA, payload);
+    },
+
+    /**
+     * 搜索轮播图的id和简介（imgAlt）
+     * @param commit
+     * @param payload
+     */
+    searchCarousel({commit}, payload){
+        commit(types.SEARCH_CAROUSEL, payload);
+    },
+
+    /**
+     * 清除轮播图搜索痕迹
+     * @param commit
+     */
+    clearSearchCarousel({commit}){
+        commit(types.CLEAR_SEARCH_CAROUSEL);
     }
 }
 

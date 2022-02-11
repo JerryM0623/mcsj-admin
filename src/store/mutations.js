@@ -150,6 +150,32 @@ const mutations = {
             })
 
         state.carouselList.total = payload.total;
+    },
+
+    /**
+     * 搜索轮播图的id和简介（imgAlt）
+     * @param state
+     * @param payload
+     */
+    [types.SEARCH_CAROUSEL](state, payload){
+        const originList = state.carouselList.originList;
+        let newArr = [];
+        originList.forEach(item => {
+            const checkOne = item.id.toString() === payload;
+            const checkTwo = item.imgAlt.toString() === payload;
+            if (checkOne || checkTwo){
+                newArr.push(item);
+            }
+        })
+        state.carouselList.showList = newArr;
+    },
+
+    /**
+     * 清除轮播图搜索痕迹
+     * @param state
+     */
+    [types.CLEAR_SEARCH_CAROUSEL](state){
+        state.carouselList.showList = state.carouselList.originList;
     }
 
 }

@@ -1,11 +1,11 @@
 <template>
     <div class="carousel">
-        <el-card class="management" style="margin-bottom: 10px">
+        <el-card class="management" style="margin-bottom: 20px">
             <el-row class="card-title">管理轮播图</el-row>
             <!--功能区-->
             <el-row style="margin-bottom: 10px">
                 <el-col :span="6">
-                    <el-input v-model="searchInput" style="width: 100%" placeholder="请键入数据进行搜索"></el-input>
+                    <el-input v-model="searchInput" style="width: 100%" placeholder="仅支持搜索编号和简介"></el-input>
                 </el-col>
                 <el-col :span="18">
                     <el-button @click="searchCarousel" type="primary" style="margin-left: 10px">搜索</el-button>
@@ -54,11 +54,6 @@ export default {
     data() {
         return {
             searchInput: '',
-            tableData: [
-                {id: 1, imgUrl: 'https://www.baidu.com', uuid: 'ndjekwndjekwndje', alt: 'dnjek', isOnline: '上线'},
-                {id: 2, imgUrl: 'https://www.baidu.com', uuid: 'ndjekwndjekwndje', alt: 'dnjek', isOnline: '下线'},
-                {id: 3, imgUrl: 'https://www.baidu.com', uuid: 'ndjekwndjekwndje', alt: 'dnjek', isOnline: '上线'},
-            ],
             paginationOptions: {
                 pageSize: 10,
                 currentPage: 1
@@ -117,11 +112,23 @@ export default {
             }
         },
 
+        /**
+         * 搜索轮播图的回调函数
+         */
         searchCarousel() {
-            console.log('searchCarousel...');
+            if (this.searchInput === ''){
+                this.$message.error('请输入关键字进行搜索');
+                return;
+            }
+            this.$store.dispatch('searchCarousel', this.searchInput);
         },
+
+        /**
+         * 清除搜索痕迹，恢复原样
+         */
         clearSearch() {
-            console.log('clearSearch...');
+            this.searchInput = '';
+            this.$store.dispatch('clearSearchCarousel');
         },
         addCarousel() {
             console.log('addCarousel...');
