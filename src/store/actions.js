@@ -105,6 +105,10 @@ const actions = {
         commit(types.SET_CAROUSEL_DATA, payload);
     },
 
+    setOnlineCarousel({commit}, payload){
+        commit(types.SET_ONLINE_CAROUSEL_DATA, payload);
+    },
+
     /**
      * 搜索轮播图的id和简介（imgAlt）
      * @param commit

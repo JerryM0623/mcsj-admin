@@ -115,9 +115,27 @@ export default {
                 if (code !== 200) return;
                 // 更新数据
                 await this.getCarouselByPageNum(this.paginationOptions.currentPage);
+                await this.getOnlineCarouselList();
             }catch (e) {
                 console.log(e);
                 this.$message.error('操作失败!');
+            }
+        },
+
+        /**
+         * 获取已上线的轮播图数据数据
+         */
+        async getOnlineCarouselList(){
+            try {
+                const { code, msg, data } = await this.$axios.get('/admin/carousel/online');
+                if (code !== 200){
+                    this.$message.error(msg);
+                    return;
+                }
+                await this.$store.dispatch('setOnlineCarousel', data);
+            }catch (e) {
+                console.log(e);
+                this.$message.error('获取数据失败');
             }
         },
 
@@ -163,9 +181,9 @@ export default {
         /**
          * 上传成功之后关闭 dialog
          */
-        dialogSubmit(){
+        async dialogSubmit(){
             this.addCarouselDialogVisible = false;
-            this.getCarouselByPageNum(this.paginationOptions.currentPage);
+            await this.getCarouselByPageNum(this.paginationOptions.currentPage);
         },
 
         /**
@@ -182,6 +200,7 @@ export default {
     watch: {},
     mounted() {
         this.getCarouselByPageNum();
+        this.getOnlineCarouselList();
     }
 }
 </script>

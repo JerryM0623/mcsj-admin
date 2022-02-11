@@ -14,7 +14,8 @@ export default {
     SEARCH_ACCOUNT_ROLE: 'SEARCH_ACCOUNT_ROLE',                 // 搜索账户信息
     CLEAR_SEARCH_ACCOUNT_ROLE: 'CLEAR_SEARCH_ACCOUNT_ROLE',     // 清楚搜索痕迹
 
-    SET_CAROUSEL_DATA: 'SET_CAROUSEL_DATA',             // 添加轮播图信息
-    SEARCH_CAROUSEL: 'SEARCH_CAROUSEL',                 // 搜索轮播图
-    CLEAR_SEARCH_CAROUSEL: 'CLEAR_SEARCH_CAROUSEL'      // 清除轮播图搜索记录
+    SET_CAROUSEL_DATA: 'SET_CAROUSEL_DATA',                 // 添加某一页的轮播图信息
+    SET_ONLINE_CAROUSEL_DATA: 'SET_ONLINE_CAROUSEL_DATA',   // 添加已经上线的轮播图信息
+    SEARCH_CAROUSEL: 'SEARCH_CAROUSEL',                     // 搜索轮播图
+    CLEAR_SEARCH_CAROUSEL: 'CLEAR_SEARCH_CAROUSEL'          // 清除轮播图搜索记录
 }

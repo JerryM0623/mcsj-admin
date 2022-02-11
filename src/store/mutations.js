@@ -143,13 +143,16 @@ const mutations = {
         state.carouselList.originList =
             state.carouselList.showList =
                 payload.list;
-
-        state.carouselList.onlineList =
-            payload.list.filter(item => {
-                return item.isOnline === 1;
-            })
-
         state.carouselList.total = payload.total;
+    },
+
+    /**
+     * 更新以上线的 carousel 的数据
+     * @param state
+     * @param payload
+     */
+    [types.SET_ONLINE_CAROUSEL_DATA](state, payload){
+        state.carouselList.onlineList = payload;
     },
 
     /**
