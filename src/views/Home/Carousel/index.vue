@@ -16,6 +16,7 @@
             <!--数据展示区-->
             <carousel-table
                 :change-carousel-status="changeCarouselStatus"
+                :handle-delete="deleteOneCarousel"
             ></carousel-table>
             <!--分页组件-->
             <el-pagination
@@ -183,7 +184,33 @@ export default {
          */
         async dialogSubmit(){
             this.addCarouselDialogVisible = false;
+            await this.getOnlineCarouselList();
             await this.getCarouselByPageNum(this.paginationOptions.currentPage);
+        },
+
+        deleteOneCarousel(uuid, url){
+            this.$confirm('你确定要删除吗？删除之后信息将会永久消失！','注意',{
+                cancelButtonText:'取消',
+                confirmButtonText:'确定',
+                type: 'warning'
+            }).then( async () => {
+                try {
+                    const { code, msg } = await this.$axios.post('/admin/carousel/del', {
+                        uuid,
+                        url
+                    })
+                    this.$message({
+                        type: code === 200 ? 'success' : 'error',
+                        message: msg
+                    })
+                    if ( code !== 200) return;
+                    await this.getOnlineCarouselList();
+                    await this.getCarouselByPageNum(this.paginationOptions.currentPage);
+                }catch (e) {
+                    console.log(e);
+                    this.$message.error('操作失败');
+                }
+            })
         },
 
         /**

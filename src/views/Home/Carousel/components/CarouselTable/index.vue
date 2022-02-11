@@ -59,6 +59,11 @@ export default {
         changeCarouselStatus: {
             type: Function,
             required: true
+        },
+        // 删除某一个轮播图
+        handleDelete: {
+            type: Function,
+            required: true
         }
 
     },
@@ -73,6 +78,14 @@ export default {
          */
         changeStatus(row, type){
             this.changeCarouselStatus(row, type);
+        },
+
+        /**
+         * 删除一条数据
+         * @param row
+         */
+        deleteRow(row){
+            this.handleDelete(row.uuid, row.imgUrl);
         }
     }
 }
