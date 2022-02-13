@@ -87,7 +87,7 @@ export default {
          * @param scoped
          */
         editRow(scoped) {
-            this.handleEdit(scoped.row);
+            this.handleEdit({mode:'edit',data:scoped.row});
         },
         /**
          * 删除
