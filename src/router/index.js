@@ -76,83 +76,55 @@ const routes = [
                 component: () => import(/* webpackChunkName: "goods" */ '../views/Home/Goods/index'),
                 children: [
                     {
-                        path: '/goods/window',
-                        name: 'window',
+                        path: 'series',
+                        name: 'series',
                         meta: {
-                            title: '窗系列'
+                            title: '系列管理'
                         },
-                        component: () => import(/* webpackChunkName: "window" */ '../views/Home/Goods/Window/index'),
-                        children: [
-                            {
-                                path: '/goods/window/series',
-                                name: 'windowSeries',
-                                component: () => import(/* webpackChunkName: "windowSeries" */ '../views/Home/Goods/Window/Series/index'),
-                                meta: {
-                                    title: '系列管理'
-                                }
-                            },
-                            {
-                                path: '/goods/window/commodity',
-                                name: 'windowCommodity',
-                                component: () => import(/* webpackChunkName: "windowCommodity" */ '../views/Home/Goods/Window/Commodity/index'),
-                                meta: {
-                                    title: '商品管理'
-                                }
-                            },
-                        ]
+                        component: () => import(/* webpackChunkName: "series" */ '../views/Home/Goods/Series/index')
                     },
                     {
-                        path: '/goods/door',
-                        name: 'door',
+                        path: 'types',
+                        name: 'types',
                         meta: {
-                            title: '门系列'
+                            title: '类别管理'
                         },
-                        component: () => import(/* webpackChunkName: "door" */ '../views/Home/Goods/Door/index'),
-                        children: [
-                            {
-                                path: '/goods/door/series',
-                                name: 'doorSeries',
-                                component: () => import(/* webpackChunkName: "doorSeries" */ '../views/Home/Goods/Door/Series/index'),
-                                meta: {
-                                    title: '系列管理'
-                                }
-                            },
-                            {
-                                path: '/goods/door/commodity',
-                                name: 'doorCommodity',
-                                component: () => import(/* webpackChunkName: "doorCommodity" */ '../views/Home/Goods/Door/Commodity/index'),
-                                meta: {
-                                    title: '商品管理'
-                                }
-                            },
-                        ]
+                        component: () => import(/* webpackChunkName: "types" */ '../views/Home/Goods/Types/index')
                     },
                     {
-                        path: '/goods/house',
-                        name: 'house',
+                        path: 'product',
+                        name: 'product',
                         meta: {
-                            title: '房系列'
+                            title: '产品管理'
                         },
-                        component: () => import(/* webpackChunkName: "house" */ '../views/Home/Goods/House/index'),
+                        component: () => import(/* webpackChunkName: "product" */ '../views/Home/Goods/Product/index'),
                         children: [
                             {
-                                path: '/goods/house/series',
-                                name: 'houseSeries',
-                                component: () => import(/* webpackChunkName: "houseSeries" */ '../views/Home/Goods/House/Series/index'),
+                                path: 'window',
+                                name: 'window',
                                 meta: {
-                                    title: '系列管理'
-                                }
+                                    title: '窗类产品管理'
+                                },
+                                component: () => import(/* webpackChunkName: "window" */ '../views/Home/Goods/Product/Window')
                             },
                             {
-                                path: '/goods/house/commodity',
-                                name: 'houseCommodity',
-                                component: () => import(/* webpackChunkName: "houseCommodity" */ '../views/Home/Goods/House/Commodity/index'),
+                                path: 'door',
+                                name: 'door',
                                 meta: {
-                                    title: '商品管理'
-                                }
+                                    title: '门类产品管理'
+                                },
+                                component: () => import(/* webpackChunkName: "door" */ '../views/Home/Goods/Product/Door')
                             },
+                            {
+                                path: 'house',
+                                name: 'house',
+                                meta: {
+                                    title: '房类产品管理'
+                                },
+                                component: () => import(/* webpackChunkName: "house" */ '../views/Home/Goods/Product/House')
+                            }
                         ]
-                    }
+                    },
                 ]
             },
             {

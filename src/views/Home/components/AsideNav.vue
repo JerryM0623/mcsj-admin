@@ -59,45 +59,29 @@ export default {
                     iconClassName: 'el-icon-present',
                     child: [
                         {
-                            title: '窗系列',
-                            url: '/goods/window',
-                            child: [
-                                {
-                                    title: '系列管理',
-                                    url: '/goods/window/series'
-                                },
-                                {
-                                    title: '商品管理',
-                                    url: '/goods/window/commodity'
-                                }
-                            ]
+                            title: '系列管理',
+                            url: '/goods/series',
                         },
                         {
-                            title: '门系列',
-                            url: '/goods/door',
-                            child: [
-                                {
-                                    title: '系列管理',
-                                    url: '/goods/door/series'
-                                },
-                                {
-                                    title: '商品管理',
-                                    url: '/goods/door/commodity'
-                                }
-                            ]
+                            title: '类别管理',
+                            url: '/goods/types',
                         },
                         {
-                            title: '房系列',
-                            url: '/goods/house',
+                            title: '产品管理',
+                            url: '/goods/product',
                             child: [
                                 {
-                                    title: '系列管理',
-                                    url: '/goods/house/series'
+                                    title: '窗类产品管理',
+                                    url: '/goods/product/window'
                                 },
                                 {
-                                    title: '商品管理',
-                                    url: '/goods/house/commodity'
-                                }
+                                    title: '门类产品管理',
+                                    url: '/goods/product/door'
+                                },
+                                {
+                                    title: '房类产品管理',
+                                    url: '/goods/product/house'
+                                },
                             ]
                         },
                     ]
