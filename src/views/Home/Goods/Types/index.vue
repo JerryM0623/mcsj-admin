@@ -27,7 +27,7 @@
                     align="center"
                 ></el-table-column>
                 <el-table-column
-                    prop="series_name"
+                    prop="seriesName"
                     label="所属系列"
                     align="center"
                 ></el-table-column>
@@ -88,7 +88,7 @@ import typesApis from "../../../../apis/goods.types.api";
 import seriesApis from "../../../../apis/goods.series.api";
 
 export default {
-    name: "Series",
+    name: "Types",
     data() {
         return {
             searchInput: '',
@@ -144,7 +144,7 @@ export default {
          * 点击搜索按钮的事件处理函数
          */
         searchTypes() {
-            const { searchInput, seriesData } = this;
+            const { searchInput, typesData } = this;
             // 判断信息
             if (searchInput === '') {
                 this.$message.error('请输入关键词');
@@ -152,16 +152,17 @@ export default {
             }
             // 开始搜索
             const newArr = [];
-            seriesData.originData.forEach(item => {
+            typesData.originData.forEach(item => {
                 const checkID = item.id.toString().indexOf(searchInput);
+                const checkSeries = item.seriesName.toString().indexOf(searchInput);
                 const checkName = item.name.toString().indexOf(searchInput);
                 const checkComment = item.comment.toString().indexOf(searchInput);
 
-                if (checkID >= 0 || checkName>= 0 || checkComment>= 0){
+                if (checkID >= 0 || checkSeries >= 0 || checkName>= 0 || checkComment>= 0){
                     newArr.push(item);
                 }
             })
-            this.seriesData.showData = newArr;
+            this.typesData.showData = newArr;
         },
 
         /**
@@ -169,7 +170,7 @@ export default {
          */
         clearSearch() {
             this.searchInput = '';
-            this.seriesData.showData = this.seriesData.originData;
+            this.typesData.showData = this.typesData.originData;
         },
 
         /**
