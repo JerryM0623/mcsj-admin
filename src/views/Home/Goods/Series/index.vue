@@ -239,18 +239,20 @@ export default {
 
         async editOne(){
             try {
-                const { seriesName, seriesComment } = this.dialogData;
+                const { seriesId, seriesName, seriesComment } = this.dialogData;
                 const checkName = seriesName !== '';
                 const checkComment = seriesComment !== '';
+                const checkId = seriesId > 0;
 
-                if (!checkName || !checkComment){
+                if (!checkName || !checkComment || !checkId){
                     this.$message.error('请填写数据');
                     return;
                 }
 
-                const { code, msg } = await this.$axios.post(seriesApis.addSeries, {
+                const { code, msg } = await this.$axios.post(seriesApis.editSeries, {
                     seriesName,
-                    seriesComment
+                    seriesComment,
+                    seriesId
                 })
 
                 if (code !== 200){
