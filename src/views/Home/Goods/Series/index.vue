@@ -57,7 +57,28 @@
                 :current-page.sync="paginationOptions.currentPage"
             >
             </el-pagination>
-            <!--添加的 dialog 区-->
+            <!--添加 / 编辑的 dialog 区-->
+            <el-dialog
+                :visible.sync="dialogData.isShow"
+                :title="dialogTitle"
+                width="35%"
+                :show-close="false"
+                :close-on-click-modal="false"
+                :close-on-press-escape="false"
+            >
+                <el-form :model="dialogData" label-width="100">
+                    <el-form-item label="系列名称" >
+                        <el-input v-model="dialogData.seriesName" autocomplete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="系列简介" >
+                        <el-input type="textarea" v-model="dialogData.seriesComment" autocomplete="off"></el-input>
+                    </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="closeDialog">取 消</el-button>
+                    <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+                </div>
+            </el-dialog>
         </el-card>
     </div>
 </template>
@@ -78,6 +99,13 @@ export default {
                 originData: [],
                 showData: [],
                 total: 0
+            },
+            dialogData: {
+                isShow: false,
+                mode: 'pending',
+                seriesName: '',
+                seriesComment: '',
+                seriesId: -1
             }
         }
     },
@@ -143,17 +171,67 @@ export default {
             this.searchInput = '';
             this.seriesData.showData = this.seriesData.originData;
         },
+
+        /**
+         * 打开添加的 dialog
+         */
         addSeries() {
-            console.log('addSeries');
+            this.dialogData = {
+                mode: 'create',
+                seriesName: '',
+                seriesComment: '',
+                seriesId: -1,
+                isShow: true
+            }
         },
+
+        /**
+         * 打开编辑的 dialog
+         */
         editRow(row) {
-            console.log('editRow', row);
+            this.dialogData = {
+                mode: 'edit',
+                seriesName: row.name,
+                seriesComment: row.comment,
+                seriesId: row.id,
+                isShow: true
+            }
+        },
+
+        closeDialog(){
+            this.$confirm('你确定要关闭吗？关闭将会丢失全部的数据！', '注意', {
+                cancelButtonText:'取消',
+                confirmButtonText:'确定',
+                type: 'warning'
+            }).then(() => {
+                this.dialogData = {
+                    isShow: false,
+                    mode: 'pending',
+                    seriesName: '',
+                    seriesComment: '',
+                    seriesId: -1
+                }
+            })
         },
         deleteRow(row) {
             console.log('deleteRow', row);
         },
         pageNumChange(num) {
             console.log('pageNumChange', num);
+        }
+    },
+    computed: {
+        /**
+         * 转换dialog的标题
+         * @returns {*}
+         */
+        dialogTitle(){
+            const titleMap = {
+                'pending' : '初始化错误！',
+                'edit' : '编辑系列',
+                'create' : '添加系列'
+            }
+            return titleMap[this.dialogData.mode];
         }
     },
     mounted() {
