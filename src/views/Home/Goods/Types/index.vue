@@ -191,6 +191,21 @@ export default {
          * 打开添加的 dialog
          */
         async addTypes() {
+            await this.getAllSeries();
+            this.dialogData = {
+                mode: 'create',
+                seriesId: '',
+                typeName: '',
+                typeComment: '',
+                typeId: -1,
+                isShow: true
+            }
+        },
+
+        /**
+         * 获取全部系列数据
+         */
+        async getAllSeries(){
             try {
                 const { code, msg, data } = await this.$axios.get(seriesApis.getAllSeries);
 
@@ -200,15 +215,6 @@ export default {
                 }
 
                 this.selectOptions = data;
-
-                this.dialogData = {
-                    mode: 'create',
-                    seriesId: '',
-                    typeName: '',
-                    typeComment: '',
-                    typeId: -1,
-                    isShow: true
-                }
             }catch (e) {
                 console.log(e);
                 this.$message.error('获取下拉框数据失败');
@@ -261,10 +267,19 @@ export default {
         /**
          * 打开编辑的 dialog
          */
-        editRow(row) {
+        async editRow(row) {
+            await this.getAllSeries();
+            let newSeriesId = -999;
+            // 将 seriesName 转换成 seriesId
+            for (let i = 0 ; i < this.selectOptions.length ; i++){
+                if (this.selectOptions[i].name === row.seriesName){
+                    newSeriesId = this.selectOptions[i].id;
+                    break;
+                }
+            }
             this.dialogData = {
                 mode: 'edit',
-                seriesId: row.seriesName,
+                seriesId: newSeriesId,
                 typeName: row.name,
                 typeComment: row.comment,
                 typeId: row.id,
@@ -277,20 +292,22 @@ export default {
          */
         async editOne(){
             try {
-                const { seriesId, seriesName, seriesComment } = this.dialogData;
-                const checkName = seriesName !== '';
-                const checkComment = seriesComment !== '';
-                const checkId = seriesId > 0;
+                const { typeId, seriesId, typeName, typeComment } = this.dialogData;
 
-                if (!checkName || !checkComment || !checkId){
+                const checkTypeId = typeId > 0;
+                const checkId = seriesId > 0;
+                const checkComment = typeComment !== '';
+                const checkName = typeName !== '';
+                if (!checkTypeId || !checkId || !checkComment || !checkName){
                     this.$message.error('请填写数据');
                     return;
                 }
 
-                const { code, msg } = await this.$axios.post(seriesApis.editSeries, {
-                    seriesName,
-                    seriesComment,
-                    seriesId
+                const { code, msg } = await this.$axios.post(typesApis.editType, {
+                    typeId,
+                    seriesId,
+                    typeName,
+                    typeComment
                 })
 
                 if (code !== 200){
@@ -299,13 +316,14 @@ export default {
                 }
 
                 this.$message.success(msg);
-                await this.getSeriesByPageNum(this.paginationOptions.currentPage);
+                await this.getTypesByPageNum(this.paginationOptions.currentPage);
                 this.dialogData = {
-                    isShow: false,
                     mode: 'pending',
-                    seriesName: '',
-                    seriesComment: '',
-                    seriesId: -1
+                    seriesId: '',
+                    typeName: '',
+                    typeComment: '',
+                    typeId: -1,
+                    isShow: false
                 }
 
             }catch (e) {
