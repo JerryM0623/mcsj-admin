@@ -30,11 +30,13 @@
                     prop="seriesName"
                     label="所属系列"
                     align="center"
+                    width="150"
                 ></el-table-column>
                 <el-table-column
                     prop="name"
                     label="类型名称"
                     align="center"
+                    width="150"
                 ></el-table-column>
                 <el-table-column
                     prop="comment"
@@ -72,7 +74,17 @@
                 :close-on-press-escape="false"
             >
                 <el-form :model="dialogData" label-width="100">
-
+                    <el-form-item label="所属系列">
+                        <el-select v-model="dialogData.seriesId">
+                            <el-option v-for="item in selectOptions" :value="item.id" :label="item.name" :key="item.id"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item label="类型名称">
+                        <el-input v-model="dialogData.typeName"></el-input>
+                    </el-form-item>
+                    <el-form-item label="类型简介">
+                        <el-input type="textarea" :rows="3" v-model="dialogData.typeComment"></el-input>
+                    </el-form-item>
                 </el-form>
                 <div slot="footer" class="dialog-footer">
                     <el-button @click="closeDialog">取 消</el-button>
@@ -104,10 +116,12 @@ export default {
             dialogData: {
                 isShow: false,
                 mode: 'pending',
-                seriesName: '',
-                seriesComment: '',
-                seriesId: -1
-            }
+                seriesId: -1,
+                typeName: '',
+                typeComment: '',
+                typeId: -1
+            },
+            selectOptions: [],
         }
     },
     methods: {
@@ -176,13 +190,28 @@ export default {
         /**
          * 打开添加的 dialog
          */
-        addTypes() {
-            this.dialogData = {
-                mode: 'create',
-                seriesName: '',
-                seriesComment: '',
-                seriesId: -1,
-                isShow: true
+        async addTypes() {
+            try {
+                const { code, msg, data } = await this.$axios.get(seriesApis.getAllSeries);
+
+                if (code !== 200){
+                    this.$message.error(msg);
+                    return;
+                }
+
+                this.selectOptions = data;
+
+                this.dialogData = {
+                    mode: 'create',
+                    seriesId: '',
+                    typeName: '',
+                    typeComment: '',
+                    typeId: -1,
+                    isShow: true
+                }
+            }catch (e) {
+                console.log(e);
+                this.$message.error('获取下拉框数据失败');
             }
         },
 
@@ -191,18 +220,20 @@ export default {
          */
         async addOne(){
             try {
-                const { seriesName, seriesComment } = this.dialogData;
-                const checkName = seriesName !== '';
-                const checkComment = seriesComment !== '';
+                const { seriesId, typeComment, typeName } = this.dialogData;
+                const checkId = seriesId > 0;
+                const checkComment = typeComment !== '';
+                const checkName = typeName !== '';
 
-                if (!checkName || !checkComment){
+                if (!checkId || !checkComment || !checkName){
                     this.$message.error('请填写数据');
                     return;
                 }
 
-                const { code, msg } = await this.$axios.post(seriesApis.addSeries, {
-                    seriesName,
-                    seriesComment
+                const { code, msg } = await this.$axios.post(typesApis.addType, {
+                    seriesId,
+                    typeName,
+                    typeComment
                 })
 
                 if (code !== 200){
@@ -211,13 +242,14 @@ export default {
                 }
 
                 this.$message.success(msg);
-                await this.getSeriesByPageNum(this.paginationOptions.currentPage);
+                await this.getTypesByPageNum(this.paginationOptions.currentPage);
                 this.dialogData = {
-                    isShow: false,
                     mode: 'pending',
-                    seriesName: '',
-                    seriesComment: '',
-                    seriesId: -1
+                    seriesId: '',
+                    typeName: '',
+                    typeComment: '',
+                    typeId: -1,
+                    isShow: false
                 }
 
             }catch (e) {
@@ -232,9 +264,10 @@ export default {
         editRow(row) {
             this.dialogData = {
                 mode: 'edit',
-                seriesName: row.name,
-                seriesComment: row.comment,
-                seriesId: row.id,
+                seriesId: row.seriesName,
+                typeName: row.name,
+                typeComment: row.comment,
+                typeId: row.id,
                 isShow: true
             }
         },
@@ -367,8 +400,8 @@ export default {
         dialogTitle(){
             const titleMap = {
                 'pending' : '初始化错误！',
-                'edit' : '编辑系列',
-                'create' : '添加系列'
+                'edit' : '编辑类型',
+                'create' : '添加类型'
             }
             return titleMap[this.dialogData.mode];
         }
