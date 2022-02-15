@@ -110,11 +110,38 @@ export default {
                 this.$message.error('获取数据失败');
             }
         },
+
+        /**
+         * 点击搜索按钮的事件处理函数
+         */
         searchSeries() {
-            console.log('searchSeries');
+            const { searchInput, seriesData } = this;
+            // 判断信息
+            if (searchInput === '') {
+                this.$message.error('请输入关键词');
+                return;
+            }
+            // 开始搜索
+            const newArr = [];
+            seriesData.originData.forEach(item => {
+                const checkID = item.id.toString().indexOf(searchInput);
+                const checkName = item.name.toString().indexOf(searchInput);
+                const checkComment = item.comment.toString().indexOf(searchInput);
+
+                if (checkID >= 0 || checkName>= 0 || checkComment>= 0){
+                    newArr.push(item);
+                }
+            })
+            // console.log(newArr);
+            this.seriesData.showData = newArr;
         },
+
+        /**
+         * 清空搜索记录
+         */
         clearSearch() {
-            console.log('clearSearch');
+            this.searchInput = '';
+            this.seriesData.showData = this.seriesData.originData;
         },
         addSeries() {
             console.log('addSeries');
