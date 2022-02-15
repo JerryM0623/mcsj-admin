@@ -76,7 +76,7 @@
                 </el-form>
                 <div slot="footer" class="dialog-footer">
                     <el-button @click="closeDialog">取 消</el-button>
-                    <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+                    <el-button type="primary" @click="submitDialog">确 定</el-button>
                 </div>
             </el-dialog>
         </el-card>
@@ -160,7 +160,6 @@ export default {
                     newArr.push(item);
                 }
             })
-            // console.log(newArr);
             this.seriesData.showData = newArr;
         },
 
@@ -186,6 +185,46 @@ export default {
         },
 
         /**
+         * 添加一个新的系列
+         */
+        async addOne(){
+            try {
+                const { seriesName, seriesComment } = this.dialogData;
+                const checkName = seriesName !== '';
+                const checkComment = seriesComment !== '';
+
+                if (!checkName || !checkComment){
+                    this.$message.error('请填写数据');
+                    return;
+                }
+
+                const { code, msg } = await this.$axios.post(seriesApis.addSeries, {
+                    seriesName,
+                    seriesComment
+                })
+
+                if (code !== 200){
+                    this.$message.error(msg);
+                    return;
+                }
+
+                this.$message.success(msg);
+                await this.getSeriesByPageNum(this.paginationOptions.currentPage);
+                this.dialogData = {
+                    isShow: false,
+                    mode: 'pending',
+                    seriesName: '',
+                    seriesComment: '',
+                    seriesId: -1
+                }
+
+            }catch (e) {
+                console.log(e);
+                this.$message.error('操作失败！');
+            }
+        },
+
+        /**
          * 打开编辑的 dialog
          */
         editRow(row) {
@@ -198,6 +237,63 @@ export default {
             }
         },
 
+        async editOne(){
+            try {
+                const { seriesName, seriesComment } = this.dialogData;
+                const checkName = seriesName !== '';
+                const checkComment = seriesComment !== '';
+
+                if (!checkName || !checkComment){
+                    this.$message.error('请填写数据');
+                    return;
+                }
+
+                const { code, msg } = await this.$axios.post(seriesApis.addSeries, {
+                    seriesName,
+                    seriesComment
+                })
+
+                if (code !== 200){
+                    this.$message.error(msg);
+                    return;
+                }
+
+                this.$message.success(msg);
+                await this.getSeriesByPageNum(this.paginationOptions.currentPage);
+                this.dialogData = {
+                    isShow: false,
+                    mode: 'pending',
+                    seriesName: '',
+                    seriesComment: '',
+                    seriesId: -1
+                }
+
+            }catch (e) {
+                console.log(e);
+                this.$message.error('操作失败！');
+            }
+        },
+
+        /**
+         * 点击提交时根据 mode 触发不同的请求完成 添加/编辑 功能
+         */
+        submitDialog(){
+            const { mode } = this.dialogData;
+            if (mode === 'pending'){
+                this.$message.error('弹出框加载出现问题，请关闭重开');
+                return;
+            }
+            const funcMap = {
+                'create' : this.addOne,
+                'edit' : this.editOne
+            }
+
+            funcMap[mode]();
+        },
+
+        /**
+         * 关闭 dialog
+         */
         closeDialog(){
             this.$confirm('你确定要关闭吗？关闭将会丢失全部的数据！', '注意', {
                 cancelButtonText:'取消',
