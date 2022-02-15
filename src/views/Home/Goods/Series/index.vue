@@ -237,6 +237,9 @@ export default {
             }
         },
 
+        /**
+         * 编辑系列信息
+         */
         async editOne(){
             try {
                 const { seriesId, seriesName, seriesComment } = this.dialogData;
@@ -311,11 +314,47 @@ export default {
                 }
             })
         },
+
+        /**
+         * 删除系列
+         */
         deleteRow(row) {
-            console.log('deleteRow', row);
+            this.$confirm('你确定要删除吗？删除将会丢失全部的数据！', '注意', {
+                cancelButtonText:'取消',
+                confirmButtonText:'确定',
+                type: 'warning'
+            }).then( async () => {
+                try {
+                    const seriesId = row.id;
+                    const checkId = seriesId > 0;
+
+                    if (!checkId) {
+                        this.$message.error('数据错误，不可进行删除操作！');
+                        return;
+                    }
+
+                    const {code, msg} = await this.$axios.post(seriesApis.deleteSeries, {seriesId})
+
+                    if (code !== 200) {
+                        this.$message.error(msg);
+                        return;
+                    }
+
+                    this.$message.success(msg);
+                    await this.getSeriesByPageNum(this.paginationOptions.currentPage);
+
+                } catch (e) {
+                    console.log(e);
+                    this.$message.error('操作失败！');
+                }
+            })
         },
+
+        /**
+         * 分页器页面更新的时候回调函数
+         */
         pageNumChange(num) {
-            console.log('pageNumChange', num);
+            this.getSeriesByPageNum(num);
         }
     },
     computed: {
@@ -338,7 +377,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-
-</style>
