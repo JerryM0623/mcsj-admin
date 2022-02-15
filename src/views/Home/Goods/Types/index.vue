@@ -76,7 +76,8 @@
                 <el-form :model="dialogData" label-width="100">
                     <el-form-item label="所属系列">
                         <el-select v-model="dialogData.seriesId">
-                            <el-option v-for="item in selectOptions" :value="item.id" :label="item.name" :key="item.id"></el-option>
+                            <el-option v-for="item in selectOptions" :value="item.id" :label="item.name"
+                                       :key="item.id"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="类型名称">
@@ -133,13 +134,13 @@ export default {
          */
         async getTypesByPageNum(pageNum = 1, pageSize = this.paginationOptions.pageSize) {
             try {
-                const { code, msg, data } = await this.$axios.get(typesApis.getTypesByPageNum, {
-                    params:{
+                const {code, msg, data} = await this.$axios.get(typesApis.getTypesByPageNum, {
+                    params: {
                         pageSize,
                         pageNum
                     }
                 })
-                if (code !== 200){
+                if (code !== 200) {
                     this.$message.error(msg);
                     return;
                 }
@@ -148,7 +149,7 @@ export default {
                     showData: data.list,
                     total: data.total
                 }
-            }catch (e) {
+            } catch (e) {
                 console.log(e);
                 this.$message.error('获取数据失败');
             }
@@ -158,7 +159,7 @@ export default {
          * 点击搜索按钮的事件处理函数
          */
         searchTypes() {
-            const { searchInput, typesData } = this;
+            const {searchInput, typesData} = this;
             // 判断信息
             if (searchInput === '') {
                 this.$message.error('请输入关键词');
@@ -172,7 +173,7 @@ export default {
                 const checkName = item.name.toString().indexOf(searchInput);
                 const checkComment = item.comment.toString().indexOf(searchInput);
 
-                if (checkID >= 0 || checkSeries >= 0 || checkName>= 0 || checkComment>= 0){
+                if (checkID >= 0 || checkSeries >= 0 || checkName >= 0 || checkComment >= 0) {
                     newArr.push(item);
                 }
             })
@@ -205,44 +206,44 @@ export default {
         /**
          * 获取全部系列数据
          */
-        async getAllSeries(){
+        async getAllSeries() {
             try {
-                const { code, msg, data } = await this.$axios.get(seriesApis.getAllSeries);
+                const {code, msg, data} = await this.$axios.get(seriesApis.getAllSeries);
 
-                if (code !== 200){
+                if (code !== 200) {
                     this.$message.error(msg);
                     return;
                 }
 
                 this.selectOptions = data;
-            }catch (e) {
+            } catch (e) {
                 console.log(e);
                 this.$message.error('获取下拉框数据失败');
             }
         },
 
         /**
-         * 添加一个新的系列
+         * 添加一个新的类型
          */
-        async addOne(){
+        async addOne() {
             try {
-                const { seriesId, typeComment, typeName } = this.dialogData;
+                const {seriesId, typeComment, typeName} = this.dialogData;
                 const checkId = seriesId > 0;
                 const checkComment = typeComment !== '';
                 const checkName = typeName !== '';
 
-                if (!checkId || !checkComment || !checkName){
+                if (!checkId || !checkComment || !checkName) {
                     this.$message.error('请填写数据');
                     return;
                 }
 
-                const { code, msg } = await this.$axios.post(typesApis.addType, {
+                const {code, msg} = await this.$axios.post(typesApis.addType, {
                     seriesId,
                     typeName,
                     typeComment
                 })
 
-                if (code !== 200){
+                if (code !== 200) {
                     this.$message.error(msg);
                     return;
                 }
@@ -258,7 +259,7 @@ export default {
                     isShow: false
                 }
 
-            }catch (e) {
+            } catch (e) {
                 console.log(e);
                 this.$message.error('操作失败！');
             }
@@ -271,8 +272,8 @@ export default {
             await this.getAllSeries();
             let newSeriesId = -999;
             // 将 seriesName 转换成 seriesId
-            for (let i = 0 ; i < this.selectOptions.length ; i++){
-                if (this.selectOptions[i].name === row.seriesName){
+            for (let i = 0; i < this.selectOptions.length; i++) {
+                if (this.selectOptions[i].name === row.seriesName) {
                     newSeriesId = this.selectOptions[i].id;
                     break;
                 }
@@ -288,29 +289,29 @@ export default {
         },
 
         /**
-         * 编辑系列信息
+         * 编辑类型信息
          */
-        async editOne(){
+        async editOne() {
             try {
-                const { typeId, seriesId, typeName, typeComment } = this.dialogData;
+                const {typeId, seriesId, typeName, typeComment} = this.dialogData;
 
                 const checkTypeId = typeId > 0;
                 const checkId = seriesId > 0;
                 const checkComment = typeComment !== '';
                 const checkName = typeName !== '';
-                if (!checkTypeId || !checkId || !checkComment || !checkName){
+                if (!checkTypeId || !checkId || !checkComment || !checkName) {
                     this.$message.error('请填写数据');
                     return;
                 }
 
-                const { code, msg } = await this.$axios.post(typesApis.editType, {
+                const {code, msg} = await this.$axios.post(typesApis.editType, {
                     typeId,
                     seriesId,
                     typeName,
                     typeComment
                 })
 
-                if (code !== 200){
+                if (code !== 200) {
                     this.$message.error(msg);
                     return;
                 }
@@ -326,7 +327,7 @@ export default {
                     isShow: false
                 }
 
-            }catch (e) {
+            } catch (e) {
                 console.log(e);
                 this.$message.error('操作失败！');
             }
@@ -335,15 +336,15 @@ export default {
         /**
          * 点击提交时根据 mode 触发不同的请求完成 添加/编辑 功能
          */
-        submitDialog(){
-            const { mode } = this.dialogData;
-            if (mode === 'pending'){
+        submitDialog() {
+            const {mode} = this.dialogData;
+            if (mode === 'pending') {
                 this.$message.error('弹出框加载出现问题，请关闭重开');
                 return;
             }
             const funcMap = {
-                'create' : this.addOne,
-                'edit' : this.editOne
+                'create': this.addOne,
+                'edit': this.editOne
             }
 
             funcMap[mode]();
@@ -352,10 +353,10 @@ export default {
         /**
          * 关闭 dialog
          */
-        closeDialog(){
+        closeDialog() {
             this.$confirm('你确定要关闭吗？关闭将会丢失全部的数据！', '注意', {
-                cancelButtonText:'取消',
-                confirmButtonText:'确定',
+                cancelButtonText: '取消',
+                confirmButtonText: '确定',
                 type: 'warning'
             }).then(() => {
                 this.dialogData = {
@@ -369,24 +370,24 @@ export default {
         },
 
         /**
-         * 删除系列
+         * 删除类型
          */
         deleteRow(row) {
             this.$confirm('你确定要删除吗？删除将会丢失全部的数据！', '注意', {
-                cancelButtonText:'取消',
-                confirmButtonText:'确定',
+                cancelButtonText: '取消',
+                confirmButtonText: '确定',
                 type: 'warning'
-            }).then( async () => {
+            }).then(async () => {
                 try {
-                    const seriesId = row.id;
-                    const checkId = seriesId > 0;
+                    const typeId = row.id;
+                    const checkId = typeId > 0;
 
                     if (!checkId) {
                         this.$message.error('数据错误，不可进行删除操作！');
                         return;
                     }
 
-                    const {code, msg} = await this.$axios.post(seriesApis.deleteSeries, {seriesId})
+                    const {code, msg} = await this.$axios.post(typesApis.deleteType, {typeId})
 
                     if (code !== 200) {
                         this.$message.error(msg);
@@ -394,7 +395,7 @@ export default {
                     }
 
                     this.$message.success(msg);
-                    await this.getSeriesByPageNum(this.paginationOptions.currentPage);
+                    await this.getTypesByPageNum(this.paginationOptions.currentPage);
 
                 } catch (e) {
                     console.log(e);
@@ -415,11 +416,11 @@ export default {
          * 转换dialog的标题
          * @returns {*}
          */
-        dialogTitle(){
+        dialogTitle() {
             const titleMap = {
-                'pending' : '初始化错误！',
-                'edit' : '编辑类型',
-                'create' : '添加类型'
+                'pending': '初始化错误！',
+                'edit': '编辑类型',
+                'create': '添加类型'
             }
             return titleMap[this.dialogData.mode];
         }
