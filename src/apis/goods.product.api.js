@@ -16,6 +16,11 @@ const productApis = {
     editOneDoor: `${ productRoute }/door/edit`,
     editOneHouse: `${ productRoute }/house/edit`,
 
+    // 上线一个商品
+    onlineOneWindow: `${ productRoute }/window/online`,
+    onlineOneDoor: `${ productRoute }/door/online`,
+    onlineOneHouse: `${ productRoute }/house/online`,
+
     // 下线一个商品
     offlineOneWindow: `${ productRoute }/window/offline`,
     offlineOneDoor: `${ productRoute }/door/offline`,
