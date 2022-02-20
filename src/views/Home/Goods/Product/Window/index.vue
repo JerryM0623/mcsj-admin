@@ -97,7 +97,7 @@
                     align="center"
                 >
                     <template v-slot="scoped">
-                        <el-button size="small" @click="checkRow(scoped.row)" type="primary">查看</el-button>
+                        <el-button size="small" @click="editRow(scoped.row)" type="primary">编辑</el-button>
                         <el-button v-if="scoped.row.isOnline === 0" size="small" @click="editRow(scoped.row)"
                                    type="success">上架
                         </el-button>
@@ -173,6 +173,9 @@ export default {
             }
         },
 
+        /**
+         * 搜索
+         */
         searchWindows(){
             const key = this.searchInput;
             const list = this.tableData.originData;
@@ -187,6 +190,9 @@ export default {
             this.tableData.showData = newArr;
         },
 
+        /**
+         * 清空搜索
+         */
         clearSearch(){
             this.searchInput = '';
             this.tableData.showData = this.tableData.originData;
