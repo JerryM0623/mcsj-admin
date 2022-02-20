@@ -17,7 +17,7 @@
                 :data="tableData.showData"
                 border
                 stripe
-                style="width: 100%"
+                style="width: 99.5%"
             >
                 <el-table-column
                     prop="id"
