@@ -98,10 +98,10 @@
                 >
                     <template v-slot="scoped">
                         <el-button size="small" @click="editRow(scoped.row)" type="primary">编辑</el-button>
-                        <el-button v-if="scoped.row.isOnline === 0" size="small" @click="editRow(scoped.row)"
+                        <el-button v-if="scoped.row.isOnline === 0" size="small" @click="changeStatus('online',scoped.row)"
                                    type="success">上架
                         </el-button>
-                        <el-button v-else size="small" @click="editRow(scoped.row)" type="warning">下架</el-button>
+                        <el-button v-else size="small" @click="changeStatus('offline',scoped.row)" type="warning">下架</el-button>
                         <el-button size="small" @click="deleteRow(scoped.row)" type="danger">删除</el-button>
                     </template>
                 </el-table-column>
@@ -197,6 +197,29 @@ export default {
             this.searchInput = '';
             this.tableData.showData = this.tableData.originData;
         },
+
+        /**
+         * 切换商品的上下架
+         */
+        async changeStatus(type, row){
+            try {
+                const { code, msg } = await this.$axios.post(productApis.changeStatusWindow, {
+                    status: type === 'online' ? 1 : 0,
+                    id: row.id
+                })
+                if (code !== 200){
+                    this.$message.error(msg);
+                    return;
+                }
+
+                this.$message.success(msg);
+                await this.getWindowByPageNum(this.paginationOptions.currentPage);
+            }catch (e) {
+                console.log(e);
+                this.$message.error('操作失败');
+            }
+        },
+
         /**
          * 分页组件更新页面的时候触发的回调函数
          * 用于触发获取数据的函数进行数据更新
