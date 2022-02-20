@@ -7,9 +7,9 @@
                     <el-input v-model="searchInput" style="width: 100%" placeholder="请输入关键词进行搜索"></el-input>
                 </el-col>
                 <el-col :span="18">
-                    <el-button @click="searchWindows" type="primary" style="margin-left: 10px">搜索</el-button>
+                    <el-button @click="searchProduct" type="primary" style="margin-left: 10px">搜索</el-button>
                     <el-button @click="clearSearch" type="primary">清除搜索信息</el-button>
-                    <el-button type="primary">添加新类型</el-button>
+                    <el-button @click="addProduct" type="primary">添加新商品</el-button>
                 </el-col>
             </el-row>
             <!--表格展示区-->
@@ -115,6 +115,66 @@
                 :current-page.sync="paginationOptions.currentPage"
             >
             </el-pagination>
+            <!--编辑/添加 dialog-->
+            <el-dialog
+                :title="dialogTitle"
+                :visible.sync="dialogData.isShow"
+                :show-close="false"
+                :close-on-click-modal="false"
+                :close-on-press-escape="false"
+                width="35%"
+            >
+                <el-form label-width="100">
+                    <el-form-item label="所属类型">
+                        <el-select v-model="dialogData.typeName">
+                            <el-option v-for="item in 4" :key="item" :value="item" :label="item"></el-option>
+                        </el-select>
+                    </el-form-item>
+
+                    <el-form-item label="商品名称">
+                        <el-input v-model="dialogData.name"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="简介一">
+                        <el-input type="textarea" :rows="5" v-model="dialogData.commentOne"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="简介二">
+                        <el-input type="textarea" :rows="5" v-model="dialogData.commentTwo"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="简介三">
+                        <el-input type="textarea" :rows="5" v-model="dialogData.commentThree"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="原始价格">
+                        <el-input v-model="dialogData.originPrice"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="现售价格">
+                        <el-input v-model="dialogData.salePrice"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="是否热门">
+                        <el-select v-model="dialogData.isHot">
+                            <el-option label="非热门商品" value="0"></el-option>
+                            <el-option label="热门商品" value="1"></el-option>
+                        </el-select>
+                    </el-form-item>
+
+                    <el-form-item label="是否上架">
+                        <el-select v-model="dialogData.isOnline">
+                            <el-option label="不上架" value="0"></el-option>
+                            <el-option label="上架" value="1"></el-option>
+                        </el-select>
+                    </el-form-item>
+
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="closeDialog">取 消</el-button>
+                    <el-button type="primary" @click="dialogSubmit">确 定</el-button>
+                </div>
+            </el-dialog>
         </el-card>
     </div>
 </template>
@@ -136,6 +196,10 @@ export default {
             paginationOptions: {
                 currentPage: 1,
                 pageSize: 10
+            },
+            dialogData: {
+                isShow: false,
+                dialogMode: 'pending'
             }
         }
     },
@@ -175,7 +239,7 @@ export default {
         /**
          * 搜索
          */
-        searchWindows(){
+        searchProduct(){
             const key = this.searchInput;
             const list = this.tableData.originData;
             let newArr = [];
@@ -244,6 +308,69 @@ export default {
             })
         },
 
+        addProduct(){
+            this.dialogData = {
+                typeName: '',
+                name: '',
+                commentOne: '',
+                commentTwo: '',
+                commentThree: '',
+                originPrice: '',
+                salePrice: '',
+                isHot: '',
+                isOnline: '',
+                dialogMode: 'create',
+                isShow: true
+            }
+        },
+
+        editRow(row){
+            this.dialogData = {
+                typeName: row.typeName,
+                name: row.name,
+                commentOne: row.commentOne,
+                commentTwo: row.commentTwo,
+                commentThree: row.commentThree,
+                originPrice: row.originPrice,
+                salePrice: row.salePrice,
+                isHot: row.isHot === 0 ? '非热门商品' : '热门商品',
+                isOnline: row.isOnline === 0 ? '不上架' : '上架',
+                dialogMode: 'edit',
+                isShow: true
+            }
+        },
+
+        closeDialog(){
+            this.$confirm('你确定要关闭吗？关闭将会丢失全部的数据！','注意',{
+                cancelButtonText:'取消',
+                confirmButtonText:'确定',
+                type: 'warning'
+            }).then(() => {
+                this.dialogData = {};
+                this.dialogData = {
+                    dialogMode: 'pending',
+                    isShow: false
+                }
+            })
+        },
+
+        dialogSubmit(){
+            if (this.dialogData.dialogMode === 'pending') {
+                this.$message.error('系统出现错误，请刷新页面重试！');
+                return;
+            }
+
+            if (this.dialogData.dialogMode === 'create'){
+                console.log('create');
+            }
+
+            if (this.dialogData.dialogMode === 'edit'){
+                console.log('edit');
+            }
+
+            console.log(this.dialogData);
+        },
+
         /**
          * 分页组件更新页面的时候触发的回调函数
          * 用于触发获取数据的函数进行数据更新
@@ -252,6 +379,15 @@ export default {
         pageNumChange(num) {
             this.searchInput = '';
             this.getWindowByPageNum(num);
+        }
+    },
+    computed: {
+        dialogTitle(){
+            const titleMap = new Map();
+            titleMap.set('pending', '初始化...');
+            titleMap.set('create', '添加一个新的商品');
+            titleMap.set('edit', '编辑商品数据');
+            return titleMap.get(this.dialogData.dialogMode);
         }
     },
     mounted() {
