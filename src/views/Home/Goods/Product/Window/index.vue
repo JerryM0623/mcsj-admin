@@ -219,6 +219,9 @@ export default {
             }
         },
 
+        /**
+         * 删除商品
+         */
         deleteRow(row){
             this.$confirm('你确定要删除吗？删除之后信息将会永久消失！','注意',{
                 cancelButtonText:'取消',
