@@ -14,7 +14,6 @@
             </el-row>
             <!--表格展示区-->
             <el-table
-                class="series-table"
                 :data="tableData.showData"
                 border
                 stripe
@@ -218,6 +217,28 @@ export default {
                 console.log(e);
                 this.$message.error('操作失败');
             }
+        },
+
+        deleteRow(row){
+            this.$confirm('你确定要删除吗？删除之后信息将会永久消失！','注意',{
+                cancelButtonText:'取消',
+                confirmButtonText:'确定',
+                type: 'warning'
+            }).then( async () => {
+                try {
+                    const { id } = row;
+                    const { code, msg } = await this.$axios.post(productApis.deleteOneWindow, {id});
+                    this.$message({
+                        type: code === 200 ? 'success' : 'error',
+                        message: msg
+                    })
+                    if (code !== 200) return;
+                    await this.getWindowByPageNum(this.paginationOptions.currentPage);
+                }catch (e) {
+                    console.log(e);
+                    this.$message.error('请求失败');
+                }
+            })
         },
 
         /**
