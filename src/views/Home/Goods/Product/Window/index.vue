@@ -17,7 +17,7 @@
                 :data="tableData.showData"
                 border
                 stripe
-                style="width: 99.5%"
+                style="width: 97%"
             >
                 <el-table-column
                     prop="id"
@@ -133,6 +133,18 @@
 
                     <el-form-item label="商品名称">
                         <el-input v-model="dialogData.name"></el-input>
+                    </el-form-item>
+
+                    <el-form-item label="商品图片">
+                        <el-upload
+                            class="upload-demo"
+                            ref="upload"
+                            action="https://jsonplaceholder.typicode.com/posts/"
+                            :auto-upload="false"
+                            :http-request="submitForm"
+                            list-type="picture">
+                            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                        </el-upload>
                     </el-form-item>
 
                     <el-form-item label="简介一">
@@ -346,7 +358,6 @@ export default {
                 confirmButtonText:'确定',
                 type: 'warning'
             }).then(() => {
-                this.dialogData = {};
                 this.dialogData = {
                     dialogMode: 'pending',
                     isShow: false
@@ -360,15 +371,48 @@ export default {
                 return;
             }
 
-            if (this.dialogData.dialogMode === 'create'){
-                console.log('create');
-            }
-
-            if (this.dialogData.dialogMode === 'edit'){
-                console.log('edit');
-            }
-
             console.log(this.dialogData);
+            this.$refs.upload.submit();
+        },
+
+        async submitForm(){
+            try {
+                const { dialogMode, typeName, name,
+                    commentOne, commentTwo, commentThree,
+                    isHot, isOnline, originPrice, salePrice } = this.dialogData;
+                const formData = new FormData();
+
+                formData.append('mode', dialogMode);
+                formData.append('typeName', typeName);
+                formData.append('name', name);
+                formData.append('commentOne', commentOne);
+                formData.append('commentTwo', commentTwo);
+                formData.append('commentThree', commentThree);
+                formData.append('isHot', isHot);
+                formData.append('isOnline', isOnline);
+                formData.append('originPrice', originPrice);
+                formData.append('salePrice', salePrice);
+
+                formData.append('file', arguments[0].file);
+
+                // 上传 formData 必须使用 multipart/form-data 为头
+                const { code, msg } = await this.$axios.post(productApis.addOneWindow, formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+                if (code !== 200){
+                    this.$message.error(msg);
+                    return;
+                }
+                this.$message.success(msg);
+                this.dialogData = {
+                    dialogMode: 'pending',
+                    isShow: false
+                }
+            }catch (e) {
+                console.log(e);
+            }
         },
 
         /**
