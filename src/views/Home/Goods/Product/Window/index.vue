@@ -477,6 +477,7 @@ export default {
                     isShow: false
                 }
                 this.fileList = [];
+                await this.getWindowByPageNum(this.paginationOptions.currentPage);
             }catch (e) {
                 console.log(e);
             }
