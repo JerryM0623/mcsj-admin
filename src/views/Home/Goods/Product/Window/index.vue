@@ -126,8 +126,8 @@
             >
                 <el-form label-width="100">
                     <el-form-item label="所属类型">
-                        <el-select v-model="dialogData.typeName">
-                            <el-option v-for="item in 4" :key="item" :value="item" :label="item"></el-option>
+                        <el-select v-model="dialogData.typeId">
+                            <el-option v-for="item in typeList" :key="item.id" :value="item.id" :label="item.name"></el-option>
                         </el-select>
                     </el-form-item>
 
@@ -142,6 +142,7 @@
                             action="https://jsonplaceholder.typicode.com/posts/"
                             :auto-upload="false"
                             :http-request="submitForm"
+                            :file-list="fileList"
                             list-type="picture">
                             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
                         </el-upload>
@@ -160,11 +161,17 @@
                     </el-form-item>
 
                     <el-form-item label="原始价格">
-                        <el-input v-model="dialogData.originPrice"></el-input>
+                        <el-input v-model="dialogData.originPrice">
+                            <template slot="prepend">￥</template>
+                            <template slot="append">元</template>
+                        </el-input>
                     </el-form-item>
 
                     <el-form-item label="现售价格">
-                        <el-input v-model="dialogData.salePrice"></el-input>
+                        <el-input v-model="dialogData.salePrice">
+                            <template slot="prepend">￥</template>
+                            <template slot="append">元</template>
+                        </el-input>
                     </el-form-item>
 
                     <el-form-item label="是否热门">
@@ -193,6 +200,7 @@
 
 <script>
 import productApis from "../../../../../apis/goods.product.api";
+import typesApis from "../../../../../apis/goods.types.api";
 
 export default {
     name: "Window",
@@ -212,7 +220,9 @@ export default {
             dialogData: {
                 isShow: false,
                 dialogMode: 'pending'
-            }
+            },
+            fileList: [],
+            typeList: [],
         }
     },
     methods: {
@@ -245,6 +255,26 @@ export default {
             } catch (e) {
                 console.log(e);
                 this.$message.error('操作失败');
+            }
+        },
+
+        /**
+         * 请求 window 的 type
+         */
+        async getWindowTypes(){
+            try {
+                const { code, msg, data } = await this.$axios.get(typesApis.getTypesBySeries, {
+                    params: {
+                        seriesId: 1
+                    }
+                })
+                if (code !== 200){
+                    console.log(msg);
+                    return;
+                }
+                this.typeList = data;
+            }catch (e) {
+                console.log(e);
             }
         },
 
@@ -320,9 +350,26 @@ export default {
             })
         },
 
-        addProduct(){
+        /**
+         * 获取 typeId
+         */
+        typeId(typeName){
+            for (let i = 0; i < this.typeList.length; i++){
+                if (this.typeList[i].name === typeName){
+                    return this.typeList[i].id;
+                }
+            }
+        },
+
+        /**
+         * 开启 create 模式 dialog
+         */
+        async addProduct(){
+            // 请求数据
+            await this.getWindowTypes();
+            // 配置dialog
             this.dialogData = {
-                typeName: '',
+                typeId: '',
                 name: '',
                 commentOne: '',
                 commentTwo: '',
@@ -336,9 +383,15 @@ export default {
             }
         },
 
-        editRow(row){
+        /**
+         * 开启 edit 模式 dialog
+         */
+        async editRow(row){
+            // 请求数据
+            await this.getWindowTypes();
+            // 配置 dialog
             this.dialogData = {
-                typeName: row.typeName,
+                typeId: this.typeId(row.typeName).toString(), // 实现点击编辑的时候就自动选中下拉列表中对应的数据
                 name: row.name,
                 commentOne: row.commentOne,
                 commentTwo: row.commentTwo,
@@ -352,6 +405,9 @@ export default {
             }
         },
 
+        /**
+        * 关闭任意模式的 dialog 使其成为 pending 模式并清空数据
+        */
         closeDialog(){
             this.$confirm('你确定要关闭吗？关闭将会丢失全部的数据！','注意',{
                 cancelButtonText:'取消',
@@ -365,6 +421,9 @@ export default {
             })
         },
 
+        /**
+         * 点击 dialog 右下角的确认按钮的回调函数
+         */
         dialogSubmit(){
             if (this.dialogData.dialogMode === 'pending') {
                 this.$message.error('系统出现错误，请刷新页面重试！');
@@ -372,18 +431,23 @@ export default {
             }
 
             console.log(this.dialogData);
+
+            // 触发 upload 的上传行为
             this.$refs.upload.submit();
         },
 
+        /**
+         * 自定义的 upload 上传函数
+         */
         async submitForm(){
             try {
-                const { dialogMode, typeName, name,
+                const { dialogMode, typeId, name,
                     commentOne, commentTwo, commentThree,
                     isHot, isOnline, originPrice, salePrice } = this.dialogData;
                 const formData = new FormData();
 
-                formData.append('mode', dialogMode);
-                formData.append('typeName', typeName);
+                formData.append('typeId', typeId);
+                formData.append('seriesId', 1);     // 1 代表窗系列
                 formData.append('name', name);
                 formData.append('commentOne', commentOne);
                 formData.append('commentTwo', commentTwo);
@@ -396,7 +460,8 @@ export default {
                 formData.append('file', arguments[0].file);
 
                 // 上传 formData 必须使用 multipart/form-data 为头
-                const { code, msg } = await this.$axios.post(productApis.addOneWindow, formData, {
+                const { code, msg } = await this.$axios.post(dialogMode === 'create' ?
+                    productApis.addOneWindow : productApis.editOneWindow, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -406,10 +471,12 @@ export default {
                     return;
                 }
                 this.$message.success(msg);
+                // 清空数据
                 this.dialogData = {
                     dialogMode: 'pending',
                     isShow: false
                 }
+                this.fileList = [];
             }catch (e) {
                 console.log(e);
             }
@@ -432,7 +499,7 @@ export default {
             titleMap.set('create', '添加一个新的商品');
             titleMap.set('edit', '编辑商品数据');
             return titleMap.get(this.dialogData.dialogMode);
-        }
+        },
     },
     mounted() {
         this.getWindowByPageNum();
