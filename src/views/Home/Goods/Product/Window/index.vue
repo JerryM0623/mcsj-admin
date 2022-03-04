@@ -122,7 +122,7 @@
                 :show-close="false"
                 :close-on-click-modal="false"
                 :close-on-press-escape="false"
-                width="35%"
+                width="500px"
             >
                 <el-form label-width="100">
                     <el-form-item label="所属类型">
@@ -141,11 +141,20 @@
                             ref="upload"
                             action="https://jsonplaceholder.typicode.com/posts/"
                             :auto-upload="false"
-                            :http-request="submitForm"
                             :file-list="fileList"
+                            :on-change="fileStatusChanged"
+                            :limit="1"
                             list-type="picture">
                             <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
                         </el-upload>
+                    </el-form-item>
+
+                    <!--<el-form-item label="上传商品图片">-->
+                    <!--    <input style="background-color: #409eff; width: 100px; height: 50px" type="file" name="file" value="点击选择文件">-->
+                    <!--</el-form-item>-->
+
+                    <el-form-item v-if="dialogData.dialogMode === 'edit'" label="商品图片预览">
+                        <el-image style="height: 200px" :src="dialogData.imgUrl" fit="fill"></el-image>
                     </el-form-item>
 
                     <el-form-item label="简介一">
@@ -291,7 +300,6 @@ export default {
                     newArr.push(item);
                 }
             })
-            console.log(newArr);
             this.tableData.showData = newArr;
         },
 
@@ -391,15 +399,17 @@ export default {
             await this.getWindowTypes();
             // 配置 dialog
             this.dialogData = {
-                typeId: this.typeId(row.typeName).toString(), // 实现点击编辑的时候就自动选中下拉列表中对应的数据
+                id: row.id,
+                typeId: this.typeId(row.typeName), // 实现点击编辑的时候就自动选中下拉列表中对应的数据
                 name: row.name,
+                imgUrl: row.imgUrl,
                 commentOne: row.commentOne,
                 commentTwo: row.commentTwo,
                 commentThree: row.commentThree,
                 originPrice: row.originPrice,
                 salePrice: row.salePrice,
-                isHot: row.isHot === 0 ? '非热门商品' : '热门商品',
-                isOnline: row.isOnline === 0 ? '不上架' : '上架',
+                isHot: row.isHot.toString(),
+                isOnline: row.isOnline.toString(),
                 dialogMode: 'edit',
                 isShow: true
             }
@@ -422,24 +432,22 @@ export default {
         },
 
         /**
+         * 文件选中之后 更新 fileList
+         */
+        fileStatusChanged(file,fileList){
+            this.fileList = fileList;
+            console.log(fileList);
+        },
+
+        /**
          * 点击 dialog 右下角的确认按钮的回调函数
          */
-        dialogSubmit(){
+        async dialogSubmit(){
             if (this.dialogData.dialogMode === 'pending') {
                 this.$message.error('系统出现错误，请刷新页面重试！');
                 return;
             }
 
-            console.log(this.dialogData);
-
-            // 触发 upload 的上传行为
-            this.$refs.upload.submit();
-        },
-
-        /**
-         * 自定义的 upload 上传函数
-         */
-        async submitForm(){
             try {
                 const { dialogMode, typeId, name,
                     commentOne, commentTwo, commentThree,
@@ -457,7 +465,14 @@ export default {
                 formData.append('originPrice', originPrice);
                 formData.append('salePrice', salePrice);
 
-                formData.append('file', arguments[0].file);
+                if (this.dialogData.dialogMode === 'edit'){
+                    formData.append('id', this.dialogData.id);
+                }
+
+                // 如果存在图片上传就携带图片进行上传
+                if (this.fileList.length > 0){
+                    formData.append('file', this.fileList[0].raw);
+                }
 
                 // 上传 formData 必须使用 multipart/form-data 为头
                 const { code, msg } = await this.$axios.post(dialogMode === 'create' ?
@@ -481,6 +496,14 @@ export default {
             }catch (e) {
                 console.log(e);
             }
+
+        },
+
+        /**
+         * 自定义的 upload 上传函数
+         */
+        async submitForm(){
+
         },
 
         /**
