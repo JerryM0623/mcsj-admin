@@ -17,7 +17,7 @@
                 :data="tableData.showData"
                 border
                 stripe
-                style="width: 97%"
+                style="width: 95%"
             >
                 <el-table-column
                     prop="id"
@@ -41,7 +41,7 @@
                     prop="originPrice"
                     label="初始价格"
                     align="center"
-                    width="120"
+                    width="100"
                 >
                     <template slot-scope="scoped">
                         <span>￥{{ scoped.row.originPrice }}</span>
@@ -51,7 +51,7 @@
                     prop="salePrice"
                     label="现售价格"
                     align="center"
-                    width="120"
+                    width="100"
                 >
                     <template slot-scope="scoped">
                         <span>￥{{ scoped.row.salePrice }}</span>

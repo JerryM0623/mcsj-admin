@@ -17,7 +17,7 @@
                 :data="tableData.showData"
                 border
                 stripe
-                style="width: 97%"
+                style="width: 95%"
             >
                 <el-table-column
                     prop="id"
@@ -41,7 +41,7 @@
                     prop="originPrice"
                     label="初始价格"
                     align="center"
-                    width="120"
+                    width="100"
                 >
                     <template slot-scope="scoped">
                         <span>￥{{ scoped.row.originPrice }}</span>
@@ -51,7 +51,7 @@
                     prop="salePrice"
                     label="现售价格"
                     align="center"
-                    width="120"
+                    width="100"
                 >
                     <template slot-scope="scoped">
                         <span>￥{{ scoped.row.salePrice }}</span>
@@ -320,7 +320,7 @@ export default {
          */
         async changeStatus(type, row){
             try {
-                const { code, msg } = await this.$axios.post(productApis.changeStatusWindow, {
+                const { code, msg } = await this.$axios.post(productApis.changeStatusDoor, {
                     status: type === 'online' ? 1 : 0,
                     id: row.id
                 })
@@ -330,7 +330,7 @@ export default {
                 }
 
                 this.$message.success(msg);
-                await this.getWindowByPageNum(this.paginationOptions.currentPage);
+                await this.getDoorByPageNum(this.paginationOptions.currentPage);
             }catch (e) {
                 console.log(e);
                 this.$message.error('操作失败');
@@ -517,7 +517,7 @@ export default {
          */
         pageNumChange(num) {
             this.searchInput = '';
-            this.getWindowByPageNum(num);
+            this.getDoorByPageNum(num);
         }
     },
     computed: {
