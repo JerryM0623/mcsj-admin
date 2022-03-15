@@ -17,7 +17,7 @@
                 :data="tableData.showData"
                 border
                 stripe
-                style="width: 95%"
+                style="width: 100%"
             >
                 <el-table-column
                     prop="id"
@@ -274,7 +274,7 @@ export default {
             try {
                 const { code, msg, data } = await this.$axios.get(typesApis.getTypesBySeries, {
                     params: {
-                        seriesId: 1
+                        seriesId: 3
                     }
                 })
                 if (code !== 200){
@@ -344,13 +344,13 @@ export default {
             }).then( async () => {
                 try {
                     const { id } = row;
-                    const { code, msg } = await this.$axios.post(productApis.deleteOneWindow, {id});
+                    const { code, msg } = await this.$axios.post(productApis.deleteOneHouse, {id});
                     this.$message({
                         type: code === 200 ? 'success' : 'error',
                         message: msg
                     })
                     if (code !== 200) return;
-                    await this.getWindowByPageNum(this.paginationOptions.currentPage);
+                    await this.getHouseByPageNum();
                 }catch (e) {
                     console.log(e);
                     this.$message.error('请求失败');
@@ -374,7 +374,7 @@ export default {
          */
         async addProduct(){
             // 请求数据
-            await this.getWindowTypes();
+            await this.getHouseTypes();
             // 配置dialog
             this.dialogData = {
                 typeId: '',
@@ -396,7 +396,7 @@ export default {
          */
         async editRow(row){
             // 请求数据
-            await this.getWindowTypes();
+            await this.getHouseTypes();
             // 配置 dialog
             this.dialogData = {
                 id: row.id,
@@ -455,7 +455,7 @@ export default {
                 const formData = new FormData();
 
                 formData.append('typeId', typeId);
-                formData.append('seriesId', 1);     // 1 代表窗系列
+                formData.append('seriesId', 3);     // 3 代表房系列
                 formData.append('name', name);
                 formData.append('commentOne', commentOne);
                 formData.append('commentTwo', commentTwo);
@@ -476,7 +476,7 @@ export default {
 
                 // 上传 formData 必须使用 multipart/form-data 为头
                 const { code, msg } = await this.$axios.post(dialogMode === 'create' ?
-                    productApis.addOneWindow : productApis.editOneWindow, formData, {
+                    productApis.addOneHouse : productApis.editOneHouse, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -492,7 +492,7 @@ export default {
                     isShow: false
                 }
                 this.fileList = [];
-                await this.getWindowByPageNum(this.paginationOptions.currentPage);
+                await this.getHouseByPageNum(this.paginationOptions.currentPage);
             }catch (e) {
                 console.log(e);
             }
