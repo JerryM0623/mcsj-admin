@@ -316,7 +316,7 @@ export default {
          */
         async changeStatus(type, row){
             try {
-                const { code, msg } = await this.$axios.post(productApis.changeStatusWindow, {
+                const { code, msg } = await this.$axios.post(productApis.changeStatusHouse, {
                     status: type === 'online' ? 1 : 0,
                     id: row.id
                 })
@@ -326,7 +326,7 @@ export default {
                 }
 
                 this.$message.success(msg);
-                await this.getWindowByPageNum(this.paginationOptions.currentPage);
+                await this.getHouseByPageNum(this.paginationOptions.currentPage);
             }catch (e) {
                 console.log(e);
                 this.$message.error('操作失败');
