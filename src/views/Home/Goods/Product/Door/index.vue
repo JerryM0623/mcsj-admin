@@ -274,11 +274,11 @@ export default {
         /**
          * 请求 window 的 type
          */
-        async getWindowTypes(){
+        async getDoorTypes(){
             try {
                 const { code, msg, data } = await this.$axios.get(typesApis.getTypesBySeries, {
                     params: {
-                        seriesId: 1
+                        seriesId: 2
                     }
                 })
                 if (code !== 200){
@@ -348,13 +348,13 @@ export default {
             }).then( async () => {
                 try {
                     const { id } = row;
-                    const { code, msg } = await this.$axios.post(productApis.deleteOneWindow, {id});
+                    const { code, msg } = await this.$axios.post(productApis.deleteOneDoor, {id});
                     this.$message({
                         type: code === 200 ? 'success' : 'error',
                         message: msg
                     })
                     if (code !== 200) return;
-                    await this.getWindowByPageNum(this.paginationOptions.currentPage);
+                    await this.getDoorByPageNum();
                 }catch (e) {
                     console.log(e);
                     this.$message.error('请求失败');
@@ -378,7 +378,7 @@ export default {
          */
         async addProduct(){
             // 请求数据
-            await this.getWindowTypes();
+            await this.getDoorTypes();
             // 配置dialog
             this.dialogData = {
                 typeId: '',
@@ -400,7 +400,7 @@ export default {
          */
         async editRow(row){
             // 请求数据
-            await this.getWindowTypes();
+            await this.getDoorTypes();
             // 配置 dialog
             this.dialogData = {
                 id: row.id,
@@ -459,7 +459,7 @@ export default {
                 const formData = new FormData();
 
                 formData.append('typeId', typeId);
-                formData.append('seriesId', 1);     // 1 代表窗系列
+                formData.append('seriesId', 2);     // 1 代表窗系列
                 formData.append('name', name);
                 formData.append('commentOne', commentOne);
                 formData.append('commentTwo', commentTwo);
@@ -480,7 +480,7 @@ export default {
 
                 // 上传 formData 必须使用 multipart/form-data 为头
                 const { code, msg } = await this.$axios.post(dialogMode === 'create' ?
-                    productApis.addOneWindow : productApis.editOneWindow, formData, {
+                    productApis.addOneDoor : productApis.editOneDoor, formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
@@ -496,7 +496,7 @@ export default {
                     isShow: false
                 }
                 this.fileList = [];
-                await this.getWindowByPageNum(this.paginationOptions.currentPage);
+                await this.getDoorByPageNum(this.paginationOptions.currentPage);
             }catch (e) {
                 console.log(e);
             }
