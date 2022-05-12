@@ -47,7 +47,7 @@ export default {
          */
         logout() {
             // 清除数据
-            localStorage.removeItem('token');
+            localStorage.removeItem('accountInfo');
             sessionStorage.removeItem('store');
             this.$store.dispatch('removeUserInfo');
             // 发送通知

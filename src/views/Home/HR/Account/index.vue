@@ -68,7 +68,7 @@ export default {
         AccountTable,
         AddAccountDialog,
         AccountRoleDialog,
-        DeleteAccountDialog
+        DeleteAccountDialog,
     },
     data() {
         return {
