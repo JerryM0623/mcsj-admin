@@ -33,7 +33,7 @@ export default {
       loginFormRules: {
         account: [
           {required: true, message: '请输入账号', trigger: 'blur'},
-          {min: 6, max: 10, message: '账号长度在 6 到 10 个字符', trigger: 'blur'}
+          {min: 6, max: 16, message: '账号长度在 6 到 16 个字符', trigger: 'blur'}
         ],
         password: [
           {required: true, message: '请输入密码', trigger: 'blur'},
@@ -49,17 +49,21 @@ export default {
       const {account, password} = this.loginForm;
       // 账号验证的结果
       const res = await this.$axios.post('/admin/login', { account, password })
-      // 写入 token
-      localStorage.setItem('token',res.data.token);
+      // 写入用户信息
+      const newResData = {
+        ...res.data,
+        timeStamp: Date.now()
+      }
+      localStorage.setItem('accountInfo',JSON.stringify(newResData));
       this.$message({
         type: res.code === 200 ? "success" : "error",
         message:res.msg
       })
       if (res.code === 200){
-        await this.$store.dispatch('setAccountInfo',res.data);
+        await this.$store.dispatch('setAccountInfo',newResData);
       }
       // 跳转
-      await this.$router.push('/');
+      await this.$router.push(newResData.roleId === 1 ? '/hr/account' : '/carousel');
     }
   },
 }
