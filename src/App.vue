@@ -16,10 +16,19 @@ export default {
                 )
             );
         }
-        //在页面刷新时将vuex里的信息保存到sessionStorage里
+        // 在页面刷新时将vuex里的信息保存到sessionStorage里
         window.addEventListener("beforeunload", () => {
             sessionStorage.setItem("store", JSON.stringify(this.$store.state));
         });
+        // 如果现在已经有userinfo就去验证时间是不是已经超过1天
+        if (localStorage.getItem('accountInfo')){
+            const accountInfo = JSON.parse(localStorage.getItem('accountInfo'));
+            const oneDayMilliSecond = 86400000;
+            if (Date.now() - accountInfo.timeStamp > oneDayMilliSecond){
+                // 超过了一天
+                localStorage.removeItem('accountInfo');
+            }
+        }
     },
 }
 </script>
