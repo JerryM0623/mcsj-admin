@@ -1,10 +1,10 @@
 <template>
-  <router-view></router-view>
+  <div>AllOrder...</div>
 </template>
 
 <script>
 export default {
-    name: "Order"
+  name: "AllOrder"
 }
 </script>
 

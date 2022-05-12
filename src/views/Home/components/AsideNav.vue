@@ -39,7 +39,7 @@ export default {
                             url: '/hr/account'
                         },
                         {
-                            title: '角色管理',
+                            title: '职位管理',
                             url: '/hr/role'
                         },
                         {
@@ -90,6 +90,16 @@ export default {
                     title: '订单管理',
                     url: '/order',
                     iconClassName: 'el-icon-document',
+                    child: [
+                      {
+                        title: '全部订单',
+                        url: '/order/all'
+                      },
+                      {
+                        title: '退款订单',
+                        url: '/order/refund'
+                      }
+                    ]
                 },
                 // {
                 //     title: '在线客服',
