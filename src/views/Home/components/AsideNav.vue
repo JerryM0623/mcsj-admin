@@ -91,11 +91,11 @@ export default {
                     url: '/order',
                     iconClassName: 'el-icon-document',
                 },
-                {
-                    title: '在线客服',
-                    url: '/cs',
-                    iconClassName: 'el-icon-chat-dot-square',
-                }
+                // {
+                //     title: '在线客服',
+                //     url: '/cs',
+                //     iconClassName: 'el-icon-chat-dot-square',
+                // }
             ]
         }
     }
