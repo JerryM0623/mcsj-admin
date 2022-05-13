@@ -1,6 +1,6 @@
 <template>
     <div class="permission">
-        <el-card>
+        <el-card v-if="roleId === 1">
             <!--功能区-->
             <el-row style="margin-bottom: 10px">
                 <el-col :span="6">
@@ -29,21 +29,23 @@
                 :current-page.sync="paginationOptions.currentPage"
             >
             </el-pagination>
+          <permission-dialog
+              :dialog-data="dialogOptions.dialogData"
+              :dialog-mode="dialogOptions.dialogMode"
+              :dialog-visible="dialogOptions.dialogVisible"
+              :handle-close="closeDialog"
+              :handle-submit-add="submitNewPermission"
+              :handle-submit-edit="submitEditPermission"
+          ></permission-dialog>
         </el-card>
-        <permission-dialog
-            :dialog-data="dialogOptions.dialogData"
-            :dialog-mode="dialogOptions.dialogMode"
-            :dialog-visible="dialogOptions.dialogVisible"
-            :handle-close="closeDialog"
-            :handle-submit-add="submitNewPermission"
-            :handle-submit-edit="submitEditPermission"
-        ></permission-dialog>
+      <FZT v-else></FZT>
     </div>
 </template>
 
 <script>
 import PermissionTable from './components/PermissionTable';
 import PermissionDialog from './components/PermissionDialog';
+import FZT from '../../../../components/fzt/index';
 
 import {mapState} from 'vuex';
 
@@ -51,7 +53,8 @@ export default {
     name: "Permission",
     components: {
         PermissionTable,
-        PermissionDialog
+        PermissionDialog,
+        FZT
     },
     data() {
         return {
@@ -69,7 +72,8 @@ export default {
                 },
                 dialogMode: 'pending',
                 dialogVisible: false
-            }
+            },
+          roleId: JSON.parse(localStorage.getItem('accountInfo')).roleId
         }
     },
     methods: {

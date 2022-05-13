@@ -8,7 +8,7 @@
         active-text-color="#FFD585"
         unique-opened
     >
-        <h2 class="logo">门窗世界后台管理系统</h2>
+        <h2 class="logo">门窗视界后台管理系统</h2>
         <aside-nav-item
             v-for="item in menuList"
             :key="item.url"
@@ -90,16 +90,6 @@ export default {
                     title: '订单管理',
                     url: '/order',
                     iconClassName: 'el-icon-document',
-                    child: [
-                      {
-                        title: '全部订单',
-                        url: '/order/all'
-                      },
-                      {
-                        title: '退款订单',
-                        url: '/order/refund'
-                      }
-                    ]
                 },
                 // {
                 //     title: '在线客服',

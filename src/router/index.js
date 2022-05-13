@@ -117,28 +117,10 @@ const routes = [
             {
                 path: 'order',
                 name: 'order',
-                component: () => import(/* webpackChunkName: "order" */ '../views/Home/Order/index'),
+                component: () => import(/* webpackChunkName: "order" */ '../views/Home/Order/AllOrder/index'),
                 meta: {
                     title: '订单管理'
-                },
-                children: [
-                    {
-                        path: 'all',
-                        name: 'allOrder',
-                        meta: {
-                            title: '全部订单'
-                        },
-                        component: () => import(/* webpackChunkName: "allOrder" */ '../views/Home/Order/AllOrder/index')
-                    },
-                    {
-                        path: 'refund',
-                        name: 'refund',
-                        meta: {
-                            title: '退款订单'
-                        },
-                        component: () => import(/* webpackChunkName: "refund" */ '../views/Home/Order/RefundOrder/index')
-                    },
-                ]
+                }
             }
             // {
             //     path: 'cs',

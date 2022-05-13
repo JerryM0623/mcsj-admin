@@ -1,6 +1,6 @@
 <template>
     <div class="role">
-        <el-card>
+        <el-card v-if="roleId === 1">
             <!--功能区-->
             <el-row style="margin-bottom: 10px">
                 <el-col :span="6">
@@ -48,6 +48,7 @@
                 :dialog-visible="deleteRoleDialogVisible"
             ></delete-role-dialog>
         </el-card>
+      <FZT v-else></FZT>
     </div>
 </template>
 
@@ -56,6 +57,7 @@ import RoleTable from './components/RoleTable';
 import RoleDialog from './components/RoleDialog';
 import RolePermissionDialog from './components/RolePermissionDialog';
 import DeleteRoleDialog from './components/DeleteRoleDialog';
+import FZT from '../../../../components/fzt/index';
 import {mapState} from "vuex";
 export default {
     name: "Role",
@@ -63,7 +65,8 @@ export default {
         RoleTable,
         RoleDialog,
         RolePermissionDialog,
-        DeleteRoleDialog
+        DeleteRoleDialog,
+        FZT
     },
     data(){
         return{
@@ -75,7 +78,8 @@ export default {
             },
             roleDialogVisible: false,
             rolePermissionDialogVisible: false,
-            deleteRoleDialogVisible: false
+            deleteRoleDialogVisible: false,
+            roleId: JSON.parse(localStorage.getItem('accountInfo')).roleId
         }
     },
     methods: {

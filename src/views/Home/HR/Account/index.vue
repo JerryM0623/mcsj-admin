@@ -1,6 +1,6 @@
 <template>
     <div class="account">
-        <el-card>
+        <el-card v-if="roleId === 1">
             <!--功能区-->
             <el-row style="margin-bottom: 10px">
                 <el-col :span="6">
@@ -52,6 +52,7 @@
                 :dialog-visible="deleteAccountVisible"
             ></delete-account-dialog>
         </el-card>
+      <FZT v-else></FZT>
     </div>
 </template>
 
@@ -60,6 +61,7 @@ import AccountTable from './components/AccountTable';
 import AddAccountDialog from './components/AddAccountDialog';
 import AccountRoleDialog from './components/AccountRoleDialog';
 import DeleteAccountDialog from './components/DeleteAccountDialog';
+import FZT from '../../../../components/fzt/index';
 import {mapState} from "vuex";
 
 export default {
@@ -69,6 +71,7 @@ export default {
         AddAccountDialog,
         AccountRoleDialog,
         DeleteAccountDialog,
+        FZT
     },
     data() {
         return {
@@ -86,7 +89,7 @@ export default {
             },
             accountRoleDialogVisible: false,
             deleteAccountVisible: false,
-
+            roleId: JSON.parse(localStorage.getItem('accountInfo')).roleId
         }
     },
     methods: {
