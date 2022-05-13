@@ -15,6 +15,7 @@
       <AllOrderTable
         :table-data="showTableData"
         :handler-edit="dialogShow"
+        :handler-delivery="productDelivery"
       ></AllOrderTable>
     <!--  分页区域-->
       <el-pagination
@@ -156,6 +157,24 @@ export default {
       })
       .catch(() => {
         this.$message.error('系统错误，暂时无法修改！')
+      })
+    },
+    // 发货
+    productDelivery(row){
+      const orderId = row.orderId;
+      this.$axios.post(orderApis.orderDelivery, {
+        orderId
+      })
+      .then((res) => {
+        if (res.code !== 200){
+          this.$message.error(res.msg);
+        }else{
+          this.$message.success(res.msg);
+          this.getOrderByPage(this.paginationOptions.currentPage, this.paginationOptions.pageSize);
+        }
+      })
+      .catch(() => {
+        this.$message.error('发货失败');
       })
     }
   },

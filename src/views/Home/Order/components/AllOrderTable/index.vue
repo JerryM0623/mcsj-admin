@@ -54,7 +54,7 @@
           align="center">
         <template slot-scope="scope">
           <el-button v-show = "scope.row.status < 4" size="small" type="primary" @click="editRow(scope.row)">编辑</el-button>
-          <el-button v-show = "scope.row.status === 2" size="small" type="warning" @click="deleteRow(scope.row)">发货</el-button>
+          <el-button v-show = "scope.row.status === 2" size="small" type="warning" @click="delivery(scope.row)">发货</el-button>
           <el-button v-show = "scope.row.status === 5" size="small" type="success" @click="deleteRow(scope.row)">同意退款</el-button>
           <el-button v-show = "scope.row.status === 5" size="small" type="danger" @click="deleteRow(scope.row)">拒绝退款</el-button>
         </template>
@@ -76,11 +76,19 @@ export default {
     handlerEdit:{
       type: Function,
       required: true
+    },
+    // 处理发货按钮你
+    handlerDelivery:{
+      type: Function,
+      require: true
     }
   },
   methods:{
     editRow(row){
       this.handlerEdit(row);
+    },
+    delivery(row){
+      this.handlerDelivery(row);
     }
   }
 }
