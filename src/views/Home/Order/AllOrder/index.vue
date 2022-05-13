@@ -16,6 +16,8 @@
         :table-data="showTableData"
         :handler-edit="dialogShow"
         :handler-delivery="productDelivery"
+        :handler-agree-refund="agreeRefund"
+        :handler-reject-refund="rejectRefund"
       ></AllOrderTable>
     <!--  分页区域-->
       <el-pagination
@@ -176,6 +178,40 @@ export default {
       .catch(() => {
         this.$message.error('发货失败');
       })
+    },
+    agreeRefund(row){
+      const orderId = row.orderId;
+      this.$axios.post(orderApis.agreeRefund, {
+        orderId
+      })
+      .then((res) => {
+        if (res.code !== 200){
+          this.$message.error(res.msg);
+        }else{
+          this.$message.success(res.msg);
+          this.getOrderByPage(this.paginationOptions.currentPage, this.paginationOptions.pageSize);
+        }
+      })
+      .catch(() => {
+        this.$message.error('操作失败');
+      })
+    },
+    rejectRefund(row){
+      const orderId = row.orderId;
+      this.$axios.post(orderApis.rejectRefund, {
+        orderId
+      })
+          .then((res) => {
+            if (res.code !== 200){
+              this.$message.error(res.msg);
+            }else{
+              this.$message.success(res.msg);
+              this.getOrderByPage(this.paginationOptions.currentPage, this.paginationOptions.pageSize);
+            }
+          })
+          .catch(() => {
+            this.$message.error('操作失败');
+          })
     }
   },
   mounted() {

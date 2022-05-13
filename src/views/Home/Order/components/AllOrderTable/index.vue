@@ -55,8 +55,8 @@
         <template slot-scope="scope">
           <el-button v-show = "scope.row.status < 4" size="small" type="primary" @click="editRow(scope.row)">编辑</el-button>
           <el-button v-show = "scope.row.status === 2" size="small" type="warning" @click="delivery(scope.row)">发货</el-button>
-          <el-button v-show = "scope.row.status === 5" size="small" type="success" @click="deleteRow(scope.row)">同意退款</el-button>
-          <el-button v-show = "scope.row.status === 5" size="small" type="danger" @click="deleteRow(scope.row)">拒绝退款</el-button>
+          <el-button v-show = "scope.row.status === 5" size="small" type="success" @click="agreeRefund(scope.row)">同意退款</el-button>
+          <el-button v-show = "scope.row.status === 5" size="small" type="danger" @click="rejectRefund(scope.row)">拒绝退款</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -81,6 +81,16 @@ export default {
     handlerDelivery:{
       type: Function,
       require: true
+    },
+    // 同意退款
+    handlerAgreeRefund:{
+      type: Function,
+      require: true
+    },
+    // 拒绝退款
+    handlerRejectRefund:{
+      type: Function,
+      require: true
     }
   },
   methods:{
@@ -89,6 +99,12 @@ export default {
     },
     delivery(row){
       this.handlerDelivery(row);
+    },
+    agreeRefund(row){
+      this.handlerAgreeRefund(row);
+    },
+    rejectRefund(row){
+      this.handlerRejectRefund(row);
     }
   }
 }
