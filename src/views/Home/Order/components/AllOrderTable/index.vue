@@ -53,7 +53,7 @@
           width="230"
           align="center">
         <template slot-scope="scope">
-          <el-button v-show = "scope.row.status < 4" size="small" type="primary" @click="deleteRow(scope.row)">编辑</el-button>
+          <el-button v-show = "scope.row.status < 4" size="small" type="primary" @click="editRow(scope.row)">编辑</el-button>
           <el-button v-show = "scope.row.status === 2" size="small" type="warning" @click="deleteRow(scope.row)">发货</el-button>
           <el-button v-show = "scope.row.status === 5" size="small" type="success" @click="deleteRow(scope.row)">同意退款</el-button>
           <el-button v-show = "scope.row.status === 5" size="small" type="danger" @click="deleteRow(scope.row)">拒绝退款</el-button>
@@ -72,6 +72,16 @@ export default {
       type: Array,
       required: true
     },
+    // 点击编辑的回调函数
+    handlerEdit:{
+      type: Function,
+      required: true
+    }
+  },
+  methods:{
+    editRow(row){
+      this.handlerEdit(row);
+    }
   }
 }
 </script>

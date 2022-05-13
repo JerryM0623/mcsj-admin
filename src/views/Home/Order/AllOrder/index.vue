@@ -11,9 +11,28 @@
           <el-button @click="clearSearch" type="primary">清除搜索信息</el-button>
         </el-col>
       </el-row>
+      <!--表格区域-->
       <AllOrderTable
         :table-data="showTableData"
+        :handler-edit="dialogShow"
       ></AllOrderTable>
+    <!--  分页区域-->
+      <el-pagination
+          style="margin-top: 10px"
+          background
+          layout="prev, pager, next"
+          :total="total"
+          @current-change="pageNumChange"
+          :current-page.sync="paginationOptions.currentPage"
+      >
+      </el-pagination>
+    <!--  弹出框-->
+      <EditDialog
+        :dialog-visible="editDialogShow"
+        :order-location="orderLocation"
+        :handle-cancel="closeDialog"
+        :handle-submit="submitDialog"
+      ></EditDialog>
     </el-card>
   </div>
 </template>
@@ -21,10 +40,12 @@
 <script>
 import orderApis from '../../../../apis/order.api';
 import AllOrderTable from '../components/AllOrderTable/index';
+import EditDialog from '../components/editDialog/index';
 export default {
   name: "AllOrder",
   components: {
-    AllOrderTable
+    AllOrderTable,
+    EditDialog,
   },
   data(){
     return {
@@ -36,7 +57,10 @@ export default {
         pageNum: 1,
         currentPage: 1
       },
-      total: -1
+      total: -1,
+      editDialogShow: false,
+      orderLocation: {},
+      orderId: -1,
     }
   },
   methods: {
@@ -73,6 +97,66 @@ export default {
     clearSearch(){
       this.searchInput = '';
       this.showTableData = this.tableData;
+    },
+    /**
+     * 分页组件换页时的事件回调
+     * @param pageNum
+     */
+    pageNumChange(pageNum) {
+      this.getOrderByPage(pageNum);
+    },
+    dialogShow(row){
+      // 获取订单信息
+      const orderId = row.orderId;
+      this.orderId = orderId;
+      this.$axios.get(orderApis.getOrderLocation, {
+        params: {
+          orderId
+        }
+      })
+      .then((res) => {
+        if(res.code !== 200){
+          this.$message.error(res.msg)
+        }else {
+          this.orderLocation = res.data;
+          this.editDialogShow = true;
+        }
+      })
+      .catch(() => {
+        this.$message.error('暂时无法获取收货信息')
+      })
+    },
+    closeDialog(){
+      this.$confirm('你确定要取消修改？已修改内容将会消失','注意',{
+        cancelButtonText:'取消',
+        confirmButtonText:'确定',
+        type: 'warning'
+      }).then(async () => {
+        this.editDialogShow = false;
+        this.orderLocation = {};
+        this.orderId = -1;
+      })
+    },
+    submitDialog(){
+      this.$axios.post(orderApis.setOrderLocation, {
+        orderId: this.orderId,
+        locationName: this.orderLocation.locationName,
+        locationPhone: this.orderLocation.locationPhone,
+        location: this.orderLocation.location
+      })
+      .then((res) => {
+        if (res.code!==200){
+          this.$message.error(res.msg);
+        }else{
+          this.$message.success(res.msg);
+          this.editDialogShow = false;
+          this.orderLocation = {};
+          this.orderId = -1;
+        }
+      })
+      .catch(() => {
+        this.$message.error('系统错误，暂时无法修改！')
+      })
     }
   },
   mounted() {
